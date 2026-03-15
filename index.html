@@ -174,22 +174,10 @@
 
     /* ─── AGENDA ──────────────────────────────── */
     #agenda { background: var(--white); }
-    .agenda-grid {
-      display: grid; grid-template-columns: 90px 1fr;
-      gap: 0;
-    }
-    .agenda-day-col {
-      position: relative;
-    }
-    .agenda-day-label {
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      transform: rotate(180deg);
-      font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
-      color: var(--blue); padding-top: 1.5rem;
-      position: sticky; top: 80px;
-    }
-    .agenda-items { border-left: 1px solid var(--line); }
+    .agenda-grid { display: block; }
+    .agenda-day-col { display: none; }
+    .agenda-day-label { display: none; }
+    .agenda-items { border: 1px solid var(--line); }
     .agenda-item {
       display: grid; grid-template-columns: 90px 1fr;
       gap: 1.5rem; padding: 1.8rem 2rem;
@@ -419,7 +407,7 @@
       </div>
       <div class="hero-meta-item">
         <span class="hero-meta-label">Fecha</span>
-        <span class="hero-meta-val">A confirmar</span>
+        <span class="hero-meta-val">6 y 7 de abril</span>
       </div>
       <div class="hero-meta-item">
         <span class="hero-meta-label">Modalidad</span>
@@ -475,31 +463,10 @@
         <h2 class="section-title">Quiénes<br><em>participan</em></h2>
       </div>
     </div>
-    <div class="reveal">
-      <div class="speakers-grid">
-        <!-- Placeholder cards -->
-        <div class="speaker-card">
-          <div class="speaker-avatar">?</div>
-          <div class="speaker-name">Disertante 1</div>
-          <div class="speaker-role">Especialidad — A confirmar</div>
-          <div class="speaker-institution">Institución</div>
-        </div>
-        <div class="speaker-card">
-          <div class="speaker-avatar">?</div>
-          <div class="speaker-name">Disertante 2</div>
-          <div class="speaker-role">Especialidad — A confirmar</div>
-          <div class="speaker-institution">Institución</div>
-        </div>
-        <div class="speaker-card">
-          <div class="speaker-avatar">?</div>
-          <div class="speaker-name">Disertante 3</div>
-          <div class="speaker-role">Especialidad — A confirmar</div>
-          <div class="speaker-institution">Institución</div>
-        </div>
-        <div class="speaker-card" style="display:flex; align-items:center; justify-content:center; min-height:180px;">
-          <span style="font-style:italic; color:var(--text-muted); font-size:0.95rem;">Más disertantes próximamente</span>
-        </div>
-      </div>
+    <div class="reveal" style="text-align:center; padding: 4rem 0;">
+      <p style="font-size:1.15rem; color:var(--text-muted); font-style:italic;">
+        Próximamente más información sobre los disertantes del encuentro.
+      </p>
     </div>
   </div>
 </section>
@@ -554,6 +521,10 @@
         <div class="contacto-item">
           <div class="contacto-item-label">Instagram ATP</div>
           <div class="contacto-item-val"><a href="https://instagram.com/atp.fcm" target="_blank">@atp.fcm</a></div>
+        </div>
+        <div class="contacto-item">
+          <div class="contacto-item-label">Fecha</div>
+          <div class="contacto-item-val">Lunes 6 y martes 7 de abril</div>
         </div>
         <div class="contacto-item">
           <div class="contacto-item-label">Sede</div>
