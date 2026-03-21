@@ -7,6 +7,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NN76M1GBX5"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-NN76M1GBX5');
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -224,6 +232,7 @@
     }
     .agenda-talk-title { font-size: 1.15rem; font-weight: 600; line-height: 1.3; }
     .agenda-talk-speaker { font-size: 0.9rem; color: var(--text-muted); margin-top: 0.3rem; font-style: italic; }
+    .agenda-talk-desc { font-size:0.88rem; color:var(--text-muted); margin-top:0.4rem; line-height:1.5; max-width:600px; }
     .agenda-talk-type {
       display: inline-block; margin-top: 0.6rem;
       font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
@@ -493,8 +502,26 @@
         <span class="agenda-day-label">Programa</span>
       </div>
       <div class="agenda-items">
-        <div class="agenda-placeholder">
-          Próximamente más información sobre el programa del encuentro.
+        <div class="agenda-item">
+          <span class="agenda-time"></span>
+          <div>
+            <div class="agenda-talk-title">Taller teórico-práctico de soporte vital y primer respondiente</div>
+            <div class="agenda-talk-speaker">Equipo de Soporte Vital de la FCM</div>
+            <div class="agenda-talk-desc">Formación en Soporte Vital Básico y Primer Respondiente: RCP, obstrucción de vía aérea y abordaje en distintas poblaciones. Incluye práctica con material de simulación.</div>
+            <span class="agenda-talk-type">Taller</span>
+          </div>
+        </div>
+        <div class="agenda-item">
+          <span class="agenda-time"></span>
+          <div>
+            <div class="agenda-talk-title">Primeros auxilios y procedimientos básicos en el ámbito hospitalario y el primer nivel de atención</div>
+            <div class="agenda-talk-speaker">Paola Martinotti — Lic. en Enfermería</div>
+            <div class="agenda-talk-desc">Herramientas para el abordaje inicial de situaciones frecuentes: quemaduras, heridas, hemorragias y traumatismo encefalocraneano. Combina teoría con instancias demostrativas.</div>
+            <span class="agenda-talk-type">Capacitación</span>
+          </div>
+        </div>
+        <div class="agenda-item" style="justify-content:center; padding: 1.5rem 2rem;">
+          <span style="font-style:italic; color:var(--text-muted); font-size:0.95rem; grid-column: 1/-1;">Próximamente más charlas · El cronograma completo con días, horarios y anfiteatros se publicará cerca de la fecha del encuentro.</span>
         </div>
       </div>
     </div>
@@ -510,10 +537,24 @@
         <h2 class="section-title">Quiénes<br><em>participan</em></h2>
       </div>
     </div>
-    <div class="reveal" style="text-align:center; padding: 4rem 0;">
-      <p style="font-size:1.15rem; color:var(--text-muted); font-style:italic;">
-        Próximamente más información sobre los disertantes del encuentro.
-      </p>
+    <div class="reveal">
+      <div class="speakers-grid">
+        <div class="speaker-card">
+          <div class="speaker-avatar">EQ</div>
+          <div class="speaker-name">Equipo de Soporte Vital</div>
+          <div class="speaker-role">Soporte Vital Básico y Primer Respondiente</div>
+          <div class="speaker-institution">Facultad de Ciencias Médicas</div>
+        </div>
+        <div class="speaker-card">
+          <div class="speaker-avatar">PM</div>
+          <div class="speaker-name">Paola Martinotti</div>
+          <div class="speaker-role">Lic. en Enfermería</div>
+          <div class="speaker-institution">Hospital HECA · CS Juana Azurduy</div>
+        </div>
+        <div class="speaker-card" style="display:flex; align-items:center; justify-content:center; min-height:180px;">
+          <span style="font-style:italic; color:var(--text-muted); font-size:0.95rem;">Más disertantes próximamente</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
