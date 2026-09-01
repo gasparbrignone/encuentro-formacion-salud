@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://efsarg.com.ar/sitemap.xml
