@@ -1,0 +1,134 @@
+{
+  "bloques": [
+    {
+      "hora": "8:00 — 9:00 hs",
+      "gridCols": "1fr",
+      "items": [
+        {
+          "especial": true,
+          "icon": "📋",
+          "title": "Acreditaciones",
+          "speaker": null,
+          "desc": "En el momento de la acreditación se informan los anfiteatros donde se realizan las actividades.",
+          "type": null
+        }
+      ]
+    },
+    {
+      "hora": "9:00 hs",
+      "gridCols": null,
+      "items": [
+        {
+          "especial": false,
+          "icon": "🔬",
+          "title": "Cómo se produce conocimiento sobre cáncer en Rosario",
+          "speaker": "Mauricio Menacho — Docente FCM e Investigador CONICET",
+          "desc": "Investigación en salud: cómo se estudia el cáncer hoy y cómo ese conocimiento mejora diagnósticos y terapias.",
+          "type": "Charla"
+        },
+        {
+          "especial": false,
+          "icon": "🩺",
+          "title": "Primeros auxilios y procedimientos básicos hospitalarios",
+          "speaker": "Paola Martinotti — Lic. en Enfermería, HECA · CS Juana Azurduy",
+          "desc": "Herramientas para el abordaje inicial de situaciones frecuentes: quemaduras, heridas, hemorragias y TEC.",
+          "type": "Capacitación"
+        }
+      ]
+    },
+    {
+      "hora": "10:00 hs",
+      "gridCols": null,
+      "items": [
+        {
+          "especial": false,
+          "icon": "🚑",
+          "title": "Abordaje del paciente politraumatizado",
+          "speaker": "Paola Martinotti — Lic. en Enfermería, HECA",
+          "desc": "Evaluación inicial y manejo del paciente con trauma. Primer contacto en situaciones críticas de guardia.",
+          "type": "Charla"
+        },
+        {
+          "especial": false,
+          "icon": "🏥",
+          "title": "Del Caos al Control: Evaluación Inicial y Priorización en la Guardia Médica",
+          "speaker": "Dr. Guillermo García — Médico UNR, Especialista en Clínica Médica, Terapia Intensiva y Emergencias",
+          "desc": "Abordaje sistematizado del paciente en guardia: enfoque ABCDE, banderas rojas, triage práctico y comunicación SBAR.",
+          "type": "Charla–taller"
+        }
+      ]
+    },
+    {
+      "hora": "12:00 hs",
+      "gridCols": null,
+      "items": [
+        {
+          "especial": false,
+          "icon": "🫀",
+          "title": "Taller de Soporte Vital Básico y Primer Respondiente",
+          "speaker": "Equipo de Soporte Vital de la FCM",
+          "desc": "RCP, obstrucción de vía aérea y abordaje en distintas poblaciones. Práctica con material de simulación.",
+          "type": "Taller"
+        },
+        {
+          "especial": false,
+          "icon": "🩻",
+          "title": "Diagnóstico por Imágenes para el Equipo de Guardia Médica",
+          "speaker": "Dr. M. Fabián Orellana — Médico, Técnico Radiólogo, Docente FCM UNR",
+          "desc": "Interpretación básica de estudios por imágenes en contexto de guardia y toma de decisiones en emergencias.",
+          "type": "Charla"
+        }
+      ]
+    },
+    {
+      "hora": "14:00 — 15:00 hs",
+      "gridCols": "1fr",
+      "items": [
+        {
+          "especial": true,
+          "icon": "☕",
+          "title": "Break",
+          "speaker": null,
+          "desc": null,
+          "type": null
+        }
+      ]
+    },
+    {
+      "hora": "15:00 hs",
+      "gridCols": "repeat(auto-fill, minmax(260px,1fr))",
+      "items": [
+        {
+          "especial": false,
+          "icon": "🧠",
+          "title": "Modelos y Estrategias en el Abordaje de los Consumos Problemáticos",
+          "speaker": "Ps. María Aravena Bupo, Fabricio Matkovich y Martín Terradillo — Fac. de Psicología UNR",
+          "desc": null,
+          "type": "Charla"
+        },
+        {
+          "especial": false,
+          "icon": "📈",
+          "title": "ECG: Criterios de Normalidad e Interpretación",
+          "speaker": "Florencia Pérez — Médica UNR, Cardiología",
+          "desc": "Lectura sistemática del ECG: ondas, intervalos, segmentos y criterios de normalidad.",
+          "type": "Charla–taller"
+        }
+      ]
+    },
+    {
+      "hora": "17:00 hs",
+      "gridCols": "1fr",
+      "items": [
+        {
+          "especial": false,
+          "icon": "❤️",
+          "title": "Síndrome Coronario Agudo: Reconocimiento y Manejo Inicial",
+          "speaker": "Dra. Florencia Pérez — Médica UNR, Cardiología",
+          "desc": "Abordaje del SCA en guardia: reconocimiento clínico, ECG en SCA, tratamiento inicial y criterios de derivación.",
+          "type": "Charla"
+        }
+      ]
+    }
+  ]
+}

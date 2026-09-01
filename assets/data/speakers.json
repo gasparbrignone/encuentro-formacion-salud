@@ -1,0 +1,58 @@
+{
+  "speakers": [
+    {
+      "initials": "EQ",
+      "name": "Equipo de Soporte Vital",
+      "role": "Soporte Vital Básico y Primer Respondiente",
+      "institution": "Facultad de Ciencias Médicas"
+    },
+    {
+      "initials": "PM",
+      "name": "Paola Martinotti",
+      "role": "Lic. en Enfermería",
+      "institution": "Hospital HECA · CS Juana Azurduy"
+    },
+    {
+      "initials": "MA",
+      "name": "María Aravena Bupo",
+      "role": "Ps. — Docente de la Diplomatura en Abordajes de los Consumos Problemáticos",
+      "institution": "Facultad de Psicología · UNR"
+    },
+    {
+      "initials": "FM",
+      "name": "Fabricio Matkovich",
+      "role": "Ps. — Docente de la Diplomatura en Abordajes de los Consumos Problemáticos",
+      "institution": "Facultad de Psicología · UNR"
+    },
+    {
+      "initials": "MT",
+      "name": "Martín Terradillo",
+      "role": "Ps. — Docente de la Diplomatura en Abordajes de los Consumos Problemáticos",
+      "institution": "Facultad de Psicología · UNR"
+    },
+    {
+      "initials": "MM",
+      "name": "Mauricio Menacho",
+      "role": "Docente FCM · Investigador CONICET",
+      "institution": "CIC-R · CIPReB · ICER"
+    },
+    {
+      "initials": "FP",
+      "name": "Florencia Pérez",
+      "role": "Médica egresada UNR — Cardiología",
+      "institution": "Universidad Nacional de Rosario"
+    },
+    {
+      "initials": "GG",
+      "name": "Dr. Guillermo García",
+      "role": "Médico UNR · Especialista en Clínica Médica, Terapia Intensiva y Emergencias",
+      "institution": "Universidad Nacional de Rosario"
+    },
+    {
+      "initials": "FO",
+      "name": "Dr. M. Fabián Orellana",
+      "role": "Médico · Técnico Radiólogo · Docente FCM",
+      "institution": "Facultad de Ciencias Médicas · UNR"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+backend:
+  name: github
+  repo: gasparbrignone/encuentro-formacion-salud
+  branch: main
+
+# Modo local: al correr `npx decap-server` en este proyecto y abrir
+# /admin desde localhost, el CMS escribe directo en assets/data/*.json
+# de tu copia local (sin necesidad de configurar login de GitHub).
+# Para editar desde el sitio publicado (efsarg.com.ar/admin) sin pasar
+# por una copia local, hay que crear una GitHub OAuth App y un proxy
+# de autenticación — ver README de este panel.
+local_backend: true
+
+publish_mode: simple
+media_folder: assets/img/uploads
+public_folder: /assets/img/uploads
+
+collections:
+  - name: agenda
+    label: Programa / Agenda
+    files:
+      - file: assets/data/agenda.json
+        label: Bloques horarios
+        name: agenda
+        fields:
+          - label: Bloques horarios
+            name: bloques
+            widget: list
+            summary: "{{fields.hora}}"
+            fields:
+              - {label: "Horario (ej: 9:00 hs, o 8:00 — 9:00 hs)", name: hora, widget: string}
+              - label: "Distribución de columnas (avanzado, dejar vacío salvo que sepas qué hace)"
+                name: gridCols
+                widget: string
+                required: false
+                hint: "Ej: 1fr para una sola columna ancha. Vacío = grilla automática de 2+ columnas."
+              - label: Actividades de este horario
+                name: items
+                widget: list
+                summary: "{{fields.title}}"
+                fields:
+                  - {label: "Ícono (un emoji)", name: icon, widget: string, required: false}
+                  - {label: "Título de la actividad", name: title, widget: string}
+                  - label: "Es un bloque especial (Acreditación, Break, etc. — sin disertante)"
+                    name: especial
+                    widget: boolean
+                    default: false
+                  - {label: "Disertante(s)", name: speaker, widget: string, required: false}
+                  - {label: "Descripción", name: desc, widget: text, required: false}
+                  - {label: "Tipo (Charla, Taller, Charla-taller, Capacitación...)", name: type, widget: string, required: false}
+
+  - name: speakers
+    label: Disertantes
+    files:
+      - file: assets/data/speakers.json
+        label: Lista de disertantes
+        name: speakers
+        fields:
+          - label: Disertantes
+            name: speakers
+            widget: list
+            summary: "{{fields.name}}"
+            fields:
+              - {label: "Iniciales (para el avatar, ej: JP)", name: initials, widget: string}
+              - {label: "Nombre completo", name: name, widget: string}
+              - {label: "Rol / especialidad", name: role, widget: string}
+              - {label: "Institución", name: institution, widget: string}
