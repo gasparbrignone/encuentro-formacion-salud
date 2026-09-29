@@ -48,21 +48,52 @@
     const c = ev.contacto || {};
     if (c.whatsapp) $('[data-contacto="whatsapp"]').href = 'https://wa.me/' + String(c.whatsapp).replace(/\D/g, '');
     if (c.telefono) { const t = $('[data-contacto="telefono"]'); t.href = 'tel:' + String(c.telefono).replace(/[^\d+]/g, ''); t.textContent = c.telefono; $('[data-contacto="whatsapp"]').textContent = c.telefono; }
-    inscripcion(ev.inscripcion || {});
+    inscripcion(ev.inscripcion || {}, c);
   }
 
-  function inscripcion(i) {
+  const pesos = (n) => '$' + Number(n).toLocaleString('es-AR');
+
+  // Precio en el inicio: "Inscripción: $5.000", "Entrada libre y gratuita" (precio 0) o nada si no está definido.
+  function precioInicio(i) {
+    const tema = $('[data-tema="precio"]');
+    if (!tema) return;
+    if (i.precio === 0 || i.precio === '0') tema.textContent = 'Entrada libre y gratuita';
+    else if (Number(i.precio) > 0) tema.textContent = 'Inscripción: ' + pesos(i.precio);
+    tema.hidden = !tema.textContent;
+  }
+
+  function inscripcion(i, contacto = {}) {
     const cont = $('#inscripcionCont');
     const cta = $('[data-evento="cta"]');
-    if (i.estado === 'abierta' && i.link) {
+    precioInicio(i);
+    const conPago = i.modo === 'mercadopago' && i.servicio;
+    const volviendoDelPago = new URLSearchParams(location.search).has('pago');
+
+    // Quien vuelve de Mercado Pago ve su entrada aunque la inscripción ya figure
+    // como cerrada o todavía como "próximamente" (por ejemplo, si pagó justo al cierre).
+    if (conPago && volviendoDelPago && i.estado !== 'abierta') {
+      cont.innerHTML = formularioPago(i, contacto);
+      $('#inscForm').hidden = true;
+      retornoPago(i, false);
+      return;
+    }
+
+    if (i.estado === 'abierta' && conPago) {
+      cont.innerHTML = formularioPago(i, contacto);
+      cta.textContent = 'Inscribirme'; cta.href = '#inscripcion';
+      $('#formInsc').addEventListener('submit', (e) => enviarInscripcion(e, i));
+      prepararConfirmacion(i);
+      cargarTurnstile(i);
+      retornoPago(i);
+    } else if (i.estado === 'abierta' && i.link) {
+      const gratis = !(Number(i.precio) > 0);
       cont.innerHTML = `
         <p class="insc-estado">Inscripción abierta</p>
-        <p class="insc-texto">${esc(i.texto || 'Es gratis y lleva dos minutos. Los talleres tienen cupo: elegilos al inscribirte.')}</p>
+        <p class="insc-texto">${esc(i.texto || (gratis ? 'Es gratis y lleva dos minutos.' : `La inscripción cuesta ${pesos(i.precio)} y lleva dos minutos.`))}</p>
         <ol class="pasos">
           <li><span>01</span><b>Ingresá</b> al formulario de inscripción</li>
           <li><span>02</span><b>Completá tus datos</b> nombre, correo y carrera</li>
-          <li><span>03</span><b>Elegí tus talleres</b> tienen cupo</li>
-          <li><span>04</span><b>Confirmá</b> te llega un correo con tu inscripción</li>
+          <li><span>03</span><b>Confirmá</b> te llega un correo con tu inscripción</li>
         </ol>
         <a class="btn btn--blanco" href="${esc(i.link)}" target="_blank" rel="noopener">Inscribirme</a>`;
       cta.textContent = 'Inscribirme'; cta.href = i.link; cta.target = '_blank'; cta.rel = 'noopener';
@@ -71,6 +102,224 @@
     } else if (i.texto) {
       $('.insc-texto', cont).textContent = i.texto;
     }
+  }
+
+  // Formulario con pago por Mercado Pago. Habla con el Worker del EFS
+  // (i.servicio = su dirección), que verifica Turnstile y pasa el pedido al
+  // Apps Script de ATP. Ver docs/EFS_2026_PLAN.md en el repo de la plataforma.
+  const INTENTO = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now()) + Math.random().toString(16).slice(2);
+  let turnstileId = null;
+  let turnstileToken = '';
+
+  const ERRORES = {
+    turnstile: 'No pudimos comprobar que no sos un robot. Recargá la página y probá de nuevo.',
+    demasiados_intentos: 'Hiciste varios intentos seguidos. Esperá unos minutos y volvé a probar.',
+    ya_inscripto: 'Ya hay una inscripción paga con ese DNI. Tu entrada está en el mail que te mandamos (revisá también spam). Si no la encontrás, escribinos por WhatsApp.',
+    cerrada: 'La inscripción está cerrada.',
+  };
+  const CAMPOS = { nombre: 'el nombre', apellido: 'el apellido', dni: 'el DNI', telefono: 'el teléfono', correo: 'el correo', carrera: 'la carrera', anio: 'el año', universidad: 'la universidad' };
+
+  function formularioPago(i, contacto = {}) {
+    const precio = Number(i.precio) > 0 ? pesos(i.precio) : '';
+    const whatsapp = String(contacto.whatsapp || '').replace(/\D/g, '');
+    const anios = ['1.º', '2.º', '3.º', '4.º', '5.º', '6.º', 'Internado / PFO', 'Egresado/a', 'Otro'];
+    const carreras = ['Medicina', 'Enfermería', 'Fonoaudiología', 'Obstetricia', 'Psicología', 'Nutrición', 'Kinesiología', 'Odontología', 'Bioquímica'];
+    return `
+      <div id="inscMensaje" class="insc-mensaje" hidden role="status" aria-live="polite"></div>
+      <div id="inscForm">
+        <p class="insc-estado">Inscripción abierta</p>
+        <p class="insc-texto">${esc(i.texto || `Completá tus datos y pagá la inscripción${precio ? ` (${precio})` : ''} con Mercado Pago. Apenas se aprueba el pago ves tu entrada en pantalla y te llega por mail.`)}</p>
+        <ol class="pasos pasos--cortos">
+          <li><span>01</span><b>Completá tus datos</b></li>
+          <li><span>02</span><b>Pagá con Mercado Pago</b> débito, crédito o dinero en cuenta</li>
+          <li><span>03</span><b>Recibí tu entrada</b> un código QR personal</li>
+        </ol>
+        <form class="form" id="formInsc" novalidate>
+          <p class="form-aviso">Completá tu nombre, apellido, DNI y correo tal como querés que figuren en tu <b>certificado</b>.</p>
+          <div class="form-grilla">
+            <label>Nombre<input name="nombre" autocomplete="given-name" required maxlength="60"></label>
+            <label>Apellido<input name="apellido" autocomplete="family-name" required maxlength="60"></label>
+            <label>DNI<input name="dni" inputmode="numeric" required pattern="[0-9.\\s]{7,11}" maxlength="11" placeholder="Solo números"></label>
+            <label>Teléfono<input name="telefono" type="tel" autocomplete="tel" required minlength="8" maxlength="30" placeholder="Ej.: 341 555-1234"></label>
+            <label>Correo electrónico<input name="correo" type="email" autocomplete="email" required maxlength="120"></label>
+            <label>Repetí el correo<input name="correo2" type="email" autocomplete="off" required maxlength="120"></label>
+            <label>Carrera<input name="carrera" list="carreras" required maxlength="80"><datalist id="carreras">${carreras.map((c) => `<option value="${c}">`).join('')}</datalist></label>
+            <label>Año que cursás<select name="anio" required><option value="">Elegí</option>${anios.map((a) => `<option>${a}</option>`).join('')}</select></label>
+            <label class="form-ancho">Universidad<input name="universidad" required maxlength="100" value="Universidad Nacional de Rosario"></label>
+          </div>
+          <div id="turnstile" class="form-turnstile"></div>
+          <p class="form-error" id="formError" role="alert"></p>
+          <button class="btn btn--blanco" type="submit" id="formBoton">Continuar</button>
+          <div class="confirmar" id="formConfirmar" hidden>
+            <p class="confirmar-titulo" tabindex="-1">Revisá tus datos</p>
+            <p class="confirmar-texto">Así van a figurar en tu certificado, y a este correo te llega la entrada.</p>
+            <dl class="confirmar-datos" id="confirmarDatos"></dl>
+            <label class="confirmar-check"><input type="checkbox" id="confirmoDatos"> <span>Revisé mi nombre, DNI y correo: están bien escritos.</span></label>
+            <div class="confirmar-acciones">
+              <button class="btn btn--blanco" type="button" id="botonPagar" disabled>Ir al pago${precio ? `: ${precio}` : ''}</button>
+              <button class="btn-chico" type="button" id="botonCorregir">Corregir datos</button>
+            </div>
+          </div>
+          <p class="form-pie">El costo de la inscripción cubre los materiales de los talleres y la logística del encuentro. ATP es una agrupación estudiantil y el EFS no tiene fines de lucro.</p>
+          ${whatsapp ? `<a class="btn-chico" href="https://wa.me/${whatsapp}?text=${encodeURIComponent('¡Hola! Quiero ir al EFS 2026 pero no puedo pagar la inscripción.')}" target="_blank" rel="noopener">¿No podés pagar la inscripción? Escribinos</a>` : ''}
+        </form>
+      </div>`;
+  }
+
+  function cargarTurnstile(i) {
+    if (!i.turnstile) return;
+    window.efsTurnstileListo = () => {
+      turnstileId = window.turnstile.render('#turnstile', {
+        sitekey: i.turnstile, theme: 'light', language: 'es',
+        callback: (t) => { turnstileToken = t; },
+        'expired-callback': () => { turnstileToken = ''; },
+        'error-callback': () => { turnstileToken = ''; },
+      });
+    };
+    const s = document.createElement('script');
+    s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=efsTurnstileListo';
+    s.async = true; s.defer = true;
+    document.head.appendChild(s);
+  }
+
+  async function llamar(i, ruta, cuerpo) {
+    const r = await fetch(String(i.servicio).replace(/\/$/, '') + ruta, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo),
+    });
+    return r.json();
+  }
+
+  // Paso 1: validar y mostrar los datos para que la persona los confirme
+  // (el certificado se emite tal cual se escribieron).
+  function enviarInscripcion(e, i) {
+    e.preventDefault();
+    const f = e.target, err = $('#formError');
+    err.textContent = '';
+    f.telefono.setCustomValidity(f.telefono.value.replace(/\D/g, '').length >= 8 ? '' : 'corto');
+    f.correo2.setCustomValidity(f.correo2.value.trim().toLowerCase() === f.correo.value.trim().toLowerCase() ? '' : 'distinto');
+    if (!f.checkValidity()) {
+      const mal = [...f.elements].find((x) => x.willValidate && !x.checkValidity());
+      err.textContent = !mal ? '' : mal.name === 'correo2' ? 'Los dos correos no coinciden.' : 'Revisá los datos marcados antes de continuar.';
+      f.classList.add('form--revisar'); if (mal) mal.focus();
+      return;
+    }
+    const d = Object.fromEntries(new FormData(f));
+    const dni = String(d.dni).replace(/\D/g, '');
+    const limpio = (v) => String(v).replace(/\s+/g, ' ').trim();
+    $('#confirmarDatos').innerHTML = [
+      ['Nombre completo', `${limpio(d.nombre)} ${limpio(d.apellido)}`],
+      ['DNI', Number(dni).toLocaleString('es-AR')],
+      ['Correo', limpio(d.correo).toLowerCase()],
+    ].map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('');
+    $('#confirmoDatos').checked = false;
+    $('#botonPagar').disabled = true;
+    $('#formBoton').hidden = true;
+    $('#formConfirmar').hidden = false;
+    $('#formConfirmar .confirmar-titulo').focus();
+  }
+
+  function prepararConfirmacion(i) {
+    const f = $('#formInsc');
+    const cerrar = () => { $('#formConfirmar').hidden = true; $('#formBoton').hidden = false; };
+    $('#confirmoDatos').addEventListener('change', (e) => { $('#botonPagar').disabled = !e.target.checked; });
+    $('#botonCorregir').addEventListener('click', () => { cerrar(); f.nombre.focus(); });
+    // Si cambia cualquier dato con la confirmación abierta, hay que volver a confirmar.
+    f.addEventListener('input', (e) => { if (!$('#formConfirmar').hidden && e.target.id !== 'confirmoDatos') cerrar(); });
+    $('#botonPagar').addEventListener('click', () => pagar(i));
+  }
+
+  // Paso 2: datos confirmados → pedir el link de pago al Worker.
+  async function respuestaTurnstile(f, ms) {
+    const leer = () => {
+      const campo = f.querySelector('[name="cf-turnstile-response"]');
+      return turnstileToken || (campo && campo.value) || (window.turnstile && turnstileId !== null && window.turnstile.getResponse(turnstileId)) || '';
+    };
+    const fin = Date.now() + ms;
+    let t = leer();
+    while (!t && Date.now() < fin) { await new Promise((ok) => setTimeout(ok, 250)); t = leer(); }
+    return t;
+  }
+
+  async function pagar(i) {
+    const f = $('#formInsc'), err = $('#formError'), btn = $('#botonPagar');
+    const textoBoton = btn.textContent;
+    err.textContent = '';
+    btn.disabled = true; btn.textContent = 'Verificando…';
+    // Turnstile renueva su respuesta cada tanto: si justo se está renovando, se esperan unos segundos.
+    const token = i.turnstile ? await respuestaTurnstile(f, 8000) : '';
+    if (i.turnstile && !token) {
+      err.textContent = 'No se pudo completar la verificación de seguridad (el recuadro de arriba). Esperá unos segundos y volvé a tocar el botón.';
+      btn.disabled = false; btn.textContent = textoBoton;
+      return;
+    }
+
+    const datos = Object.fromEntries(new FormData(f));
+    delete datos.correo2; delete datos['cf-turnstile-response'];
+    btn.disabled = true; btn.textContent = 'Generando el pago…';
+    try {
+      const r = await llamar(i, '/inscribir', { ...datos, intento_id: INTENTO, turnstile: token });
+      if (r.ok && r.pago_url) { location.href = r.pago_url; return; }
+      err.textContent = ERRORES[r.error] || (r.error === 'datos' && CAMPOS[r.campo] ? `Revisá ${CAMPOS[r.campo]}.` : 'No pudimos generar el pago. Probá de nuevo en unos minutos: no se cobró nada.');
+    } catch (x) {
+      err.textContent = 'No pudimos conectarnos. Revisá tu conexión y probá de nuevo: no se cobró nada.';
+    }
+    // Cada respuesta de Turnstile sirve una sola vez: se pide otra para el próximo intento.
+    turnstileToken = '';
+    if (window.turnstile && turnstileId !== null) window.turnstile.reset(turnstileId);
+    btn.disabled = false; btn.textContent = textoBoton;
+  }
+
+  // Vuelta desde Mercado Pago: ?pago=aprobado|pendiente|rechazado. Mercado
+  // Pago agrega payment_id y external_reference; con eso el servidor confirma
+  // el pago y devuelve la entrada para mostrarla acá mismo.
+  async function retornoPago(i, puedeReintentar = true) {
+    const q = new URLSearchParams(location.search);
+    const estado = q.get('pago');
+    if (!estado) return;
+    const pagoId = q.get('payment_id') || q.get('collection_id');
+    const referencia = q.get('external_reference');
+    const msj = $('#inscMensaje');
+    const mostrar = (titulo, texto, extra = '') => {
+      msj.innerHTML = `<p class="insc-estado">${esc(titulo)}</p><p class="insc-texto">${esc(texto)}</p>${extra}`;
+      msj.hidden = false;
+    };
+    setTimeout(() => $('#inscripcion').scrollIntoView({ block: 'start' }), 50);
+
+    if (estado === 'rechazado') {
+      mostrar('El pago no se completó', puedeReintentar ? 'No se cobró nada. Podés intentarlo de nuevo con otro medio de pago, con el mismo DNI.' : 'No se cobró nada.');
+      return;
+    }
+    $('#inscForm').hidden = true;
+    if (!pagoId || pagoId === 'null' || !referencia) {
+      mostrar('Estamos confirmando tu pago', 'Apenas Mercado Pago lo confirme te llega la entrada por mail. No hace falta que vuelvas a inscribirte.');
+      return;
+    }
+    mostrar('Confirmando tu pago…', 'Esto tarda unos segundos.');
+    for (let vuelta = 0; vuelta < 4; vuelta++) {
+      try {
+        const r = await llamar(i, '/verificar', { pago_id: pagoId, referencia });
+        if (r.ok && r.estado === 'pagado' && r.codigo) {
+          mostrar('¡Listo, ya tenés tu entrada!', `Hola ${r.nombre || ''}. Este QR es tu entrada: mostralo en la acreditación. También te lo mandamos por mail.`, entradaHtml(r.codigo));
+          window.EFSQR && window.EFSQR.dibujar($('#entradaQr'), r.codigo, $('#entradaGuardar'));
+          return;
+        }
+        if (r.ok === false && r.error === 'no_coincide') break;
+      } catch (x) { /* se reintenta */ }
+      await new Promise((ok) => setTimeout(ok, 3000));
+    }
+    mostrar('Estamos confirmando tu pago', 'En unos minutos te llega la entrada por mail (revisá también spam). No hace falta que vuelvas a inscribirte ni a pagar. Si en una hora no te llegó, escribinos por WhatsApp.');
+  }
+
+  function entradaHtml(codigo) {
+    return `
+      <div class="entrada">
+        <div class="entrada-qr" id="entradaQr" role="img" aria-label="Código QR de tu entrada ${esc(codigo)}"></div>
+        <p class="entrada-codigo">${esc(codigo)}</p>
+        <div class="entrada-acciones">
+          <a class="btn btn--blanco" id="entradaGuardar" download="entrada-${esc(codigo)}.gif" href="#">Guardar imagen</a>
+          <a class="btn btn--linea-blanca" href="entrada/#${esc(codigo)}">Abrir mi entrada</a>
+        </div>
+      </div>`;
   }
 
   // ── programa

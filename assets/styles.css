@@ -156,6 +156,54 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .pasos span { font-family: var(--mono); font-size: 22px; color: #8FC1E3; }
 .pasos b { font-size: 22px; font-weight: 800; }
 
+.pasos--cortos li { grid-template-columns: 64px auto 1fr; }
+.insc-mensaje { border-left: 6px solid #8FC1E3; padding: 4px 0 4px 22px; margin-bottom: 32px; }
+
+/* formulario de inscripción (sobre fondo navy) */
+.form { max-width: 860px; }
+.form-grilla { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; margin-bottom: 22px; }
+.form label { display: flex; flex-direction: column; gap: 6px; font-family: var(--mono); font-size: 14px; color: var(--papel); }
+.form label small { font-size: 12px; opacity: .75; }
+.form input:not([type="checkbox"]), .form select { font: 500 17px var(--sans); color: var(--navy); background: #fff; border: 2px solid #fff; padding: 11px 12px; min-height: 48px; width: 100%; border-radius: 0; }
+.form input:focus-visible, .form select:focus-visible { outline: 3px solid #8FC1E3; outline-offset: 2px; }
+.form--revisar input:invalid, .form--revisar select:invalid { border-color: #F2B8A0; box-shadow: inset 0 0 0 1px #F2B8A0; }
+.form-error { min-height: 24px; color: #F8C9B6; font-weight: 600; margin-bottom: 10px; }
+.form button:disabled { opacity: .7; cursor: progress; }
+
+.form-ancho { grid-column: 1 / -1; }
+.form-pie { font-size: 14px; line-height: 1.45; color: #C9D8E6; max-width: 60ch; margin: 16px 0 12px; }
+.btn-chico { display: inline-block; font-family: var(--mono); font-size: 14px; color: #fff; border: 1px solid rgba(255,255,255,.55); padding: 7px 12px; text-decoration: none; }
+.btn-chico:hover { background: rgba(255,255,255,.1); border-color: #fff; }
+.form-aviso { font-size: 16px; color: #fff; border-left: 4px solid #8FC1E3; padding: 2px 0 2px 14px; margin-bottom: 20px; max-width: 60ch; }
+.confirmar { background: #fff; color: var(--navy); padding: 22px; max-width: 560px; }
+.confirmar-titulo { font-size: 24px; font-weight: 800; line-height: 1.1; outline: none; }
+.confirmar-texto { font-size: 16px; margin: 6px 0 14px; }
+.confirmar-datos { display: grid; gap: 10px; margin-bottom: 16px; }
+.confirmar-datos > div { border-top: 2px solid var(--navy); padding-top: 6px; }
+.confirmar-datos dt { font-family: var(--mono); font-size: 13px; color: var(--azul2); }
+.confirmar-datos dd { font-size: 20px; font-weight: 700; overflow-wrap: anywhere; }
+.form .confirmar-check { flex-direction: row; font-family: var(--sans); color: var(--navy); display: flex; gap: 12px; align-items: flex-start; font-size: 16px; margin-bottom: 16px; cursor: pointer; }
+.confirmar-check input { width: 22px; height: 22px; margin-top: 1px; accent-color: var(--navy); flex: none; }
+.confirmar-acciones { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.confirmar .btn--blanco { background: var(--navy); color: #fff; border-color: var(--navy); }
+.confirmar .btn--blanco:disabled { opacity: .45; cursor: not-allowed; }
+.confirmar .btn-chico { color: var(--navy); border-color: var(--navy); background: transparent; cursor: pointer; }
+.form-turnstile { min-height: 65px; margin-bottom: 10px; }
+
+/* entrada (QR) en la vuelta del pago y en /entrada/ */
+.entrada { background: #fff; color: var(--navy); padding: 22px; max-width: 360px; margin-top: 22px; }
+.entrada-qr { width: 100%; max-width: 280px; aspect-ratio: 1; margin: 0 auto; }
+.entrada-qr svg { display: block; width: 100%; height: 100%; }
+.entrada-qr--grande { max-width: 340px; }
+.entrada-codigo { font-family: var(--mono); font-size: 22px; letter-spacing: .08em; text-align: center; margin: 12px 0 16px; }
+.entrada-acciones { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.entrada .btn--blanco { border-color: var(--navy); }
+.btn--linea-blanca { color: var(--navy); border-color: var(--navy); background: transparent; }
+.btn--linea-blanca:hover { background: var(--papel); }
+.entrada-pagina { max-width: 480px; margin: 0 auto; padding: 32px 16px 48px; display: flex; flex-direction: column; gap: 14px; }
+.entrada-titulo { font-size: 40px; font-weight: 900; line-height: 1; }
+.entrada-ayuda { font-size: 16px; }
+
 /* ─── edición anterior ────────────────────────────────── */
 .anterior { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 40px; }
 .anterior-fecha { font-family: var(--mono); font-size: 15px; color: var(--azul2); margin-bottom: 8px; }
@@ -211,6 +259,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .datos { grid-template-columns: 1fr 1fr; }
   .bloque { grid-template-columns: 1fr; gap: 12px; }
   .anterior, .contacto { grid-template-columns: 1fr; }
+  .form-grilla { grid-template-columns: 1fr; }
 }
 @media (max-width: 560px) {
   body { font-size: 17px; }

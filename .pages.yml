@@ -59,10 +59,31 @@ content:
                   label: Abierta
                 - name: cerrada
                   label: Cerrada
-          - name: link
-            label: Link al formulario de inscripción
+          - name: modo
+            label: Cómo se inscribe la gente
+            type: select
+            options:
+              values:
+                - name: mercadopago
+                  label: Formulario del sitio + pago con Mercado Pago
+                - name: formulario
+                  label: Link a un formulario externo (sin pago)
+          - name: precio
+            label: Precio en pesos
+            type: number
+            description: 'Ej.: 5000. Se muestra en el inicio y en el formulario. Vacío = no se muestra; 0 = "Entrada libre y gratuita". El precio que se cobra de verdad está en la planilla (hoja "EFS · Config").'
+          - name: servicio
+            label: Dirección del servicio de inscripción
             type: string
-            description: 'Obligatorio cuando el estado es "Abierta". Ej.: un Google Forms.'
+            description: 'La dirección del Worker del EFS en Cloudflare (termina en .workers.dev). No cambiar una vez abierta la inscripción.'
+          - name: turnstile
+            label: Clave pública de Turnstile (Site Key)
+            type: string
+            description: 'La Site Key del widget "EFS inscripción" de Cloudflare Turnstile. Es pública: no es la Secret Key.'
+          - name: link
+            label: Link a formulario externo
+            type: string
+            description: 'Solo para el modo "Link a un formulario externo".'
           - name: texto
             label: Texto (opcional)
             type: text

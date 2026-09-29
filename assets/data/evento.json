@@ -9,6 +9,10 @@
   "modalidad": "Presencial",
   "inscripcion": {
     "estado": "proximamente",
+    "modo": "mercadopago",
+    "precio": null,
+    "servicio": "https://efs-worker.gasparbrignone1.workers.dev",
+    "turnstile": "0x4AAAAAAFJCn7CqYrS4Hoc2",
     "link": "",
     "texto": ""
   },

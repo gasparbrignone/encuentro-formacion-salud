@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tu entrada · EFS 2026</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="referrer" content="no-referrer" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@400..900&family=Chivo+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/styles.css" />
+</head>
+<body class="pagina-entrada">
+  <main class="entrada-pagina">
+    <p class="etiqueta">EFS 2026 · Encuentro de Formación en Salud</p>
+    <h1 class="entrada-titulo">Tu entrada</h1>
+    <div id="entradaOk" hidden>
+      <div class="entrada-qr entrada-qr--grande" id="entradaQr"></div>
+      <p class="entrada-codigo" id="entradaCodigo"></p>
+      <p class="entrada-ayuda">Mostrá este QR en la acreditación, con el brillo de la pantalla alto. La entrada es personal.</p>
+      <a class="btn btn--navy" id="entradaGuardar" href="#" download="entrada-efs.gif">Guardar imagen</a>
+    </div>
+    <div id="entradaMal" hidden>
+      <p class="entrada-ayuda">Este link no tiene una entrada válida. Abrilo desde el mail de confirmación que te mandamos, o escribinos por WhatsApp.</p>
+      <a class="btn btn--linea" href="../">Ir al sitio del EFS</a>
+    </div>
+  </main>
+  <script src="../assets/vendor/qrcode.js"></script>
+  <script src="../assets/entrada-qr.js"></script>
+  <script>
+    (function () {
+      // El código viaja después del "#": nunca llega a ningún servidor.
+      var codigo = decodeURIComponent(location.hash.slice(1)).trim().toUpperCase();
+      var ok = window.EFSQR.dibujar(document.getElementById('entradaQr'), codigo, document.getElementById('entradaGuardar'));
+      document.getElementById(ok ? 'entradaOk' : 'entradaMal').hidden = false;
+      if (ok) {
+        document.getElementById('entradaCodigo').textContent = codigo;
+        document.getElementById('entradaGuardar').setAttribute('download', 'entrada-' + codigo + '.gif');
+      }
+    })();
+  </script>
+</body>
+</html>
