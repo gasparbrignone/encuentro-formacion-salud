@@ -1,0 +1,22 @@
+{
+  "anio": "2026",
+  "edicion": "2.ª edición",
+  "fecha": "Próximamente",
+  "horario": "",
+  "bajada": "Un día de charlas y talleres para estudiantes del área salud, en la Facultad de Ciencias Médicas de la UNR.",
+  "lugar": "Facultad de Ciencias Médicas, UNR",
+  "direccion": "Santa Fe 3100, Rosario, Santa Fe",
+  "modalidad": "Presencial",
+  "inscripcion": {
+    "estado": "proximamente",
+    "link": "",
+    "texto": ""
+  },
+  "mostrar_edicion_anterior": true,
+  "contacto": {
+    "whatsapp": "5493415845571",
+    "telefono": "+54 9 3415 84-5571",
+    "instagram_efs": "efs.atp",
+    "instagram_atp": "atp.fcm"
+  }
+}

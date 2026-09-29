@@ -1,0 +1,254 @@
+{
+  "edicion": "1.ª edición",
+  "fecha": "Sábado 11 de abril de 2026",
+  "resumen": "Nueve actividades entre charlas, talleres y capacitaciones, con docentes e investigadores de la UNR y equipos de salud de Rosario.",
+  "actividades": [
+    {
+      "titulo": "Acreditaciones",
+      "tipo": "Especial",
+      "area": "",
+      "inicio": "08:00",
+      "fin": "09:00",
+      "lugar": "",
+      "descripcion": "En el momento de la acreditación se informan los anfiteatros donde se realizan las actividades.",
+      "temas": [],
+      "imagen": "",
+      "disertantes": [],
+      "cupo": null,
+      "inscripcion_previa": false,
+      "oculta": false
+    },
+    {
+      "titulo": "Cómo se produce conocimiento sobre cáncer en Rosario",
+      "tipo": "Charla",
+      "area": "",
+      "inicio": "09:00",
+      "fin": "",
+      "lugar": "",
+      "descripcion": "Investigación en salud: cómo se estudia el cáncer hoy y cómo ese conocimiento mejora diagnósticos y terapias.",
+      "temas": [],
+      "imagen": "",
+      "disertantes": [
+        {
+          "nombre": "Mauricio Menacho",
+          "rol": "Docente FCM · Investigador CONICET",
+          "institucion": "CIC-R · CIPReB · ICER",
+          "foto": ""
+        }
+      ],
+      "cupo": null,
+      "inscripcion_previa": false,
+      "oculta": false
+    },
+    {
+      "titulo": "Primeros auxilios y procedimientos básicos hospitalarios",
+      "tipo": "Capacitación",
+      "area": "",
+      "inicio": "09:00",
+      "fin": "",
+      "lugar": "",
+      "descripcion": "Herramientas para el abordaje inicial de situaciones frecuentes: quemaduras, heridas, hemorragias y TEC.",
+      "temas": [],
+      "imagen": "",
+      "disertantes": [
+        {
+          "nombre": "Paola Martinotti",
+          "rol": "Lic. en Enfermería",
+          "institucion": "Hospital HECA · CS Juana Azurduy",
+          "foto": ""
+        }
+      ],
+      "cupo": null,
+      "inscripcion_previa": false,
+      "oculta": false
+    },
+    {
+      "titulo": "Abordaje del paciente politraumatizado",
+      "tipo": "Charla",
+      "area": "",
+      "inicio": "10:00",
+      "fin": "",
+      "lugar": "",
+      "descripcion": "Evaluación inicial y manejo del paciente con trauma. Primer contacto en situaciones críticas de guardia.",
+      "temas": [],
+      "imagen": "",
+      "disertantes": [
+        {
+          "nombre": "Paola Martinotti",
+          "rol": "Lic. en Enfermería",
+          "institucion": "Hospital HECA · CS Juana Azurduy",
+          "foto": ""
+        }
+      ],
+      "cupo": null,
+      "inscripcion_previa": false,
+      "oculta": false
+    },
+    {
+      "titulo": "Del Caos al Control: Evaluación Inicial y Priorización en la Guardia Médica",
+      "tipo": "Charla-taller",
+      "area": "",
+      "inicio": "10:00",
+      "fin": "",
+      "lugar": "",
+      "descripcion": "Abordaje sistematizado del paciente en guardia: enfoque ABCDE, banderas rojas, triage práctico y comunicación SBAR.",
+      "temas": [],
+      "imagen": "",
+      "disertantes": [
+        {
+          "nombre": "Guillermo García",
+          "rol": "Médico UNR · Especialista en Clínica Médica, Terapia Intensiva y Emergencias",
+          "institucion": "Universidad Nacional de Rosario",
+          "foto": ""
+        }
+      ],
+      "cupo": null,
+      "inscripcion_previa": false,
+      "oculta": false
+    },
+    {
+      "titulo": "Taller de Soporte Vital Básico y Primer Respondiente",
+      "tipo": "Taller",
+      "area": "",
+      "inicio": "12:00",
+      "fin": "",
+      "lugar": "",
+      "descripcion": "RCP, obstrucción de vía aérea y abordaje en distintas poblaciones. Práctica con material de simulación.",
+      "temas": [],
+      "imagen": "/assets/img/uploads/rcp-practica.jpg",
+      "disertantes": [
+        {
+          "nombre": "Equipo de Soporte Vital de la FCM",
+          "rol": "",
+          "institucion": "",
+          "foto": ""
+        }
+      ],
+      "cupo": null,
+      "inscripcion_previa": true,
+      "oculta": false
+    },
+    {
+      "titulo": "Diagnóstico por Imágenes para el Equipo de Guardia Médica",
+      "tipo": "Charla",
+      "area": "Guardia",
+      "inicio": "12:00",
+      "fin": "",
+      "lugar": "",
+      "descripcion": "Interpretación básica de estudios por imágenes en contexto de guardia y toma de decisiones en emergencias.",
+      "temas": [
+        "Radiografía",
+        "Ecografía",
+        "Tomografía"
+      ],
+      "imagen": "/assets/img/uploads/radiografia-torax.jpg",
+      "disertantes": [
+        {
+          "nombre": "Fabián Orellana",
+          "rol": "Médico · Técnico Radiólogo · Docente FCM",
+          "institucion": "Facultad de Ciencias Médicas · UNR",
+          "foto": ""
+        }
+      ],
+      "cupo": null,
+      "inscripcion_previa": false,
+      "oculta": false
+    },
+    {
+      "titulo": "Break",
+      "tipo": "Especial",
+      "area": "",
+      "inicio": "14:00",
+      "fin": "15:00",
+      "lugar": "",
+      "descripcion": "",
+      "temas": [],
+      "imagen": "",
+      "disertantes": [],
+      "cupo": null,
+      "inscripcion_previa": false,
+      "oculta": false
+    },
+    {
+      "titulo": "Modelos y Estrategias en el Abordaje de los Consumos Problemáticos",
+      "tipo": "Charla",
+      "area": "",
+      "inicio": "15:00",
+      "fin": "",
+      "lugar": "",
+      "descripcion": "",
+      "temas": [],
+      "imagen": "",
+      "disertantes": [
+        {
+          "nombre": "María Aravena Bupo",
+          "rol": "Ps. — Docente de la Diplomatura en Abordajes de los Consumos Problemáticos",
+          "institucion": "Facultad de Psicología · UNR",
+          "foto": ""
+        },
+        {
+          "nombre": "Fabricio Matkovich",
+          "rol": "Ps. — Docente de la Diplomatura en Abordajes de los Consumos Problemáticos",
+          "institucion": "Facultad de Psicología · UNR",
+          "foto": ""
+        },
+        {
+          "nombre": "Martín Terradillo",
+          "rol": "Ps. — Docente de la Diplomatura en Abordajes de los Consumos Problemáticos",
+          "institucion": "Facultad de Psicología · UNR",
+          "foto": ""
+        }
+      ],
+      "cupo": null,
+      "inscripcion_previa": false,
+      "oculta": false
+    },
+    {
+      "titulo": "ECG: Criterios de Normalidad e Interpretación",
+      "tipo": "Charla-taller",
+      "area": "",
+      "inicio": "15:00",
+      "fin": "",
+      "lugar": "",
+      "descripcion": "Lectura sistemática del ECG: ondas, intervalos, segmentos y criterios de normalidad.",
+      "temas": [],
+      "imagen": "",
+      "disertantes": [
+        {
+          "nombre": "Florencia Pérez",
+          "rol": "Médica egresada UNR — Cardiología",
+          "institucion": "Universidad Nacional de Rosario",
+          "foto": ""
+        }
+      ],
+      "cupo": null,
+      "inscripcion_previa": false,
+      "oculta": false
+    },
+    {
+      "titulo": "Síndrome Coronario Agudo: Reconocimiento y Manejo Inicial",
+      "tipo": "Charla",
+      "area": "Cardiología",
+      "inicio": "17:00",
+      "fin": "",
+      "lugar": "",
+      "descripcion": "Abordaje del SCA en guardia: reconocimiento clínico, ECG en SCA, tratamiento inicial y criterios de derivación.",
+      "temas": [
+        "Reconocimiento",
+        "Manejo inicial"
+      ],
+      "imagen": "/assets/img/uploads/corazon-gray-anatomy.jpg",
+      "disertantes": [
+        {
+          "nombre": "Florencia Pérez",
+          "rol": "Médica egresada UNR — Cardiología",
+          "institucion": "Universidad Nacional de Rosario",
+          "foto": ""
+        }
+      ],
+      "cupo": null,
+      "inscripcion_previa": false,
+      "oculta": false
+    }
+  ]
+}

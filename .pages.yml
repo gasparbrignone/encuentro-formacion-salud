@@ -1,0 +1,189 @@
+# Pages CMS (https://app.pagescms.org) · panel para editar el sitio sin tocar código.
+# Cada cambio que se guarda en el panel es un commit en este repositorio y
+# GitHub Pages publica efsarg.com.ar en 1 o 2 minutos.
+# Instrucciones completas: INSTRUCTIVO.md
+
+media:
+  input: assets/img/uploads
+  output: /assets/img/uploads
+  categories: [image]
+  rename: safe
+
+content:
+  # ───────────────────────── EVENTO ─────────────────────────
+  - name: evento
+    label: Evento (fecha, inscripción, contacto)
+    type: file
+    path: assets/data/evento.json
+    format: json
+    fields:
+      - name: edicion
+        label: Edición
+        type: string
+        description: 'Ej.: 2.ª edición'
+      - name: anio
+        label: Año
+        type: string
+      - name: fecha
+        label: Fecha
+        type: string
+        description: 'Tal como se muestra. Ej.: "Sábado 17 de octubre" o "Próximamente".'
+      - name: horario
+        label: Horario general
+        type: string
+        description: 'Ej.: "de 9 a 18 h". Se muestra junto a la fecha (no aparece si la fecha dice "Próximamente").'
+      - name: bajada
+        label: Bajada del inicio
+        type: text
+      - name: lugar
+        label: Lugar
+        type: string
+      - name: direccion
+        label: Dirección
+        type: string
+      - name: modalidad
+        label: Modalidad
+        type: string
+      - name: inscripcion
+        label: Inscripción
+        type: object
+        fields:
+          - name: estado
+            label: Estado
+            type: select
+            options:
+              values:
+                - name: proximamente
+                  label: Próximamente (todavía no abre)
+                - name: abierta
+                  label: Abierta
+                - name: cerrada
+                  label: Cerrada
+          - name: link
+            label: Link al formulario de inscripción
+            type: string
+            description: 'Obligatorio cuando el estado es "Abierta". Ej.: un Google Forms.'
+          - name: texto
+            label: Texto (opcional)
+            type: text
+            description: Si se deja vacío, se usa un texto por defecto según el estado.
+      - name: mostrar_edicion_anterior
+        label: Mostrar la sección "Así fue la edición anterior"
+        type: boolean
+      - name: contacto
+        label: Contacto
+        type: object
+        fields:
+          - name: telefono
+            label: Teléfono (como se muestra)
+            type: string
+          - name: whatsapp
+            label: WhatsApp (solo números, con código de país)
+            type: string
+            description: 'Ej.: 5493415845571'
+          - name: instagram_efs
+            label: Instagram EFS (sin @)
+            type: string
+          - name: instagram_atp
+            label: Instagram ATP (sin @)
+            type: string
+
+  # ───────────────────────── PROGRAMA ─────────────────────────
+  - name: actividades
+    label: Programa (charlas y talleres)
+    type: file
+    path: assets/data/actividades.json
+    format: json
+    list: true
+    fields: &actividad
+      - name: titulo
+        label: Título
+        type: string
+        required: true
+      - name: tipo
+        label: Tipo
+        type: select
+        description: 'Charla usa el color azul; Taller y Capacitación, el teal. "Especial" es para acreditación, almuerzo, cierre, etc.'
+        options:
+          values: [Charla, Charla-taller, Taller, Capacitación, Especial]
+      - name: area
+        label: Área temática (opcional)
+        type: string
+        description: 'Ej.: Cardiología, Guardia, Salud mental. Aparece junto al tipo.'
+      - name: inicio
+        label: Hora de inicio
+        type: string
+        pattern:
+          regex: '^([01]\d|2[0-3]):[0-5]\d$'
+          message: 'Formato HH:MM, por ejemplo 09:00'
+        description: 'Formato 24 h: 09:00. Las actividades se agrupan y ordenan por esta hora.'
+      - name: fin
+        label: Hora de fin (opcional)
+        type: string
+        description: 'Formato 24 h: 10:30'
+      - name: lugar
+        label: Lugar
+        type: string
+        description: 'Ej.: Anfiteatro A, Sala de talleres (1.er piso)'
+      - name: descripcion
+        label: Descripción
+        type: text
+      - name: temas
+        label: Temas (opcional)
+        type: string
+        list: true
+        description: 'Palabras clave que se muestran como etiquetas. Ej.: Radiografía, Ecografía.'
+      - name: imagen
+        label: Imagen (opcional)
+        type: image
+        description: 'Una foto o lámina relacionada con el tema. El sitio le aplica sola la trama EFS; no hace falta editarla.'
+      - name: disertantes
+        label: Disertantes
+        type: object
+        list: true
+        fields:
+          - name: nombre
+            label: Nombre
+            type: string
+          - name: rol
+            label: Rol o especialidad
+            type: string
+          - name: institucion
+            label: Institución
+            type: string
+          - name: foto
+            label: Foto (opcional)
+            type: image
+            description: Idealmente de frente, con fondo simple. El sitio le aplica la trama.
+      - name: cupo
+        label: Cupo (opcional)
+        type: number
+      - name: inscripcion_previa
+        label: Requiere inscripción previa
+        type: boolean
+      - name: oculta
+        label: Ocultar esta actividad
+        type: boolean
+        description: Tildá para ocultarla del sitio sin borrarla (útil para borradores).
+
+  # ───────────────────────── ARCHIVO ─────────────────────────
+  - name: edicion_anterior
+    label: Edición anterior (1.ª edición)
+    type: file
+    path: assets/data/archivo/edicion-1.json
+    format: json
+    fields:
+      - name: edicion
+        label: Edición
+        type: string
+      - name: fecha
+        label: Fecha
+        type: string
+      - name: resumen
+        label: Resumen
+        type: text
+      - name: actividades
+        label: Actividades
+        type: object
+        list: true
+        fields: *actividad
