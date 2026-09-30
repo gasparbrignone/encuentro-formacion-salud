@@ -464,6 +464,15 @@
     mostrar('#errorIngreso', r.error === 'clave' ? 'Clave incorrecta.' : r.error === 'demasiados_intentos' ? 'Demasiados intentos. Esperá unos minutos.' : 'No hay conexión con el servidor.');
   });
 
+  // Cierra la sesión y borra del celular la lista de personas, la clave y lo pendiente (para el final del evento).
+  $('#btnSalir').addEventListener('click', () => {
+    if (cola.length && !confirm('Hay ' + cola.length + ' operaciones sin enviar. Si salís ahora se pierden. ¿Salir igual?')) return;
+    if (!cola.length && !confirm('¿Cerrar la sesión y borrar los datos de este celular?')) return;
+    for (const k of Object.values(LS)) borrar(k);
+    guardarSesion('efs-staff-coord', '');
+    location.reload();
+  });
+
   $('#tabs').addEventListener('click', (ev) => { const b = ev.target.closest('button'); if (b) { preparar(); irA(b.dataset.vista); } });
   $('#talleres').addEventListener('click', (ev) => { const b = ev.target.closest('.taller'); if (b && !b.disabled) elegirTaller(b.dataset.id); });
   $('#btnDespues').addEventListener('click', () => {
