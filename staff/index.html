@@ -20,9 +20,9 @@
     <h1>Staff del EFS</h1>
     <form id="formIngreso" autocomplete="off">
       <label for="clave">Clave del staff</label>
-      <input id="clave" type="password" required autocomplete="off" />
+      <input id="clave" type="password" required autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false" />
       <label for="puesto">Nombre de este puesto</label>
-      <input id="puesto" type="text" maxlength="20" placeholder="Ej.: Puesto 1" required />
+      <input id="puesto" type="text" maxlength="20" placeholder="Ej.: Puesto 1" required autocomplete="off" />
       <button class="btn btn--principal" type="submit">Entrar</button>
       <p id="errorIngreso" class="error" role="alert" hidden></p>
     </form>
@@ -88,7 +88,7 @@
       <form id="formCoord" autocomplete="off" hidden>
         <label for="claveCoord">Clave de coordinación</label>
         <div class="fila">
-          <input id="claveCoord" type="password" autocomplete="off" />
+          <input id="claveCoord" type="password" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false" />
           <button class="btn btn--principal" type="submit">Entrar</button>
         </div>
         <p id="errorCoord" class="error" role="alert" hidden></p>
