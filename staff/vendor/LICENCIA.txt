@@ -1,0 +1,1 @@
+jsQR 1.4.0 (Cosmo Wolfe), licencia Apache-2.0. Copia sin cambios de https://github.com/cozmo/jsQR (la misma libreria que usa /staff/escanear/ de ATP).
