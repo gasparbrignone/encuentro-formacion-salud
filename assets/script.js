@@ -62,7 +62,20 @@
     tema.hidden = !tema.textContent;
   }
 
+  // Con "apertura" y "cierre" (fechas con hora, ej. 2026-10-02T00:00:00-03:00) el sitio abre y cierra
+  // solo. La que manda de verdad es la planilla: fuera de fecha rechaza igual la inscripción.
+  function estadoPorFecha(i) {
+    if (i.estado !== 'abierta') return i;
+    const ahora = Date.now();
+    const desde = i.apertura ? Date.parse(i.apertura) : NaN;
+    const hasta = i.cierre ? Date.parse(i.cierre) : NaN;
+    if (desde > ahora) return { ...i, estado: 'proximamente' };
+    if (hasta < ahora) return { ...i, estado: 'cerrada' };
+    return i;
+  }
+
   function inscripcion(i, contacto = {}) {
+    i = estadoPorFecha(i);
     const cont = $('#inscripcionCont');
     const cta = $('[data-evento="cta"]');
     precioInicio(i);

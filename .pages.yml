@@ -59,6 +59,14 @@ content:
                   label: Abierta
                 - name: cerrada
                   label: Cerrada
+          - name: apertura
+            label: Apertura automática (opcional)
+            type: string
+            description: 'Fecha y hora en que abre, con este formato: 2026-10-02T00:00:00-03:00. Con el estado en "Abierta", antes de esa hora se muestra "próximamente". Vacío = abre apenas se ponga en "Abierta".'
+          - name: cierre
+            label: Cierre automático (opcional)
+            type: string
+            description: 'Fecha y hora en que cierra, con este formato: 2026-10-15T23:59:00-03:00. Pasada esa hora se muestra "cerrada". También hay que poner el mismo cierre en la planilla (hoja "EFS · Config", fila "cierre").'
           - name: modo
             label: Cómo se inscribe la gente
             type: select
