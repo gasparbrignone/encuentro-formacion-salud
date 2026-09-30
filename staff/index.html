@@ -21,8 +21,8 @@
     <form id="formIngreso" autocomplete="off">
       <label for="clave">Clave del staff</label>
       <input id="clave" type="password" required autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false" />
-      <label for="puesto">Nombre de este puesto</label>
-      <input id="puesto" type="text" maxlength="20" placeholder="Ej.: Puesto 1" required autocomplete="off" />
+      <label for="puesto">Tu nombre</label>
+      <input id="puesto" type="text" maxlength="20" placeholder="Ej.: Lucía" required autocomplete="off" />
       <button class="btn btn--principal" type="submit">Entrar</button>
       <p id="errorIngreso" class="error" role="alert" hidden></p>
     </form>
@@ -57,7 +57,6 @@
       <div id="tarjeta" class="tarjeta"></div>
       <div id="talleres" class="talleres" hidden></div>
       <div class="acciones" id="accionesFlujo" hidden>
-        <button class="btn" id="btnDespues" type="button">Después (mesa de talleres)</button>
         <button class="btn btn--claro" id="btnSiguiente" type="button">Siguiente persona</button>
       </div>
     </section>
@@ -118,11 +117,6 @@
             </div>
             <p id="errorTaller" class="error" role="alert" hidden></p>
           </form>
-        </div>
-
-        <div class="bloque">
-          <h2>Fila larga</h2>
-          <label class="check"><input type="checkbox" id="chkDespues" /> Todos a "Después": la mesa solo acredita y entrega credencial (pasos 1 y 2); el taller se elige en otra mesa.</label>
         </div>
 
         <div class="bloque">

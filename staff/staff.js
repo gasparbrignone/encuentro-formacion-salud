@@ -226,7 +226,6 @@
       li.className = i < actual ? 'hecho' : i === actual ? 'actual' : '';
     });
     $('#accionesFlujo').hidden = !flujo;
-    $('#btnDespues').hidden = !(flujo && flujo.fase === 'taller');
     $('#talleres').hidden = !(flujo && flujo.fase === 'taller');
     clearInterval(timerTalleres);
     if (flujo && flujo.fase === 'taller') { pintarTalleres(); timerTalleres = setInterval(refrescarTalleres, 5000); }
@@ -278,7 +277,7 @@
         feedback('ambar');
         const detalle = `<b>Ya acreditado/a</b> a las ${hhmm(r.hora)}${r.puesto ? ' en ' + esc(r.puesto) : ''}.` + (flujo.cr ? ` Credencial ${esc(flujo.cr)}.` : '') + (flujo.tn ? ` Taller: ${esc(flujo.tn)}.` : '');
         if (flujo.cr && flujo.t) { flujo.fase = 'listo'; tarjeta('ambar', flujo.nombre, detalle + ' No hace falta nada más.'); }
-        else if (flujo.cr) { flujo.fase = lista.despues ? 'listo' : 'taller'; tarjeta('ambar', flujo.nombre, detalle); }
+        else if (flujo.cr) { flujo.fase = 'taller'; tarjeta('ambar', flujo.nombre, detalle); }
         else tarjeta('ambar', flujo.nombre, detalle, 'Falta la credencial: escanéala.');
         pintarPasos();
         break;
@@ -297,18 +296,18 @@
     const r = await enviarOp('vincular', { codigo: cod, credencial: cr, puesto });
     if (!flujo || flujo.codigo !== cod) return;
     if (r.offline) {
-      flujo.cr = cr; flujo.sinRed = true; flujo.fase = lista.despues ? 'listo' : 'taller';
+      flujo.cr = cr; flujo.sinRed = true; flujo.fase = 'taller';
       feedback('ambar');
-      tarjeta('ambar', flujo.nombre, `Credencial ${esc(cr)} <b>guardada sin conexión</b> (se envía sola).`, flujo.fase === 'taller' ? 'Sin conexión no se puede elegir taller: anotalo en la planilla de papel.' : 'Mandalo/a a la mesa de talleres.');
+      tarjeta('ambar', flujo.nombre, `Credencial ${esc(cr)} <b>guardada sin conexión</b> (se envía sola).`, 'Sin conexión no se puede elegir taller: anotalo en la planilla de papel.');
       return pintarPasos();
     }
     switch (r.r) {
       case 'ok': case 'ya_tiene': {
         flujo.cr = r.r === 'ok' ? cr : r.cr;
-        flujo.fase = lista.despues ? 'listo' : 'taller';
+        flujo.fase = 'taller';
         feedback(r.r === 'ok' ? 'verde' : 'ambar');
         const nota = r.r === 'ok' ? `Credencial ${esc(cr)} entregada.` : `<b>Ya tenía la credencial ${esc(r.cr)}</b>; se mantiene esa.`;
-        tarjeta(r.r === 'ok' ? 'verde' : 'ambar', flujo.nombre, nota, flujo.fase === 'listo' ? 'Mandalo/a a la mesa de talleres.' : 'Ahora elegí el taller.');
+        tarjeta(r.r === 'ok' ? 'verde' : 'ambar', flujo.nombre, nota, 'Ahora elegí el taller.');
         pintarPasos();
         if (flujo.fase === 'listo') programarSiguiente();
         else refrescarTalleres();
@@ -378,7 +377,7 @@
     if (esRed(r)) return avisoPuerta('rojo', 'Sin conexión', 'No se puede verificar. Mirá el autoadhesivo de color.');
     if (r.r === 'ok') {
       if (r.t === puertaTaller) { puertaContador++; $('#puertaCuenta').textContent = puertaContador + (puertaContador === 1 ? ' persona verificada' : ' personas verificadas') + ' en esta puerta'; return avisoPuerta('verde', r.n, 'Puede pasar.'); }
-      if (!r.t) return avisoPuerta('rojo', r.n, '<b>No tiene taller asignado.</b> Mandalo/a a la mesa de talleres.');
+      if (!r.t) return avisoPuerta('rojo', r.n, '<b>No tiene taller asignado.</b> Que elija uno en la mesa de acreditación.');
       return avisoPuerta('rojo', r.n, `<b>Es del taller ${esc(r.tn)}</b>, no de este.`);
     }
     if (r.r === 'sin_dueno') return avisoPuerta('rojo', 'Credencial sin asignar', 'No está vinculada a ninguna persona.');
@@ -415,7 +414,6 @@
     $('#resumen').textContent = `Acreditados ${r.acreditados} de ${r.total} · con credencial ${r.credenciales} · con taller ${r.con_taller} · sin pasar a la planilla ${r.sin_sincronizar} · credenciales impresas cargadas ${r.credenciales_impresas}`;
     $('#listaTalleres').innerHTML = r.talleres.length ? r.talleres.map((t) => `<li><span class="dato"><b><span class="marca" style="background:${esc(t.color)}"></span>${esc(t.nombre)}</b><span>${t.ocupados} de ${t.cupo} lugares ocupados</span></span><span class="acciones-min"><button class="btn" data-acc="editar" data-id="${esc(t.id)}">Editar</button><button class="btn" data-acc="borrar" data-id="${esc(t.id)}">Borrar</button></span></li>`).join('') : '<li><span class="dato"><b>Todavía no hay talleres</b><span>Cargá el primero acá abajo.</span></span></li>';
     lista.talleres = r.talleres;
-    $('#chkDespues').checked = Boolean(lista.despues);
     window.__talleresCoord = r.talleres;
   }
   function mostrar(sel, texto) { const e = $(sel); e.textContent = texto; e.hidden = !texto; }
@@ -460,7 +458,7 @@
     ev.preventDefault();
     preparar();
     clave = $('#clave').value.trim();
-    puesto = $('#puesto').value.trim().replace(/[^\w .-]/g, '').slice(0, 20) || 'Puesto';
+    puesto = $('#puesto').value.trim().replace(/[^\p{L}\p{N} .'-]/gu, '').slice(0, 20) || 'Puesto';
     mostrar('#errorIngreso', '');
     detalleError = '';
     const boton = $('#formIngreso button[type=submit]');
@@ -483,12 +481,6 @@
 
   $('#tabs').addEventListener('click', (ev) => { const b = ev.target.closest('button'); if (b) { preparar(); irA(b.dataset.vista); } });
   $('#talleres').addEventListener('click', (ev) => { const b = ev.target.closest('.taller'); if (b && !b.disabled) elegirTaller(b.dataset.id); });
-  $('#btnDespues').addEventListener('click', () => {
-    if (!flujo) return;
-    flujo.fase = 'listo'; feedback('verde');
-    tarjeta('verde', flujo.nombre, 'Credencial entregada. <b>Mandalo/a a la mesa de talleres</b> para elegir.');
-    pintarPasos(); programarSiguiente();
-  });
   $('#btnSiguiente').addEventListener('click', reiniciarFlujo);
   $('#puertaTalleres').addEventListener('click', (ev) => { const b = ev.target.closest('.taller'); if (!b) return; puertaTaller = b.dataset.id; puertaContador = 0; $('#puertaCuenta').textContent = ''; $('#puertaResultado').innerHTML = ''; $('#puertaResultado').dataset.c = ''; pintarPuertaTalleres(); });
 
@@ -528,7 +520,6 @@
       cargarPanel();
     }
   });
-  $('#chkDespues').addEventListener('change', async (ev) => { const r = await coordOp('coord_despues', { valor: ev.target.checked }); if (r.ok) lista.despues = r.despues; else ev.target.checked = !ev.target.checked; });
   $('#btnCred').addEventListener('click', async () => {
     const codigos = [...new Set(($('#credLista').value.toUpperCase().match(/EFSC-[0-9A-HJKMNP-TV-Z]{8}/g)) || [])];
     if (!codigos.length) return ($('#credMsg').textContent = 'No encontré ningún código EFSC-XXXXXXXX en lo que pegaste.');
