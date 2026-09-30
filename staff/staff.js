@@ -108,8 +108,9 @@
   function cargarListaGuardada() {
     try { const g = JSON.parse(leer(LS.lista)); if (g && g.entradas) lista = g; } catch { /* sin lista guardada */ }
   }
-  async function refrescarLista() {
-    const r = await api('lista');
+  // La primera vez el servidor puede necesitar trabajar con la planilla: se le da más tiempo (ingreso).
+  async function refrescarLista(timeout = 8000) {
+    const r = await api('lista', {}, { timeout });
     if (r.ok) aplicarLista(r);
     return r;
   }
@@ -458,7 +459,10 @@
     clave = $('#clave').value.trim();
     puesto = $('#puesto').value.trim().replace(/[^\w .-]/g, '').slice(0, 20) || 'Puesto';
     mostrar('#errorIngreso', '');
-    const r = await refrescarLista();
+    const boton = $('#formIngreso button[type=submit]');
+    boton.disabled = true; boton.textContent = 'Conectando…';
+    const r = await refrescarLista(30000);
+    boton.disabled = false; boton.textContent = 'Entrar';
     if (r.ok) { guardar(LS.clave, clave); guardar(LS.puesto, puesto); return entrar(); }
     clave = '';
     mostrar('#errorIngreso', r.error === 'clave' ? 'Clave incorrecta.' : r.error === 'demasiados_intentos' ? 'Demasiados intentos. Esperá unos minutos.' : 'No hay conexión con el servidor.');
@@ -558,7 +562,7 @@
     clave = leer(LS.clave); puesto = leer(LS.puesto);
     $('#puesto').value = puesto;
     if (clave && puesto) {
-      const r = await refrescarLista();
+      const r = await refrescarLista(30000);
       if (r.ok || esRed(r)) return entrar(); // sin red igual se entra con la lista guardada
     }
     $('#ingreso').hidden = false;
