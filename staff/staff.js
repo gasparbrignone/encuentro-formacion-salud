@@ -28,6 +28,7 @@
   let audio = null;
   let timerListo = 0, timerTalleres = 0, timerCola = 0, timerLista = 0;
   let ultimoAviso = 0;
+  let detalleError = ''; // último error técnico de red (se muestra en el ingreso para poder diagnosticar)
 
   // ─────────── almacenamiento (puede fallar en modo privado: nunca debe frenar la pantalla) ───────────
   const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch { /* sin almacenamiento */ } };
@@ -49,10 +50,12 @@
     try {
       // text/plain: es un pedido "simple", sin consulta previa (preflight), un viaje menos en cada operación.
       const r = await fetch(SERVICIO + '/staff', { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=UTF-8' }, body: JSON.stringify(cuerpo), signal: control.signal });
-      const j = await r.json();
+      let j;
+      try { j = await r.json(); } catch (e) { detalleError = 'respuesta no válida (HTTP ' + r.status + ') de ' + r.url; throw e; }
       conexion(performance.now() - inicio > 2500 ? 'lenta' : 'ok');
       return j;
-    } catch {
+    } catch (e) {
+      if (!detalleError || !/respuesta/.test(detalleError)) detalleError = (e && e.name ? e.name : 'Error') + ': ' + (e && e.message ? e.message : '') + ' (' + (SERVICIO || 'sin dirección del servicio') + ')';
       conexion('sin');
       return { ok: false, error: 'red' };
     } finally {
@@ -459,13 +462,14 @@
     clave = $('#clave').value.trim();
     puesto = $('#puesto').value.trim().replace(/[^\w .-]/g, '').slice(0, 20) || 'Puesto';
     mostrar('#errorIngreso', '');
+    detalleError = '';
     const boton = $('#formIngreso button[type=submit]');
     boton.disabled = true; boton.textContent = 'Conectando…';
     const r = await refrescarLista(30000);
     boton.disabled = false; boton.textContent = 'Entrar';
     if (r.ok) { guardar(LS.clave, clave); guardar(LS.puesto, puesto); return entrar(); }
     clave = '';
-    mostrar('#errorIngreso', r.error === 'clave' ? 'Clave incorrecta.' : r.error === 'demasiados_intentos' ? 'Demasiados intentos. Esperá unos minutos.' : 'No hay conexión con el servidor.');
+    mostrar('#errorIngreso', r.error === 'clave' ? 'Clave incorrecta.' : r.error === 'demasiados_intentos' ? 'Demasiados intentos. Esperá unos minutos.' : 'No hay conexión con el servidor.' + (detalleError ? ' [' + detalleError + ']' : ''));
   });
 
   // Cierra la sesión y borra del celular la lista de personas, la clave y lo pendiente (para el final del evento).
