@@ -92,7 +92,7 @@ Tocá **Save**. En 1 o 2 minutos aparece en el sitio.
 - **Abrir la inscripción:** *Evento → Inscripción → Estado: Abierta* y pegar el *Link al formulario*. El botón "Inscribirme" y los pasos aparecen solos.
 - **Cerrar la inscripción:** *Estado: Cerrada*.
 - **Ocultar la sección de la edición anterior:** *Evento* → destildar "Mostrar la sección…".
-- **Fotos de "Así fue la 1.ª edición":** *Edición anterior → Fotos de la jornada*. Se ven como galería, antes de la lista de actividades. La primera foto sale más grande y la segunda alta, así que conviene elegirlas en ese orden.
+- **Fotos de "Así fue la 1.ª edición":** *Edición anterior → Fotos de la jornada*. Se ven como galería; las actividades de esa edición ya no se listan en el sitio (solo se usan en la vista `?demo`). La primera foto sale más grande y la segunda alta, así que conviene elegirlas en ese orden.
 - **Kit de bienvenida:** la sección "¿Qué te llevás del EFS?" toma el precio de *Evento → Inscripción → Precio*. Si el precio es 0, la sección se oculta sola (no se promete kit en una entrada gratuita).
 
 ## Ver cómo queda con contenido

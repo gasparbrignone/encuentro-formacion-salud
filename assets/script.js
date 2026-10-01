@@ -458,18 +458,13 @@
   // ── edición anterior
   function anterior(arch, mostrar) {
     if (!arch || !mostrar) return;
-    const acts = (arch.actividades || []).filter((a) => categoria(a.tipo) !== 'info');
     $('#anterior-titulo').textContent = `Así fue la ${arch.edicion || 'edición anterior'}`;
     const fotos = (arch.fotos || []).filter((f) => f && f.imagen);
-    const lista = `<ul class="anterior-lista">${acts.map((a) => `<li><span class="cat cat--${categoria(a.tipo)}">${esc(a.tipo)}</span><b>${esc(a.titulo)}</b><small>${esc((a.disertantes || []).map((d) => d.nombre).join(', '))}</small></li>`).join('')}</ul>`;
     const intro = `<div class="anterior-intro"><p class="anterior-fecha">${esc(arch.fecha || '')}</p><p>${esc(arch.resumen || '')}</p></div>`;
-    // Con fotos, las fotos van primero y ocupan el centro; la lista de actividades queda debajo, más chica.
-    $('#anteriorCont').classList.toggle('anterior--fotos', fotos.length > 0);
-    $('#anteriorCont').innerHTML = fotos.length
-      ? `${intro}
-         <div class="galeria" role="list">${fotos.map((f) => `<figure class="galeria-foto" role="listitem"><img src="${esc(f.imagen)}" alt="${esc(f.descripcion || 'Foto de la ' + (arch.edicion || 'edición anterior'))}" loading="lazy" decoding="async"></figure>`).join('')}</div>
-         <div class="anterior-act"><h3 class="anterior-sub">Lo que se dio ese día</h3>${lista}</div>`
-      : `${intro}${lista}`;
+    // Solo intro y fotos: las charlas de esa edición ya no se listan (para no confundirlas con el programa de esta).
+    $('#anteriorCont').innerHTML = intro + (fotos.length
+      ? `<div class="galeria" role="list">${fotos.map((f) => `<figure class="galeria-foto" role="listitem"><img src="${esc(f.imagen)}" alt="${esc(f.descripcion || 'Foto de la ' + (arch.edicion || 'edición anterior'))}" loading="lazy" decoding="async"></figure>`).join('')}</div>`
+      : '');
     $('#edicion-anterior').hidden = false;
   }
 

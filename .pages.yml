@@ -224,7 +224,8 @@ content:
             label: Descripción (para personas que usan lector de pantalla)
             type: string
       - name: actividades
-        label: Actividades
+        label: Actividades (no se muestran en el sitio)
         type: object
         list: true
+        description: 'Ya no se listan en "Así fue la 1.ª edición". Se conservan solo para la vista de ejemplo (?demo). No hace falta tocarlas.'
         fields: *actividad
