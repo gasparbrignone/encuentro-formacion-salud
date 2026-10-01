@@ -476,7 +476,7 @@
   // ── separadores: franja de foto con la trama EFS
   document.querySelectorAll('.separador[data-img]').forEach((n) => {
     const foco = (n.dataset.foco || '.5,.5').split(',').map(Number);
-    EFSTrama.aplicar(n, n.dataset.img, { tinta: '#2C6FA0', retiro: 'bottom', desde: .72, hasta: 1.05, celda: 4, foco });
+    EFSTrama.aplicar(n, n.dataset.img, { tinta: '#2C6FA0', retiro: 'bottom', desde: .72, hasta: 1.05, celda: 2, foco });
   });
 
   // ── carga
