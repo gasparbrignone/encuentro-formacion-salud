@@ -362,7 +362,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 #inscripcion .btn-chico { color: var(--navy); border-color: var(--navy); }
 #inscripcion .btn-chico:hover { background: var(--papel); border-color: var(--navy); }
 #inscripcion .confirmar, #inscripcion .entrada { background: var(--papel); }
-#inscripcion .trama-fondo { opacity: .28; }
 
 /* separadores entre secciones: franja panorámica de foto real con la trama EFS (assets/trama.js), decorativa.
    Sube sobre el relleno de la sección anterior para no sumar tanto aire. */
