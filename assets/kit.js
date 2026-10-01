@@ -1,7 +1,7 @@
 /* EFS · escena 3D del kit de bienvenida.
    Con JS la escena arranca "cerrada" (los objetos hundidos en la bolsa) y se abre sola al entrar en pantalla.
-   Después flota despacio y gira un poco con el mouse o con el scroll. Con "reducir movimiento" (ajuste del sistema) solo hace un fundido corto,
-   sin giro ni flote. Sin JS se ve la escena abierta, quieta. */
+   Después gira un poco con el mouse o con el scroll (no hay animación infinita que corra sola). Con "reducir movimiento" (ajuste del sistema) solo hace un fundido corto,
+   sin giro. Sin JS se ve la escena abierta, quieta. */
 (function () {
   const escena = document.getElementById('kitEscena');
   const mundo = document.getElementById('kitMundo');
@@ -21,7 +21,7 @@
     await Promise.race([Promise.all(imgs.map((i) => i.decode().catch(() => {}))), new Promise((ok) => setTimeout(ok, 2500))]);
     escena.classList.remove('kit--prep');
     escena.classList.add('kit--abierto');
-    if (!quieto) setTimeout(() => { escena.classList.add('kit--viva'); girar(); }, 2600);
+    if (!quieto) setTimeout(() => { escena.classList.add('kit--viva'); girar(); }, 1400);
   }
 
   new IntersectionObserver((es, ob) => {
@@ -37,7 +37,7 @@
       const r = escena.getBoundingClientRect();
       if (r.bottom > 0 && r.top < innerHeight) {
         const avance = (innerHeight - r.top) / (innerHeight + r.height);        // 0 al entrar, 1 al salir
-        ty = px === null ? (avance - 0.5) * -20 : (px - 0.5) * 24;
+        ty = px === null ? (avance - 0.5) * -12 : (px - 0.5) * 24;
         tx = px === null ? 3 : (py - 0.5) * -14;
         rx += (tx - rx) * 0.08; ry += (ty - ry) * 0.08;
         mundo.style.setProperty('--rx', rx.toFixed(2) + 'deg');
