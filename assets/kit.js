@@ -19,14 +19,22 @@
     abierta = true;
     // esperar a que estén las imágenes (cargan en diferido) para no animar una escena vacía
     await Promise.race([Promise.all(imgs.map((i) => i.decode().catch(() => {}))), new Promise((ok) => setTimeout(ok, 2500))]);
+    if (!abierta) return;
     escena.classList.remove('kit--prep');
     escena.classList.add('kit--abierto');
     if (!quieto) setTimeout(() => { escena.classList.add('kit--viva'); girar(); }, 1400);
   }
 
-  new IntersectionObserver((es, ob) => {
-    if (es.some((e) => e.isIntersecting)) { ob.disconnect(); abrir(); }
-  }, { threshold: 0.3 }).observe(escena);
+  // se abre al entrar en pantalla y se vuelve a cerrar al salir del todo, así sube de nuevo cada vez que se llega
+  new IntersectionObserver((es) => {
+    const e = es[es.length - 1];
+    if (e.isIntersecting && e.intersectionRatio >= 0.3) abrir();
+    else if (!e.isIntersecting && abierta && !quieto) {
+      abierta = false;
+      escena.classList.remove("kit--abierto");
+      escena.classList.add("kit--prep");
+    }
+  }, { threshold: [0, 0.3] }).observe(escena);
 
   // giro 3D: el mouse inclina la escena; sin mouse (celular) la inclina el scroll
   let rx = 0, ry = 0, tx = 0, ty = 0, px = null, py = null, vivo = false;

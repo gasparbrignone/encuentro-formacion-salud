@@ -312,12 +312,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
    Entrada de ~1,3 s en total: la bolsa se asienta, los objetos suben escalonados cada 100 ms, la credencial cuelga y se balancea dos veces, y los cartelitos aparecen. Solo transform y opacity. */
 .kit--prep .kit-o--in { transform: translateZ(var(--z)) rotate(var(--r)) translateY(var(--hunde)); }
 .kit--prep .kit-cred, .kit--prep .kit-tag { opacity: 0; }
-.kit--abierto .kit-bolsa { animation: kit-bolsa .6s var(--ease) both; }
-.kit--abierto .kit-o--in { animation: kit-sube .7s var(--d) var(--ease) both; }
-.kit--abierto .kit-cred { animation: kit-cuelga .9s .55s ease-out both; }
+.kit--abierto .kit-bolsa { animation: kit-bolsa .8s var(--ease) both; }
+.kit--abierto .kit-o--in { animation: kit-sube .95s var(--d) both; }
+.kit--abierto .kit-cred { animation: kit-cuelga 1.1s .7s ease-out both; }
 .kit--abierto .kit-tag span { animation: kit-tag .25s var(--d) ease-out both; }
-@keyframes kit-sube { from { transform: translateZ(var(--z)) rotate(var(--r)) translateY(var(--hunde)); } to { transform: translateZ(var(--z)) rotate(var(--r)) translateY(0); } }
-@keyframes kit-bolsa { 0% { transform: translateZ(var(--z)) translateY(1.2%) scale(.99, .98); } 40% { transform: translateZ(var(--z)) translateY(-.6%) scale(1.005, 1.01); } 100% { transform: translateZ(var(--z)); } }
+@keyframes kit-sube { 0% { transform: translateZ(var(--z)) rotate(var(--r)) translateY(var(--hunde)); animation-timing-function: cubic-bezier(.2, .9, .3, 1); } 55% { transform: translateZ(var(--z)) rotate(calc(var(--r) + 3deg)) translateY(-16%); animation-timing-function: cubic-bezier(.5, 0, .7, 1); } 78% { transform: translateZ(var(--z)) rotate(calc(var(--r) - 1.5deg)) translateY(3%); animation-timing-function: ease-out; } 100% { transform: translateZ(var(--z)) rotate(var(--r)) translateY(0); } }
+@keyframes kit-bolsa { 0% { transform: translateZ(var(--z)) translateY(2%) scale(1.02, .95); } 30% { transform: translateZ(var(--z)) translateY(-1.4%) scale(.985, 1.03); } 60% { transform: translateZ(var(--z)) translateY(.4%) scale(1.01, .99); } 100% { transform: translateZ(var(--z)); } }
 @keyframes kit-cuelga { 0% { opacity: 0; transform: translateZ(var(--z)) translateY(-30%) rotate(-14deg); } 20% { opacity: 1; } 55% { transform: translateZ(var(--z)) rotate(4deg); } 80% { transform: translateZ(var(--z)) rotate(-4deg); } 100% { opacity: 1; transform: translateZ(var(--z)) rotate(var(--r)); } }
 @keyframes kit-tag { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
 
