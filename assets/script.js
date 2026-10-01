@@ -140,6 +140,7 @@
     demasiados_intentos: 'Hiciste varios intentos seguidos. Esperá unos minutos y volvé a probar.',
     ya_inscripto: 'Ya hay una inscripción paga con ese DNI. Tu entrada está en el mail que te mandamos (revisá también spam). Si no la encontrás, escribinos por mail.',
     cerrada: 'La inscripción está cerrada.',
+    correo_dominio: 'Ese correo no parece existir: revisá lo que está después de la @.',
   };
   const CAMPOS = { nombre: 'el nombre', apellido: 'el apellido', dni: 'el DNI', telefono: 'el teléfono', correo: 'el correo', carrera: 'la carrera', anio: 'el año', universidad: 'la universidad' };
 
@@ -283,7 +284,13 @@
     try {
       const r = await llamar(i, '/inscribir', { ...datos, intento_id: INTENTO, turnstile: token });
       if (r.ok && r.pago_url) { location.href = r.pago_url; return; }
-      err.textContent = ERRORES[r.error] || (r.error === 'datos' && CAMPOS[r.campo] ? `Revisá ${CAMPOS[r.campo]}.` : 'No pudimos generar el pago. Probá de nuevo en unos minutos: no se cobró nada.');
+      if (r.error === 'correo_dominio' && r.sugerencia) {
+        err.textContent = `Revisá el correo: ¿quisiste escribir ${r.sugerencia}? Corregilo en los dos campos y volvé a continuar.`;
+        $('#formConfirmar').hidden = true; $('#formBoton').hidden = false; f.correo.focus();
+      } else if (r.error === 'correo_dominio') {
+        $('#formConfirmar').hidden = true; $('#formBoton').hidden = false; f.correo.focus();
+      }
+      if (!err.textContent) err.textContent = ERRORES[r.error] || (r.error === 'datos' && CAMPOS[r.campo] ? `Revisá ${CAMPOS[r.campo]}.` : 'No pudimos generar el pago. Probá de nuevo en unos minutos: no se cobró nada.');
     } catch (x) {
       err.textContent = 'No pudimos conectarnos. Revisá tu conexión y probá de nuevo: no se cobró nada.';
     }
