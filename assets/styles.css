@@ -342,3 +342,24 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 @keyframes kit-fundido { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
 @media print { .nav, .aviso-demo, .filtros { display: none; } }
+
+/* inscripción: fondo claro (antes navy con trama), para que el texto y el formulario se lean bien */
+#inscripcion { position: relative; overflow: hidden; background: #fff; color: var(--navy); }
+#inscripcion .etiqueta--blanca { background: var(--navy); color: #fff; }
+#inscripcion .insc-texto { color: var(--navy); }
+#inscripcion .pasos li { border-top-color: var(--navy); }
+#inscripcion .pasos span { color: var(--azul2); }
+#inscripcion .insc-mensaje, #inscripcion .form-aviso { border-left-color: var(--azul2); color: var(--navy); }
+#inscripcion .form label { color: var(--navy); }
+#inscripcion .form label small { opacity: 1; color: var(--gris); }
+#inscripcion .form input:not([type="checkbox"]), #inscripcion .form select { border-color: var(--navy); }
+#inscripcion .form input:focus-visible, #inscripcion .form select:focus-visible { outline-color: var(--azul2); }
+#inscripcion .form--revisar input:invalid, #inscripcion .form--revisar select:invalid { border-color: #B3411B; box-shadow: inset 0 0 0 1px #B3411B; }
+#inscripcion .form-error { color: #B3411B; }
+#inscripcion .form-pie { color: var(--gris); }
+#inscripcion .btn--blanco { background: var(--navy); color: #fff; border-color: var(--navy); }
+#inscripcion .btn--blanco:hover { background: var(--azul); border-color: var(--azul); }
+#inscripcion .btn-chico { color: var(--navy); border-color: var(--navy); }
+#inscripcion .btn-chico:hover { background: var(--papel); border-color: var(--navy); }
+#inscripcion .confirmar, #inscripcion .entrada { background: var(--papel); }
+#inscripcion .trama-fondo { opacity: .28; }
