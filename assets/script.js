@@ -46,8 +46,7 @@
     if (fecha && ev.horario && ev.fecha && !/pr[oó]ximamente/i.test(ev.fecha)) fecha.textContent = `${ev.fecha}, ${ev.horario}`;
     if (ev.direccion) $('#mapaLink').href = 'https://maps.google.com/?q=' + encodeURIComponent(`${ev.lugar || ''} ${ev.direccion}`);
     const c = ev.contacto || {};
-    if (c.whatsapp) $('[data-contacto="whatsapp"]').href = 'https://wa.me/' + String(c.whatsapp).replace(/\D/g, '');
-    if (c.telefono) { const t = $('[data-contacto="telefono"]'); t.href = 'tel:' + String(c.telefono).replace(/[^\d+]/g, ''); t.textContent = c.telefono; $('[data-contacto="whatsapp"]').textContent = c.telefono; }
+    if (c.email) { const m = $('[data-contacto="email"]'); m.href = 'mailto:' + c.email; m.textContent = c.email; }
     inscripcion(ev.inscripcion || {}, c);
   }
 
@@ -121,7 +120,7 @@
       cta.textContent = 'Inscribite'; cta.href = i.link; cta.target = '_blank'; cta.rel = 'noopener';
     } else if (i.estado === 'cerrada') {
       etiquetarCta('Ver inscripción');
-      cont.innerHTML = `<p class="insc-estado">Inscripción cerrada</p><p class="insc-texto">${esc(i.texto || 'Ya cerramos la inscripción para esta edición. Si tenés dudas, escribinos por WhatsApp.')}</p>`;
+      cont.innerHTML = `<p class="insc-estado">Inscripción cerrada</p><p class="insc-texto">${esc(i.texto || 'Ya cerramos la inscripción para esta edición. Si tenés dudas, escribinos por mail.')}</p>`;
     } else {
       // todavía no abrió: el botón no promete una inscripción que no existe, lleva a ver cuándo abre
       etiquetarCta('Cuándo abre la inscripción');
@@ -139,14 +138,14 @@
   const ERRORES = {
     turnstile: 'No pudimos comprobar que no sos un robot. Recargá la página y probá de nuevo.',
     demasiados_intentos: 'Hiciste varios intentos seguidos. Esperá unos minutos y volvé a probar.',
-    ya_inscripto: 'Ya hay una inscripción paga con ese DNI. Tu entrada está en el mail que te mandamos (revisá también spam). Si no la encontrás, escribinos por WhatsApp.',
+    ya_inscripto: 'Ya hay una inscripción paga con ese DNI. Tu entrada está en el mail que te mandamos (revisá también spam). Si no la encontrás, escribinos por mail.',
     cerrada: 'La inscripción está cerrada.',
   };
   const CAMPOS = { nombre: 'el nombre', apellido: 'el apellido', dni: 'el DNI', telefono: 'el teléfono', correo: 'el correo', carrera: 'la carrera', anio: 'el año', universidad: 'la universidad' };
 
   function formularioPago(i, contacto = {}) {
     const precio = Number(i.precio) > 0 ? pesos(i.precio) : '';
-    const whatsapp = String(contacto.whatsapp || '').replace(/\D/g, '');
+    const email = String(contacto.email || '').trim();
     const anios = ['1.º', '2.º', '3.º', '4.º', '5.º', '6.º', 'Internado / PFO', 'Egresado/a', 'Otro'];
     const carreras = ['Medicina', 'Enfermería', 'Fonoaudiología', 'Obstetricia', 'Psicología', 'Nutrición', 'Kinesiología', 'Odontología', 'Bioquímica'];
     return `
@@ -186,7 +185,7 @@
             </div>
           </div>
           <p class="form-pie">El costo de la inscripción cubre los materiales de los talleres y la logística del encuentro. ATP es una agrupación estudiantil y el EFS no tiene fines de lucro.</p>
-          ${whatsapp ? `<a class="btn-chico" href="https://wa.me/${whatsapp}?text=${encodeURIComponent('¡Hola! Quiero ir al EFS 2026 pero no puedo pagar la inscripción.')}" target="_blank" rel="noopener">¿No podés pagar la inscripción? Escribinos</a>` : ''}
+          ${email ? `<a class="btn-chico" href="mailto:${email}?subject=${encodeURIComponent('EFS 2026: no puedo pagar la inscripción')}">¿No podés pagar la inscripción? Escribinos</a>` : ''}
         </form>
       </div>`;
   }
@@ -332,7 +331,7 @@
       } catch (x) { /* se reintenta */ }
       await new Promise((ok) => setTimeout(ok, 3000));
     }
-    mostrar('Estamos confirmando tu pago', 'En unos minutos te llega la entrada por mail (revisá también spam). No hace falta que vuelvas a inscribirte ni a pagar. Si en una hora no te llegó, escribinos por WhatsApp.');
+    mostrar('Estamos confirmando tu pago', 'En unos minutos te llega la entrada por mail (revisá también spam). No hace falta que vuelvas a inscribirte ni a pagar. Si en una hora no te llegó, escribinos por mail.');
   }
 
   function entradaHtml(codigo) {
@@ -473,6 +472,12 @@
       : '');
     $('#edicion-anterior').hidden = false;
   }
+
+  // ── separadores: franja de foto con la trama EFS
+  document.querySelectorAll('.separador[data-img]').forEach((n) => {
+    const foco = (n.dataset.foco || '.5,.5').split(',').map(Number);
+    EFSTrama.aplicar(n, n.dataset.img, { tinta: '#2C6FA0', retiro: 'bottom', desde: .72, hasta: 1.05, celda: 4, foco });
+  });
 
   // ── carga
   Promise.all([cargar('assets/data/evento.json'), cargar('assets/data/actividades.json'), cargar('assets/data/archivo/edicion-1.json')])

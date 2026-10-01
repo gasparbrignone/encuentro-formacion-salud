@@ -103,13 +103,9 @@ content:
         label: Contacto
         type: object
         fields:
-          - name: telefono
-            label: Teléfono (como se muestra)
+          - name: email
+            label: Correo de contacto
             type: string
-          - name: whatsapp
-            label: WhatsApp (solo números, con código de país)
-            type: string
-            description: 'Ej.: 5493415845571'
           - name: instagram_efs
             label: Instagram EFS (sin @)
             type: string

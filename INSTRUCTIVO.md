@@ -13,7 +13,7 @@ Marcá cada una cuando la hagas.
 - [ ] **1. Revisar el rediseño.** Está en la rama `rediseno-2026`, todavía no publicado. Las capturas están en `Diseño EFS/design-work/web-capturas/` (computadora, celular, programa con contenido, detalle de una actividad e inscripción abierta).
 - [ ] **2. Publicarlo.** Ver [Publicar el rediseño](#publicar-el-rediseño). Hasta que lo publiques, el sitio sigue mostrando la versión anterior, con el programa de la 1.ª edición.
 - [ ] **3. Activar el panel (Pages CMS).** Ver [Activar el panel](#activar-el-panel-una-sola-vez). Lleva unos 5 minutos y se hace una sola vez.
-- [ ] **4. Revisar los textos fijos.** Confirmá que sigan valiendo "Entrada libre y gratuita" y "Certificado de la UNR" para la 2.ª edición, y que el teléfono y el WhatsApp de contacto sean los correctos (se editan desde el panel, en *Evento*).
+- [ ] **4. Revisar los textos fijos.** Confirmá que sigan valiendo "Entrada libre y gratuita" y "Certificado de la UNR" para la 2.ª edición, y que el correo de contacto sea el correcto (se editan desde el panel, en *Evento*).
 - [ ] **5. Confirmar la fecha de la 1.ª edición.** En la sección "Así fue la 1.ª edición" dice *Sábado 11 de abril de 2026*; lo tomé del posteo de "Cambio de fecha". Se corrige en el panel, en *Edición anterior*.
 - [ ] **6. Cuando haya fecha:** cargarla en *Evento → Fecha* y *Horario general*. Avisame para actualizar la imagen que se ve al compartir el link, que hoy no muestra fecha.
 - [ ] **7. Cuando abra la inscripción:** en *Evento → Inscripción*, elegir *Abierta* y pegar el link del formulario.
