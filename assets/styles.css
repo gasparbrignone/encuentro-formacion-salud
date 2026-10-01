@@ -363,3 +363,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 #inscripcion .btn-chico:hover { background: var(--papel); border-color: var(--navy); }
 #inscripcion .confirmar, #inscripcion .entrada { background: var(--papel); }
 #inscripcion .trama-fondo { opacity: .28; }
+
+/* separadores ilustrados entre secciones: trama de puntos en dos tintas, decorativos.
+   Suben sobre el relleno de la sección anterior para no sumar tanto aire. */
+.separador { position: relative; height: clamp(96px, 12vw, 170px); margin-top: calc(-1 * clamp(24px, 4vw, 56px)); pointer-events: none; }
+.separador img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+#inicio + .separador { margin-top: 0; }
