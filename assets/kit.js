@@ -36,18 +36,19 @@
     if (e.gamma == null || e.beta == null) return;
     if (og === null) { og = e.gamma; ob = e.beta; }
     // la referencia se acomoda sola a como se sostiene el celular, así que importa el cambio y no la posición absoluta
-    og += (e.gamma - og) * 0.02; ob += (e.beta - ob) * 0.02;
-    sg = tope(e.gamma - og, 30); sb = tope(e.beta - ob, 30);
+    og += (e.gamma - og) * 0.002; ob += (e.beta - ob) * 0.002;   // deriva lenta: unos 8 s para reacomodarse
+    sg = tope(e.gamma - og, 40); sb = tope(e.beta - ob, 40);
     sensor = true;
   }
   function escucharInclinacion() { window.addEventListener("deviceorientation", inclinacion, { passive: true }); }
-  if (typeof DeviceOrientationEvent !== "undefined" && matchMedia("(pointer: coarse)").matches) {
+  if (typeof DeviceOrientationEvent !== "undefined" && navigator.maxTouchPoints > 0) {
     if (typeof DeviceOrientationEvent.requestPermission === "function") {
-      // iOS: el permiso se pide con un toque sobre la escena
-      escena.addEventListener("click", function pedir() {
-        escena.removeEventListener("click", pedir);
+      // iOS: el permiso solo se puede pedir dentro de un toque. Se pide en el primer toque en cualquier lugar de la página,
+      // así cuando el visitante llega al kit la inclinación ya está activa.
+      document.addEventListener("touchend", function pedir() {
+        document.removeEventListener("touchend", pedir);
         DeviceOrientationEvent.requestPermission().then((r) => { if (r === "granted") escucharInclinacion(); }).catch(() => {});
-      });
+      }, { passive: true });
     } else escucharInclinacion();
   }
   window.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse') { px = e.clientX / innerWidth; py = e.clientY / innerHeight; } }, { passive: true });
@@ -57,12 +58,13 @@
       const r = escena.getBoundingClientRect();
       if (r.bottom > 0 && r.top < innerHeight) {
         const avance = (innerHeight - r.top) / (innerHeight + r.height);        // 0 al entrar, 1 al salir
-        if (sensor && px === null) { ty = sg * 0.5; tx = 3 - sb * 0.4; }
+        if (sensor && px === null) { ty = tope(sg * 1.5, 38); tx = 3 - tope(sb * 1.1, 28); }
         else {
           ty = px === null ? (avance - 0.5) * -12 : (px - 0.5) * 24;
           tx = px === null ? 3 : (py - 0.5) * -14;
         }
-        rx += (tx - rx) * 0.08; ry += (ty - ry) * 0.08;
+        const suav = sensor && px === null ? 0.18 : 0.08;
+        rx += (tx - rx) * suav; ry += (ty - ry) * suav;
         mundo.style.setProperty('--rx', rx.toFixed(2) + 'deg');
         mundo.style.setProperty('--ry', ry.toFixed(2) + 'deg');
       }
