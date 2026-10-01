@@ -99,7 +99,7 @@
 
     if (i.estado === 'abierta' && conPago) {
       cont.innerHTML = formularioPago(i, contacto);
-      cta.textContent = 'Inscribirme'; cta.href = '#inscripcion';
+      cta.textContent = 'Inscribite'; cta.href = '#inscripcion';
       $('#formInsc').addEventListener('submit', (e) => enviarInscripcion(e, i));
       prepararConfirmacion(i);
       cargarTurnstile(i);
@@ -114,8 +114,8 @@
           <li><span>02</span><b>Completá tus datos</b> nombre, correo y carrera</li>
           <li><span>03</span><b>Confirmá</b> te llega un correo con tu inscripción</li>
         </ol>
-        <a class="btn btn--blanco" href="${esc(i.link)}" target="_blank" rel="noopener">Inscribirme</a>`;
-      cta.textContent = 'Inscribirme'; cta.href = i.link; cta.target = '_blank'; cta.rel = 'noopener';
+        <a class="btn btn--blanco" href="${esc(i.link)}" target="_blank" rel="noopener">Inscribite</a>`;
+      cta.textContent = 'Inscribite'; cta.href = i.link; cta.target = '_blank'; cta.rel = 'noopener';
     } else if (i.estado === 'cerrada') {
       cont.innerHTML = `<p class="insc-estado">Inscripción cerrada</p><p class="insc-texto">${esc(i.texto || 'Ya cerramos la inscripción para esta edición. Si tenés dudas, escribinos por WhatsApp.')}</p>`;
     } else if (i.texto) {

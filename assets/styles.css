@@ -321,6 +321,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 @keyframes kit-tag { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: none; } }
 @keyframes kit-flota { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.4%); } }
 @media (max-width: 900px) { .kit-in { grid-template-columns: 1fr; } .kit-escena { max-width: 440px; } }
-@media (prefers-reduced-motion: reduce) { .kit--prep .kit-o--in { transform: translateZ(var(--z)) rotate(var(--r)); } .kit--prep .kit-cred, .kit--prep .kit-tag { opacity: 1; } .kit--abierto *, .kit--viva * { animation: none !important; } }
+/* "reducir movimiento" (ajuste del sistema): entrada suave, solo un fundido corto con un pequeño ascenso. Sin giro 3D, rebote, balanceo ni flote. */
+.kit--suave.kit--prep .kit-o--in { opacity: 0; transform: translateZ(var(--z)) rotate(var(--r)) translateY(8%); }
+.kit--suave.kit--abierto .kit-bolsa { animation: none; }
+.kit--suave.kit--abierto .kit-o--in { animation: kit-aparece .8s var(--d) ease-out both; }
+.kit--suave.kit--abierto .kit-cred { animation: kit-aparece-cred .8s 1s ease-out both; }
+.kit--suave.kit--abierto .kit-tag span { animation: kit-fundido .6s var(--d) ease-out both; }
+@keyframes kit-aparece { from { opacity: 0; transform: translateZ(var(--z)) rotate(var(--r)) translateY(8%); } to { opacity: 1; transform: translateZ(var(--z)) rotate(var(--r)); } }
+@keyframes kit-aparece-cred { from { opacity: 0; transform: translateZ(var(--z)) rotate(var(--r)) translateY(-8%); } to { opacity: 1; transform: translateZ(var(--z)) rotate(var(--r)); } }
+@keyframes kit-fundido { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
 @media print { .nav, .aviso-demo, .filtros { display: none; } }

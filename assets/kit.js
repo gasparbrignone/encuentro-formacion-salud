@@ -1,14 +1,16 @@
 /* EFS · escena 3D del kit de bienvenida.
    Con JS la escena arranca "cerrada" (los objetos hundidos en la bolsa) y se abre sola al entrar en pantalla.
-   Después flota despacio y gira un poco con el mouse o con el scroll. Sin JS o con "reducir movimiento" se ve la escena abierta, quieta. */
+   Después flota despacio y gira un poco con el mouse o con el scroll. Con "reducir movimiento" (ajuste del sistema) solo hace un fundido corto,
+   sin giro ni flote. Sin JS se ve la escena abierta, quieta. */
 (function () {
   const escena = document.getElementById('kitEscena');
   const mundo = document.getElementById('kitMundo');
   if (!escena || !mundo) return;
   const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (quieto || !('IntersectionObserver' in window)) return;
+  if (!('IntersectionObserver' in window)) return;
 
   escena.classList.add('kit--prep');
+  if (quieto) escena.classList.add('kit--suave');
   const imgs = [...escena.querySelectorAll('img')];
   let abierta = false;
 
@@ -19,7 +21,7 @@
     await Promise.race([Promise.all(imgs.map((i) => i.decode().catch(() => {}))), new Promise((ok) => setTimeout(ok, 2500))]);
     escena.classList.remove('kit--prep');
     escena.classList.add('kit--abierto');
-    setTimeout(() => { escena.classList.add('kit--viva'); girar(); }, 2600);
+    if (!quieto) setTimeout(() => { escena.classList.add('kit--viva'); girar(); }, 2600);
   }
 
   new IntersectionObserver((es, ob) => {

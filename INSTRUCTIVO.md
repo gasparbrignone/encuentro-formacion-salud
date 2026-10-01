@@ -89,7 +89,7 @@ Tocá **Save**. En 1 o 2 minutos aparece en el sitio.
 ## Otras tareas frecuentes
 
 - **Cambiar la fecha:** *Evento → Fecha* (ej.: "Sábado 17 de octubre") y *Horario general* (ej.: "de 9 a 18 h").
-- **Abrir la inscripción:** *Evento → Inscripción → Estado: Abierta* y pegar el *Link al formulario*. El botón "Inscribirme" y los pasos aparecen solos.
+- **Abrir la inscripción:** *Evento → Inscripción → Estado: Abierta* y pegar el *Link al formulario*. El botón "Inscribite" y los pasos aparecen solos.
 - **Cerrar la inscripción:** *Estado: Cerrada*.
 - **Ocultar la sección de la edición anterior:** *Evento* → destildar "Mostrar la sección…".
 - **Fotos de "Así fue la 1.ª edición":** *Edición anterior → Fotos de la jornada*. Se ven como galería; las actividades de esa edición ya no se listan en el sitio (solo se usan en la vista `?demo`). La primera foto sale más grande y la segunda alta, así que conviene elegirlas en ese orden.
@@ -128,3 +128,5 @@ Cada cambio del panel es un commit en GitHub. Para deshacer uno: en GitHub → *
 - Corazón: *Gray's Anatomy*, 1918, dominio público.
 - Radiografía de tórax: Mikael Häggström, CC0.
 - Práctica de RCP: U.S. Army, dominio público.
+
+Nota técnica: `index.html` carga `styles.css`, `script.js` y `kit.js` con `?v=…`. Si se cambia alguno de esos archivos, hay que cambiar ese número en `index.html`; si no, algunos navegadores muestran la versión vieja hasta 10 minutos.
