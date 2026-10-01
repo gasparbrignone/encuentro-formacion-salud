@@ -2,6 +2,36 @@
   "edicion": "1.ª edición",
   "fecha": "Sábado 11 de abril de 2026",
   "resumen": "Nueve actividades entre charlas, talleres y capacitaciones, con docentes e investigadores de la UNR y equipos de salud de Rosario.",
+  "fotos": [
+    {
+      "imagen": "/assets/img/uploads/edicion-1-01.webp",
+      "descripcion": "Charla de Diagnóstico por imágenes ante un auditorio lleno"
+    },
+    {
+      "imagen": "/assets/img/uploads/edicion-1-02.webp",
+      "descripcion": "Charla sobre primeros auxilios y procedimientos básicos, vista desde el fondo del anfiteatro"
+    },
+    {
+      "imagen": "/assets/img/uploads/edicion-1-03.webp",
+      "descripcion": "Práctica de reanimación en el taller, con estudiantes alrededor"
+    },
+    {
+      "imagen": "/assets/img/uploads/edicion-1-04.webp",
+      "descripcion": "Estudiantes llenando el anfiteatro durante una charla"
+    },
+    {
+      "imagen": "/assets/img/uploads/edicion-1-05.webp",
+      "descripcion": "Equipo del EFS junto a la pantalla de bienvenida"
+    },
+    {
+      "imagen": "/assets/img/uploads/edicion-1-06.webp",
+      "descripcion": "Mesa de disertantes con la pantalla del Encuentro de Formación en Salud"
+    },
+    {
+      "imagen": "/assets/img/uploads/edicion-1-07.webp",
+      "descripcion": "Diagnóstico por imágenes, vista desde el auditorio"
+    }
+  ],
   "actividades": [
     {
       "titulo": "Acreditaciones",

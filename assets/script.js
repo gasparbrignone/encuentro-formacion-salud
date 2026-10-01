@@ -60,6 +60,12 @@
     if (i.precio === 0 || i.precio === '0') tema.textContent = 'Entrada libre y gratuita';
     else if (Number(i.precio) > 0) tema.textContent = 'Inscripción: ' + pesos(i.precio);
     tema.hidden = !tema.textContent;
+    // Kit de bienvenida: el texto repite el precio de la inscripción. Sin precio se deja el texto genérico; entrada gratuita: no se promete kit.
+    const kit = $('#kit'), lead = $('#kitLead');
+    if (kit && lead) {
+      if (i.precio === 0 || i.precio === '0') kit.hidden = true;
+      else if (Number(i.precio) > 0) lead.innerHTML = `Tu inscripción de <b>${pesos(i.precio)}</b> incluye la entrada al EFS y el kit de bienvenida.`;
+    }
   }
 
   // Con "apertura" y "cierre" (fechas con hora, ej. 2026-10-02T00:00:00-03:00) el sitio abre y cierra
@@ -454,9 +460,16 @@
     if (!arch || !mostrar) return;
     const acts = (arch.actividades || []).filter((a) => categoria(a.tipo) !== 'info');
     $('#anterior-titulo').textContent = `Así fue la ${arch.edicion || 'edición anterior'}`;
-    $('#anteriorCont').innerHTML = `
-      <div class="anterior-intro"><p class="anterior-fecha">${esc(arch.fecha || '')}</p><p>${esc(arch.resumen || '')}</p></div>
-      <ul class="anterior-lista">${acts.map((a) => `<li><span class="cat cat--${categoria(a.tipo)}">${esc(a.tipo)}</span><b>${esc(a.titulo)}</b><small>${esc((a.disertantes || []).map((d) => d.nombre).join(', '))}</small></li>`).join('')}</ul>`;
+    const fotos = (arch.fotos || []).filter((f) => f && f.imagen);
+    const lista = `<ul class="anterior-lista">${acts.map((a) => `<li><span class="cat cat--${categoria(a.tipo)}">${esc(a.tipo)}</span><b>${esc(a.titulo)}</b><small>${esc((a.disertantes || []).map((d) => d.nombre).join(', '))}</small></li>`).join('')}</ul>`;
+    const intro = `<div class="anterior-intro"><p class="anterior-fecha">${esc(arch.fecha || '')}</p><p>${esc(arch.resumen || '')}</p></div>`;
+    // Con fotos, las fotos van primero y ocupan el centro; la lista de actividades queda debajo, más chica.
+    $('#anteriorCont').classList.toggle('anterior--fotos', fotos.length > 0);
+    $('#anteriorCont').innerHTML = fotos.length
+      ? `${intro}
+         <div class="galeria" role="list">${fotos.map((f) => `<figure class="galeria-foto" role="listitem"><img src="${esc(f.imagen)}" alt="${esc(f.descripcion || 'Foto de la ' + (arch.edicion || 'edición anterior'))}" loading="lazy" decoding="async"></figure>`).join('')}</div>
+         <div class="anterior-act"><h3 class="anterior-sub">Lo que se dio ese día</h3>${lista}</div>`
+      : `${intro}${lista}`;
     $('#edicion-anterior').hidden = false;
   }
 

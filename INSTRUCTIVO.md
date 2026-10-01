@@ -92,6 +92,8 @@ Tocá **Save**. En 1 o 2 minutos aparece en el sitio.
 - **Abrir la inscripción:** *Evento → Inscripción → Estado: Abierta* y pegar el *Link al formulario*. El botón "Inscribirme" y los pasos aparecen solos.
 - **Cerrar la inscripción:** *Estado: Cerrada*.
 - **Ocultar la sección de la edición anterior:** *Evento* → destildar "Mostrar la sección…".
+- **Fotos de "Así fue la 1.ª edición":** *Edición anterior → Fotos de la jornada*. Se ven como galería, antes de la lista de actividades. La primera foto sale más grande y la segunda alta, así que conviene elegirlas en ese orden.
+- **Kit de bienvenida:** la sección "¿Qué te llevás del EFS?" toma el precio de *Evento → Inscripción → Precio*. Si el precio es 0, la sección se oculta sola (no se promete kit en una entrada gratuita).
 
 ## Ver cómo queda con contenido
 
@@ -99,7 +101,7 @@ Agregando **`?demo`** a la dirección (**efsarg.com.ar/?demo**) el sitio muestra
 
 ## Qué no se edita desde el panel
 
-Los textos fijos del diseño ("Estamos armando el programa", los títulos de sección) y la foto de la fachada del inicio. Para cambiarlos, pedímelo en Claude Code.
+Los textos fijos del diseño ("Estamos armando el programa", los títulos de sección), la foto de la fachada del inicio y las imágenes y la animación del kit de bienvenida. Para cambiarlos, pedímelo en Claude Code.
 
 ## Si algo se rompe
 

@@ -211,6 +211,18 @@ content:
       - name: resumen
         label: Resumen
         type: text
+      - name: fotos
+        label: Fotos de la jornada
+        type: object
+        list: true
+        description: 'Se muestran como galería, antes de la lista de actividades. Conviene subir fotos de buena calidad; el sitio las muestra recortadas al tamaño de la grilla.'
+        fields:
+          - name: imagen
+            label: Foto
+            type: image
+          - name: descripcion
+            label: Descripción (para personas que usan lector de pantalla)
+            type: string
       - name: actividades
         label: Actividades
         type: object

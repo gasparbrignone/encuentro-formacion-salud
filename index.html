@@ -124,6 +124,49 @@
   </div>
 </section>
 
+<!-- KIT DE BIENVENIDA -->
+<section class="seccion seccion--papel kit" id="kit" aria-labelledby="kit-titulo">
+  <div class="seccion-in kit-in">
+    <div class="kit-texto">
+      <span class="etiqueta">Kit de bienvenida</span>
+      <h2 class="seccion-titulo" id="kit-titulo">¿Qué te llevás del&nbsp;EFS?</h2>
+      <p class="kit-lead" id="kitLead">Tu inscripción incluye la entrada al EFS y el kit de bienvenida.</p>
+      <ul class="temas kit-lista" aria-label="Qué trae el kit">
+        <li>Bolsita</li><li>Lapicera</li><li>Libretita</li><li>Credencial</li><li>Cronograma</li>
+      </ul>
+      <p class="kit-nota">Lo entregamos al momento de la acreditación.</p>
+      <a class="btn btn--navy" href="#inscripcion">Inscribirme</a>
+    </div>
+    <div class="kit-escena" id="kitEscena" role="img" aria-label="La bolsita del EFS abierta, con el cronograma, la libretita, la lapicera y la credencial saliendo de adentro">
+      <div class="kit-mundo" id="kitMundo">
+        <!-- planos de atrás hacia adelante; cada uno a su profundidad (translateZ) para que el giro tenga paralaje -->
+        <div class="kit-o kit-o--in" style="--l:49.63%;--t:5.65%;--w:39.93%;--r:6deg;--z:-50px;--hunde:58%;--d:.15s">
+          <div class="kit-flota" style="--img:url(img/kit/folleto.webp);--ly:55%;--ini:14%;--sh:.58;--f:6.2s"><img src="assets/img/kit/folleto.webp" alt="" width="520" height="735" loading="lazy" decoding="async"></div>
+        </div>
+        <div class="kit-o kit-o--in" style="--l:13.83%;--t:1.57%;--w:49.37%;--r:-3deg;--z:-25px;--hunde:55%;--d:.3s">
+          <div class="kit-flota" style="--img:url(img/kit/libreta.webp);--ly:49%;--ini:18%;--sh:.46;--f:7s"><img src="assets/img/kit/libreta.webp" alt="" width="520" height="795" loading="lazy" decoding="async"></div>
+        </div>
+        <div class="kit-o kit-o--in" style="--l:47.46%;--t:10.29%;--w:26.7%;--r:0deg;--z:5px;--hunde:70%;--d:.45s">
+          <div class="kit-flota" style="--img:url(img/kit/lapicera.webp);--ly:80%;--ini:4%;--sh:.38;--f:5.4s"><img src="assets/img/kit/lapicera.webp" alt="" width="380" height="433" loading="lazy" decoding="async"></div>
+        </div>
+        <div class="kit-int" aria-hidden="true"></div>
+        <div class="kit-o kit-bolsa" style="--l:14.93%;--t:21.03%;--w:75.54%;--r:0deg;--z:30px">
+          <img src="assets/img/kit/bolsa.webp" alt="" width="760" height="1166" loading="lazy" decoding="async">
+        </div>
+        <div class="kit-o kit-cred" style="--l:48.68%;--t:24.52%;--w:33.45%;--r:-3deg;--z:70px">
+          <img src="assets/img/kit/credencial.webp" alt="" width="520" height="418" loading="lazy" decoding="async">
+        </div>
+        <!-- cartelitos pegados a cada objeto -->
+        <div class="kit-tag" aria-hidden="true" style="left:12.16%;top:21.68%;--r:-3deg;--d:1.5s"><span>Libretita</span></div>
+        <div class="kit-tag" aria-hidden="true" style="left:79.73%;top:3.55%;--r:6deg;--d:1.65s"><span>Cronograma</span></div>
+        <div class="kit-tag" aria-hidden="true" style="left:62.43%;top:8.6%;--r:-4deg;--d:1.8s"><span>Lapicera</span></div>
+        <div class="kit-tag" aria-hidden="true" style="left:78.38%;top:44.49%;--r:-3deg;--d:1.95s"><span>Credencial</span></div>
+        <div class="kit-tag" aria-hidden="true" style="left:52.7%;top:94.02%;--r:0deg;--d:2.1s"><span>Bolsita</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- INSCRIPCIÓN -->
 <section class="seccion seccion--navy" id="inscripcion" aria-labelledby="inscripcion-titulo">
   <div class="trama-fondo" aria-hidden="true"></div>
@@ -196,5 +239,6 @@
 <script src="assets/entrada-qr.js"></script>
 <script src="assets/trama.js"></script>
 <script src="assets/script.js"></script>
+<script src="assets/kit.js" defer></script>
 </body>
 </html>
