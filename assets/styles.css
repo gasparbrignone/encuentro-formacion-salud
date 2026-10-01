@@ -267,9 +267,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .hero-cont { gap: 22px; }
   .datos, .datos--lista, .anterior-lista { grid-template-columns: 1fr; }
   .bloque-acts { grid-template-columns: 1fr; }
-  .pasos li { grid-template-columns: 44px 1fr; }
-  .pasos li b { grid-column: 2; }
-  .pasos li { font-size: 16px; }
+  /* número a la izquierda, título y descripción apilados en la columna de texto
+     (la descripción es texto suelto dentro del li: en una grilla caía en la columna del número) */
+  .pasos li, .pasos--cortos li { display: block; position: relative; padding-left: 58px; font-size: 16px; }
+  .pasos li span { position: absolute; left: 0; top: 16px; }
+  .pasos li b { display: block; }
   .firma-efs { height: 50px; }
   .firma-atp { height: 33px; }
 }
