@@ -70,6 +70,9 @@
 
   // Con "apertura" y "cierre" (fechas con hora, ej. 2026-10-02T00:00:00-03:00) el sitio abre y cierra
   // solo. La que manda de verdad es la planilla: fuera de fecha rechaza igual la inscripción.
+  function etiquetarCta(texto) {
+    document.querySelectorAll('.btn[href="#inscripcion"]').forEach((b) => { b.textContent = texto; });
+  }
   function estadoPorFecha(i) {
     if (i.estado !== 'abierta') return i;
     const ahora = Date.now();
@@ -117,9 +120,12 @@
         <a class="btn btn--blanco" href="${esc(i.link)}" target="_blank" rel="noopener">Inscribite</a>`;
       cta.textContent = 'Inscribite'; cta.href = i.link; cta.target = '_blank'; cta.rel = 'noopener';
     } else if (i.estado === 'cerrada') {
+      etiquetarCta('Ver inscripción');
       cont.innerHTML = `<p class="insc-estado">Inscripción cerrada</p><p class="insc-texto">${esc(i.texto || 'Ya cerramos la inscripción para esta edición. Si tenés dudas, escribinos por WhatsApp.')}</p>`;
-    } else if (i.texto) {
-      $('.insc-texto', cont).textContent = i.texto;
+    } else {
+      // todavía no abrió: el botón no promete una inscripción que no existe, lleva a ver cuándo abre
+      etiquetarCta('Cuándo abre la inscripción');
+      if (i.texto) $('.insc-texto', cont).textContent = i.texto;
     }
   }
 
