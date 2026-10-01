@@ -106,6 +106,7 @@
       prepararConfirmacion(i);
       cargarTurnstile(i);
       retornoPago(i);
+      medirVistaInscripcion();
     } else if (i.estado === 'abierta' && i.link) {
       const gratis = !(Number(i.precio) > 0);
       cont.innerHTML = `
@@ -207,6 +208,21 @@
     document.head.appendChild(s);
   }
 
+  // Meta Pixel: nunca debe romper la página si está bloqueado.
+  function pixel(evento, datos, opciones) {
+    try { if (window.fbq) window.fbq('track', evento, datos || {}, opciones || {}); } catch (x) { /* bloqueado */ }
+  }
+
+  // ViewContent: una vez, cuando la sección de inscripción entra en pantalla.
+  function medirVistaInscripcion() {
+    const sec = $('#inscripcion');
+    if (!sec || !('IntersectionObserver' in window)) return;
+    const o = new IntersectionObserver((es) => {
+      if (es.some((x) => x.isIntersecting)) { pixel('ViewContent', { content_name: 'Inscripción EFS 2026' }); o.disconnect(); }
+    }, { threshold: 0.25 });
+    o.observe(sec);
+  }
+
   async function llamar(i, ruta, cuerpo) {
     const r = await fetch(String(i.servicio).replace(/\/$/, '') + ruta, {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo),
@@ -283,7 +299,10 @@
     btn.disabled = true; btn.textContent = 'Generando el pago…';
     try {
       const r = await llamar(i, '/inscribir', { ...datos, intento_id: INTENTO, turnstile: token });
-      if (r.ok && r.pago_url) { location.href = r.pago_url; return; }
+      if (r.ok && r.pago_url) {
+        pixel('InitiateCheckout', { value: Number(i.precio) || 0, currency: 'ARS' });
+        location.href = r.pago_url; return;
+      }
       if (r.error === 'correo_dominio' && r.sugerencia) {
         err.textContent = `Revisá el correo: ¿quisiste escribir ${r.sugerencia}? Corregilo en los dos campos y volvé a continuar.`;
         $('#formConfirmar').hidden = true; $('#formBoton').hidden = false; f.correo.focus();
@@ -330,6 +349,11 @@
       try {
         const r = await llamar(i, '/verificar', { pago_id: pagoId, referencia });
         if (r.ok && r.estado === 'pagado' && r.codigo) {
+          // Una sola vez por entrada (la página se puede recargar); el eventID permite deduplicar con la API de conversiones.
+          try {
+            const marca = 'efs_purchase_' + r.codigo;
+            if (!localStorage.getItem(marca)) { pixel('Purchase', { value: Number(i.precio) || 0, currency: 'ARS' }, { eventID: r.codigo }); localStorage.setItem(marca, '1'); }
+          } catch (x) { pixel('Purchase', { value: Number(i.precio) || 0, currency: 'ARS' }, { eventID: r.codigo }); }
           mostrar('¡Listo, ya tenés tu entrada!', `Hola ${r.nombre || ''}. Este QR es tu entrada: mostralo en la acreditación. También te lo mandamos por mail.`, entradaHtml(r.codigo));
           window.EFSQR && window.EFSQR.dibujar($('#entradaQr'), r.codigo, $('#entradaGuardar'));
           return;
