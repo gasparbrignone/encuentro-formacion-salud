@@ -301,7 +301,9 @@
       const r = await llamar(i, '/inscribir', { ...datos, intento_id: INTENTO, turnstile: token });
       if (r.ok && r.pago_url) {
         pixel('InitiateCheckout', { value: Number(i.precio) || 0, currency: 'ARS' });
-        location.href = r.pago_url; return;
+        // Unos 300 ms para que el navegador alcance a enviar el evento antes de salir de la página.
+        setTimeout(() => { location.href = r.pago_url; }, 300);
+        return;
       }
       if (r.error === 'correo_dominio' && r.sugerencia) {
         err.textContent = `Revisá el correo: ¿quisiste escribir ${r.sugerencia}? Corregilo en los dos campos y volvé a continuar.`;
