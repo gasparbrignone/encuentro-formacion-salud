@@ -125,7 +125,10 @@
     } else {
       // todavía no abrió: el botón no promete una inscripción que no existe, lleva a ver cuándo abre
       etiquetarCta('Cuándo abre la inscripción');
-      if (i.texto) $('.insc-texto', cont).textContent = i.texto;
+      cont.innerHTML = `
+        <p class="insc-estado">Próximamente</p>
+        <p class="insc-texto">${esc(i.texto || 'Todavía no abrimos las inscripciones para esta edición. Seguinos en Instagram para enterarte apenas abran.')}</p>
+        <a class="btn btn--blanco" href="https://instagram.com/efs.atp" target="_blank" rel="noopener">Seguinos en @efs.atp</a>`;
     }
   }
 
@@ -513,9 +516,25 @@
   });
 
   // ── carga
-  Promise.all([cargar('assets/data/evento.json'), cargar('assets/data/actividades.json'), cargar('assets/data/archivo/edicion-1.json')])
+  // El evento (y con él la inscripción) se aplica apenas llega, sin esperar al programa ni al archivo.
+  // Si no carga, se reintenta; si igual falla, se avisa en vez de dejar la inscripción como "cargando".
+  const cargarEvento = async () => {
+    for (let intento = 0; intento < 3; intento++) {
+      const ev = await cargar('assets/data/evento.json');
+      if (ev) return ev;
+      await new Promise((r) => setTimeout(r, 800 * (intento + 1)));
+    }
+    return null;
+  };
+  const eventoListo = cargarEvento().then((ev) => {
+    if (ev) { try { aplicarEvento(ev); } catch (err) { console.error(err); } }
+    else $('#inscripcionCont').innerHTML = `
+      <p class="insc-texto">No pudimos cargar la inscripción. Revisá tu conexión y volvé a intentar.</p>
+      <button type="button" class="btn btn--blanco" onclick="location.reload()">Recargar la página</button>`;
+    return ev;
+  });
+  Promise.all([eventoListo, cargar('assets/data/actividades.json'), cargar('assets/data/archivo/edicion-1.json')])
     .then(([ev, acts, arch]) => {
-      aplicarEvento(ev);
       ACTS = DEMO && arch ? arch.actividades : (Array.isArray(acts) ? acts : []);
       if (DEMO) document.body.insertAdjacentHTML('afterbegin', '<p class="aviso-demo">Vista de ejemplo con el programa de la 1.ª edición. Sin <code>?demo</code> se ve el contenido real.</p>');
       programa(ACTS);
