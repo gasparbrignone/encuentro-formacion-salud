@@ -107,6 +107,7 @@
       cargarTurnstile(i);
       retornoPago(i);
       medirVistaInscripcion();
+      medirInicioFormulario(i);
     } else if (i.estado === 'abierta' && i.link) {
       const gratis = !(Number(i.precio) > 0);
       cont.innerHTML = `
@@ -226,6 +227,37 @@
     o.observe(sec);
   }
 
+  // InitiateCheckout: la primera vez que la persona toca un campo del formulario, una vez por sesión.
+  function medirInicioFormulario(i) {
+    const f = $('#formInsc');
+    if (!f) return;
+    const marcar = (e) => {
+      if (!e.target.matches('input, select') || e.target.id === 'confirmoDatos') return;
+      f.removeEventListener('focusin', marcar); f.removeEventListener('input', marcar);
+      try {
+        if (sessionStorage.getItem('efs_inicio_form')) return;
+        sessionStorage.setItem('efs_inicio_form', '1');
+      } catch (x) { /* sin sessionStorage: una vez por carga */ }
+      pixel('InitiateCheckout', { value: Number(i.precio) || 0, currency: 'ARS', content_name: 'Inscripción EFS 2026' });
+    };
+    f.addEventListener('focusin', marcar);
+    f.addEventListener('input', marcar);
+  }
+
+  // CompleteRegistration y Purchase: solo con el pago confirmado por el servidor (la inscripción
+  // existe recién ahí). Una vez por pago aunque se recargue la página. El eventID es el número de
+  // pago de Mercado Pago, no el código de la entrada (ese código es la entrada misma).
+  function medirInscripcionPaga(i, pagoId, codigo) {
+    const datos = { value: Number(i.precio) || 0, currency: 'ARS' };
+    const marca = 'efs_conversion_' + pagoId;
+    try {
+      if (localStorage.getItem(marca) || localStorage.getItem('efs_purchase_' + codigo)) return;
+      localStorage.setItem(marca, '1');
+    } catch (x) { /* sin localStorage: se mide igual */ }
+    pixel('CompleteRegistration', { ...datos, content_name: 'Inscripción EFS 2026' }, { eventID: 'efs26-' + pagoId });
+    pixel('Purchase', datos, { eventID: 'efs26-' + pagoId });
+  }
+
   async function llamar(i, ruta, cuerpo) {
     const r = await fetch(String(i.servicio).replace(/\/$/, '') + ruta, {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo),
@@ -303,7 +335,8 @@
     try {
       const r = await llamar(i, '/inscribir', { ...datos, intento_id: INTENTO, turnstile: token });
       if (r.ok && r.pago_url) {
-        pixel('InitiateCheckout', { value: Number(i.precio) || 0, currency: 'ARS' });
+        // Datos confirmados y link de pago listo: la persona sale a Mercado Pago.
+        pixel('AddPaymentInfo', { value: Number(i.precio) || 0, currency: 'ARS' });
         // Unos 300 ms para que el navegador alcance a enviar el evento antes de salir de la página.
         setTimeout(() => { location.href = r.pago_url; }, 300);
         return;
@@ -354,11 +387,7 @@
       try {
         const r = await llamar(i, '/verificar', { pago_id: pagoId, referencia });
         if (r.ok && r.estado === 'pagado' && r.codigo) {
-          // Una sola vez por entrada (la página se puede recargar); el eventID permite deduplicar con la API de conversiones.
-          try {
-            const marca = 'efs_purchase_' + r.codigo;
-            if (!localStorage.getItem(marca)) { pixel('Purchase', { value: Number(i.precio) || 0, currency: 'ARS' }, { eventID: r.codigo }); localStorage.setItem(marca, '1'); }
-          } catch (x) { pixel('Purchase', { value: Number(i.precio) || 0, currency: 'ARS' }, { eventID: r.codigo }); }
+          medirInscripcionPaga(i, pagoId, r.codigo);
           mostrar('¡Listo, ya tenés tu entrada!', `Hola ${r.nombre || ''}. Este QR es tu entrada: mostralo en la acreditación. También te lo mandamos por mail.`, entradaHtml(r.codigo));
           window.EFSQR && window.EFSQR.dibujar($('#entradaQr'), r.codigo, $('#entradaGuardar'));
           return;
