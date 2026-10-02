@@ -258,6 +258,11 @@
     pixel('Purchase', datos, { eventID: 'efs26-' + pagoId });
   }
 
+  function galleta(nombre) {
+    const m = document.cookie.match(new RegExp('(?:^|; )' + nombre + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : '';
+  }
+
   async function llamar(i, ruta, cuerpo) {
     const r = await fetch(String(i.servicio).replace(/\/$/, '') + ruta, {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo),
@@ -333,7 +338,8 @@
     delete datos.correo2; delete datos['cf-turnstile-response'];
     btn.disabled = true; btn.textContent = 'Generando el pago…';
     try {
-      const r = await llamar(i, '/inscribir', { ...datos, intento_id: INTENTO, turnstile: token });
+      // Cookies del píxel (si las hay): el servidor las usa para la API de Conversiones de Meta.
+      const r = await llamar(i, '/inscribir', { ...datos, intento_id: INTENTO, turnstile: token, fbp: galleta('_fbp'), fbc: galleta('_fbc') });
       if (r.ok && r.pago_url) {
         // Datos confirmados y link de pago listo: la persona sale a Mercado Pago.
         pixel('AddPaymentInfo', { value: Number(i.precio) || 0, currency: 'ARS' });
