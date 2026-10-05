@@ -447,7 +447,7 @@
   function salir(motivo) {
     detenerCamara();
     clearInterval(timerLista); clearInterval(timerCola); clearInterval(timerTalleres);
-    borrar(LS.clave); clave = '';
+    borrar(LS.clave); guardarSesion(LS.clave, ''); clave = '';
     $('#app').hidden = true;
     $('#ingreso').hidden = false;
     mostrar('#errorIngreso', motivo || '');
@@ -465,7 +465,7 @@
     boton.disabled = true; boton.textContent = 'Conectando…';
     const r = await refrescarLista(30000);
     boton.disabled = false; boton.textContent = 'Entrar';
-    if (r.ok) { guardar(LS.clave, clave); guardar(LS.puesto, puesto); return entrar(); }
+    if (r.ok) { guardarSesion(LS.clave, clave); guardar(LS.puesto, puesto); return entrar(); }
     clave = '';
     mostrar('#errorIngreso', r.error === 'clave' ? 'Clave incorrecta.' : r.error === 'demasiados_intentos' ? 'Demasiados intentos. Esperá unos minutos.' : 'No hay conexión con el servidor.' + (detalleError ? ' [' + detalleError + ']' : ''));
   });
@@ -475,6 +475,7 @@
     if (cola.length && !confirm('Hay ' + cola.length + ' operaciones sin enviar. Si salís ahora se pierden. ¿Salir igual?')) return;
     if (!cola.length && !confirm('¿Cerrar la sesión y borrar los datos de este celular?')) return;
     for (const k of Object.values(LS)) borrar(k);
+    guardarSesion(LS.clave, '');
     guardarSesion('efs-staff-coord', '');
     location.reload();
   });
@@ -554,7 +555,8 @@
     const forzado = new URLSearchParams(location.search).get('servicio');
     if (local && forzado) SERVICIO = forzado.replace(/\/$/, '');
     cargarListaGuardada();
-    clave = leer(LS.clave); puesto = leer(LS.puesto);
+    // La clave vive solo en sessionStorage (se borra al cerrar la pestaña). Si quedó una copia vieja en localStorage, se borra.
+    clave = leerSesion(LS.clave); borrar(LS.clave); puesto = leer(LS.puesto);
     $('#puesto').value = puesto;
     if (clave && puesto) {
       const r = await refrescarLista(30000);
