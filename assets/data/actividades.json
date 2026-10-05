@@ -1,1 +1,28 @@
-[]
+[
+  {
+    "titulo": "Shock: fisiopatología, diagnóstico y manejo inicial",
+    "tipo": "Charla",
+    "area": "",
+    "inicio": "",
+    "fin": "",
+    "lugar": "",
+    "descripcion": "Una aproximación para entender qué ocurre en el shock, cómo reconocerlo y diagnosticarlo, y cómo abordar inicialmente al paciente.",
+    "temas": [
+      "Fisiopatología",
+      "Diagnóstico",
+      "Manejo inicial"
+    ],
+    "imagen": "",
+    "disertantes": [
+      {
+        "nombre": "M. Fabián Orellana",
+        "rol": "Médico · Técnico Radiólogo · Docente FCM",
+        "institucion": "Facultad de Ciencias Médicas · UNR",
+        "foto": ""
+      }
+    ],
+    "cupo": null,
+    "inscripcion_previa": false,
+    "oculta": false
+  }
+]
