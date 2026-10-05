@@ -485,7 +485,7 @@
       <div class="franja franja--${cat}" aria-hidden="true"><span><b>${esc(a.tipo)}</b>${a.area ? `<i>${esc(a.area)}</i>` : ''}</span></div>
       <button class="detalle-cerrar" type="button" aria-label="Cerrar">×</button>
       ${a.imagen ? `<div class="detalle-img" data-img="${esc(a.imagen)}"></div>` : ''}
-      <div class="detalle-cuerpo">
+      <div class="detalle-cuerpo${a.imagen ? '' : ' sin-img'}">
         ${horario(a) ? `<span class="etiqueta">${esc(horario(a))}</span>` : ''}
         <h3 class="detalle-titulo" id="detalleTitulo">${esc(a.titulo)}</h3>
         ${(a.temas || []).length ? `<ul class="temas temas--${cat}">${a.temas.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
@@ -500,7 +500,6 @@
       </div>`;
     const img = $('.detalle-img', d);
     if (img) EFSTrama.aplicar(img, img.dataset.img, { tinta: TINTA[cat], retiro: 'bottom', desde: .6, hasta: 1.02, celda: 4 });
-    d.querySelectorAll('.persona-foto').forEach((n) => EFSTrama.aplicar(n, n.dataset.img, { tinta: TINTA[cat], retiro: 'radial', desde: .5, hasta: .95, celda: 3 }));
     $('.detalle-cerrar', d).addEventListener('click', () => d.close());
     if (!d.open) d.showModal();
     history.replaceState(null, '', '#' + id);
@@ -515,7 +514,7 @@
   // ── disertantes
   function persona(d) {
     return `<div class="persona">
-      ${d.foto ? `<div class="persona-foto" data-img="${esc(d.foto)}"></div>` : ''}
+      ${d.foto ? `<div class="persona-foto"><img src="${esc(d.foto)}" alt="" loading="lazy" decoding="async"></div>` : ''}
       <div class="expositor"><b>${esc(d.nombre)}</b>${d.rol ? `<span>${esc(d.rol)}</span>` : ''}${d.institucion ? `<small>${esc(d.institucion)}</small>` : ''}</div>
     </div>`;
   }
@@ -535,7 +534,6 @@
     document.querySelector('[data-si="disertantes"]').hidden = !lista.length;
     if (!lista.length) return;
     $('#disertantesLista').innerHTML = lista.map(persona).join('');
-    $('#disertantesLista').querySelectorAll('.persona-foto').forEach((n) => EFSTrama.aplicar(n, n.dataset.img, { tinta: TINTA.charla, retiro: 'radial', desde: .5, hasta: .95, celda: 3 }));
   }
 
   // ── edición anterior
@@ -556,6 +554,16 @@
     const foco = (n.dataset.foco || '.5,.5').split(',').map(Number);
     EFSTrama.aplicar(n, n.dataset.img, { tinta: '#2C6FA0', retiro: 'bottom', desde: .72, hasta: 1.05, celda: 2, foco });
   });
+
+  // ── animación de entrada: cada tarjeta sube al entrar en pantalla (escalonada); con "reducir movimiento" se ve directo (CSS)
+  function revelar(sel) {
+    const els = [...document.querySelectorAll(sel)];
+    if (!('IntersectionObserver' in window)) { els.forEach((e) => e.classList.add('visto')); return; }
+    const io = new IntersectionObserver((ents) => ents.forEach((en) => {
+      if (en.isIntersecting) { en.target.classList.add('visto'); io.unobserve(en.target); }
+    }), { rootMargin: '0px 0px -8% 0px' });
+    els.forEach((e, i) => { e.classList.add('rv'); e.style.setProperty('--d', (i % 4) * 90 + 'ms'); io.observe(e); });
+  }
 
   // ── carga
   // El evento (y con él la inscripción) se aplica apenas llega, sin esperar al programa ni al archivo.
@@ -581,6 +589,7 @@
       if (DEMO) document.body.insertAdjacentHTML('afterbegin', '<p class="aviso-demo">Vista de ejemplo con el programa de la 1.ª edición. Sin <code>?demo</code> se ve el contenido real.</p>');
       programa(ACTS);
       disertantes(ACTS);
+      revelar('.act, .persona');
       anterior(arch, ev ? ev.mostrar_edicion_anterior !== false : true);
       if (location.hash.startsWith('#actividad-')) abrir(location.hash.slice(1));
     });

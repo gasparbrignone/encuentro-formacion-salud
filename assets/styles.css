@@ -151,7 +151,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* ─── disertantes ─────────────────────────────────────── */
 .disertantes { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 36px 28px; }
 .persona { display: flex; flex-direction: column; gap: 14px; }
-.persona-foto { position: relative; width: 100%; aspect-ratio: 1; max-width: 220px; overflow: hidden; }
+.persona-foto { position: relative; width: 100%; aspect-ratio: 1; max-width: 220px; overflow: hidden; border-radius: 50%; background: #8FC1E3; }
+.persona-foto img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; }
 
 /* ─── inscripción ─────────────────────────────────────── */
 .insc-estado { font-weight: 800; font-size: clamp(32px, 4vw, 52px); line-height: 1; margin-bottom: 14px; }
@@ -238,10 +239,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .detalle::backdrop { background: rgba(22, 40, 63, .55); }
 .detalle-in { position: relative; padding-left: var(--franja); min-height: 300px; }
 .detalle .franja { position: absolute; }
-.detalle-cerrar { position: absolute; right: 10px; top: 10px; z-index: 3; width: 44px; height: 44px; font-size: 30px; line-height: 1; background: #fff; }
+.detalle-cerrar { position: absolute; right: 12px; top: 12px; z-index: 3; width: 46px; height: 46px; border-radius: 50%; font-size: 28px; line-height: 1; background: var(--navy); color: #fff; border: 2px solid #fff; box-shadow: 0 2px 10px rgba(0,0,0,.25); transition: background .15s; }
+.detalle-cerrar:hover { background: var(--azul); }
+.detalle-img + .detalle-cuerpo { margin-top: -60px; position: relative; }
 .detalle-img { position: relative; height: 300px; }
 .detalle-cuerpo { padding: 28px clamp(20px, 4vw, 40px) 36px; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
-.detalle-img + .detalle-cuerpo { margin-top: -60px; position: relative; }
+.detalle-cuerpo.sin-img { padding-top: 84px; }
 .detalle-titulo { font-weight: 800; font-size: clamp(28px, 4vw, 42px); line-height: 1; letter-spacing: -.02em; }
 .detalle-desc { font-size: 18px; max-width: 36em; }
 .detalle .datos { width: 100%; }
@@ -375,3 +378,26 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
    Sube sobre el relleno de la sección anterior para no sumar tanto aire. */
 .separador { position: relative; height: clamp(150px, 19vw, 280px); margin-top: calc(-1 * clamp(24px, 4vw, 56px)); pointer-events: none; }
 #inicio + .separador { margin-top: 0; }
+
+/* ─── animaciones ─────────────────────────────────────── */
+.hero-cont > * { animation: subir .7s cubic-bezier(.2,.7,.2,1) both; }
+.hero-cont > *:nth-child(2) { animation-delay: .08s; }
+.hero-cont > *:nth-child(3) { animation-delay: .16s; }
+.hero-cont > *:nth-child(4) { animation-delay: .24s; }
+.hero-cont > *:nth-child(5) { animation-delay: .32s; }
+.hero-cont > *:nth-child(6) { animation-delay: .4s; }
+@keyframes subir { from { opacity: 0; transform: translateY(18px); } }
+
+.rv { opacity: 0; transform: translateY(22px); transition: opacity .6s cubic-bezier(.2,.7,.2,1) var(--d, 0ms), transform .6s cubic-bezier(.2,.7,.2,1) var(--d, 0ms), background .15s; }
+.rv.visto { opacity: 1; transform: none; }
+.persona-foto img { transition: transform .8s cubic-bezier(.2,.7,.2,1); }
+.persona.visto .persona-foto img { transform: scale(1); }
+.detalle[open] { animation: detalle-entra .28s cubic-bezier(.2,.7,.2,1) both; }
+.detalle[open]::backdrop { animation: fondo-entra .28s ease both; }
+@keyframes detalle-entra { from { opacity: 0; transform: translateY(16px) scale(.985); } }
+@keyframes fondo-entra { from { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cont > *, .detalle[open], .detalle[open]::backdrop { animation: none !important; }
+  .rv { opacity: 1; transform: none; transition: none; }
+}
