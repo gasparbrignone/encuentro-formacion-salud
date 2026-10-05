@@ -34,7 +34,7 @@
   <link rel="preload" href="assets/fonts/chivo-mono-normal-500-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" as="image" href="assets/img/hero-fcm.png?v=2" fetchpriority="high" />
   <link rel="stylesheet" href="assets/fonts.css" />
-  <link rel="stylesheet" href="assets/styles.css?v=20261001b" />
+  <link rel="stylesheet" href="assets/styles.css?v=20261005a" />
 
   <!-- Google tag (gtag.js): se carga después de que la página terminó de cargar, para no frenar el primer render -->
   <script>
@@ -114,6 +114,20 @@
   </div>
 </section>
 
+<!-- INSCRIPCIÓN -->
+<section class="seccion" id="inscripcion" aria-labelledby="inscripcion-titulo">
+  <div class="seccion-in">
+    <div class="seccion-cab">
+      <span class="etiqueta etiqueta--blanca">Inscripción</span>
+      <h2 class="seccion-titulo" id="inscripcion-titulo">Reservá tu lugar</h2>
+    </div>
+    <div id="inscripcionCont" aria-live="polite">
+      <p class="insc-texto">Cargando la inscripción…</p>
+      <noscript><p class="insc-texto">Para inscribirte necesitás activar JavaScript en el navegador.</p></noscript>
+    </div>
+  </div>
+</section>
+
 <div class="separador" aria-hidden="true" data-img="assets/img/uploads/edicion-1-07.webp" data-foco=".5,.52"></div>
 
 <!-- PROGRAMA -->
@@ -121,7 +135,7 @@
   <div class="seccion-in">
     <div class="seccion-cab">
       <span class="etiqueta">Programa</span>
-      <h2 class="seccion-titulo" id="programa-titulo">Las actividades del día</h2>
+      <h2 class="seccion-titulo" id="programa-titulo">Charlas y talleres confirmados</h2>
     </div>
     <div class="filtros" id="filtros" hidden role="group" aria-label="Filtrar actividades">
       <button type="button" class="filtro" aria-pressed="true" data-filtro="todas">Todas</button>
@@ -195,20 +209,6 @@
 
 <div class="separador" aria-hidden="true" data-img="assets/img/uploads/edicion-1-06.webp" data-foco=".5,.7"></div>
 
-<!-- INSCRIPCIÓN -->
-<section class="seccion" id="inscripcion" aria-labelledby="inscripcion-titulo">
-  <div class="seccion-in">
-    <div class="seccion-cab">
-      <span class="etiqueta etiqueta--blanca">Inscripción</span>
-      <h2 class="seccion-titulo" id="inscripcion-titulo">Reservá tu lugar</h2>
-    </div>
-    <div id="inscripcionCont" aria-live="polite">
-      <p class="insc-texto">Cargando la inscripción…</p>
-      <noscript><p class="insc-texto">Para inscribirte necesitás activar JavaScript en el navegador.</p></noscript>
-    </div>
-  </div>
-</section>
-
 <!-- EDICIÓN ANTERIOR -->
 <section class="seccion seccion--papel" id="edicion-anterior" aria-labelledby="anterior-titulo" hidden>
   <div class="seccion-in">
@@ -265,7 +265,7 @@
 <script src="assets/vendor/qrcode.js"></script>
 <script src="assets/entrada-qr.js"></script>
 <script src="assets/trama.js"></script>
-<script src="assets/script.js?v=20261002c"></script>
+<script src="assets/script.js?v=20261005b"></script>
 <script src="assets/kit.js?v=20261001b" defer></script>
 </body>
 </html>

@@ -424,16 +424,23 @@
     if (cat === 'info') {
       return `<div class="act act--especial"><p class="act-titulo">${esc(a.titulo)}</p>${a.descripcion ? `<p class="act-desc">${esc(a.descripcion)}</p>` : ''}</div>`;
     }
-    const nombres = (a.disertantes || []).map((d) => d.nombre).filter(Boolean).join(', ');
+    const con = (a.disertantes || []).filter((d) => d && d.nombre);
+    const d1 = con[0];
+    const temas = (a.temas || []).filter(Boolean);
     return `<article class="act act--${cat}" data-cat="${cat}" id="${id}">
       ${a.imagen ? `<div class="act-img" data-img="${esc(a.imagen)}" data-tinta="${TINTA[cat]}"></div>` : ''}
       <div class="act-cuerpo">
         <p class="act-cat"><span class="cat cat--${cat}">${esc(a.tipo)}</span>${a.area ? `<span class="act-area">${esc(a.area)}</span>` : ''}</p>
         <h4 class="act-titulo">${esc(a.titulo)}</h4>
-        ${nombres ? `<p class="act-quien">${esc(nombres)}</p>` : ''}
+        ${a.descripcion ? `<p class="act-desc">${esc(a.descripcion)}</p>` : ''}
+        ${temas.length ? `<ul class="temas temas--chico" aria-label="Temas">${temas.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
+        ${d1 ? `<div class="act-quien">
+          ${d1.foto ? `<span class="act-foto"><img src="${esc(d1.foto)}" alt="" loading="lazy" decoding="async"></span>` : ''}
+          <span><b>${esc(con.map((d) => d.nombre).join(', '))}</b>${d1.rol ? `<small>${esc(d1.rol)}</small>` : ''}</span>
+        </div>` : ''}
         <p class="act-meta">${esc([horario(a), a.lugar].filter(Boolean).join(', '))}</p>
-        <a class="act-mas" href="#${id}" data-abrir="${id}">Ver detalle<span class="sr"> de ${esc(a.titulo)}</span></a>
       </div>
+      <a class="btn btn--navy act-mas" href="#${id}" data-abrir="${id}">Ver detalle<span class="sr"> de ${esc(a.titulo)}</span></a>
     </article>`;
   }
 

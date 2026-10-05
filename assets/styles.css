@@ -118,24 +118,29 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .filtro { font-family: var(--mono); font-weight: 500; font-size: 15px; padding: 9px 16px; border: 2px solid var(--navy); }
 .filtro[aria-pressed="true"] { background: var(--navy); color: #fff; }
 
-.bloque { display: grid; grid-template-columns: 150px 1fr; gap: 24px; border-top: 2px solid var(--navy); padding: 22px 0 34px; }
-.bloque-hora { font-family: var(--mono); font-weight: 500; font-size: 24px; line-height: 1.2; }
-.bloque-acts { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+.bloque { display: grid; grid-template-columns: 170px 1fr; gap: 32px; border-top: 3px solid var(--navy); padding: 24px 0 48px; }
+.bloque-hora { font-family: var(--mono); font-weight: 500; font-size: 30px; line-height: 1.05; letter-spacing: -.02em; position: sticky; top: calc(var(--nav) + 24px); align-self: start; }
+.bloque-acts { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
 
-.act { position: relative; display: flex; flex-direction: column; border-left: 6px solid var(--azul); background: #fff; }
+.act { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 28px; align-items: end; background: #fff; border: 2px solid var(--navy); border-left: 14px solid var(--azul); padding: clamp(22px, 3vw, 36px); transition: background .15s; }
+.act:hover { background: var(--papel); }
 .act--taller { border-left-color: var(--teal); }
-.act-img { position: relative; height: 190px; overflow: hidden; }
-.act-cuerpo { padding: 4px 0 6px 18px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
-.act-img + .act-cuerpo { margin-top: -28px; position: relative; }
+.act-img { grid-column: 1 / -1; position: relative; height: 180px; overflow: hidden; margin: calc(-1 * clamp(22px, 3vw, 36px)) calc(-1 * clamp(22px, 3vw, 36px)) 0; }
+.act-cuerpo { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
 .act-cat { display: flex; align-items: center; gap: 10px; }
 .act-area { font-family: var(--mono); font-size: 13px; color: var(--gris); }
-.act-titulo { font-weight: 800; font-size: 22px; line-height: 1.12; letter-spacing: -.01em; }
-.act-quien { font-size: 16px; font-weight: 500; }
+.act-titulo { font-weight: 800; font-size: clamp(26px, 3vw, 40px); line-height: 1.05; letter-spacing: -.02em; }
+.act-desc { font-size: 18px; line-height: 1.45; max-width: 40em; }
+.temas--chico li { font-size: 13px; padding: 3px 10px 4px; }
+.act-quien { display: flex; align-items: center; gap: 14px; margin-top: 6px; }
+.act-foto { width: 68px; height: 68px; border-radius: 50%; background: #8FC1E3; overflow: hidden; flex: none; }
+.act-foto img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; }
+.act-quien b { display: block; font-size: 18px; line-height: 1.25; }
+.act-quien small { display: block; font-family: var(--mono); font-size: 13px; line-height: 1.35; color: var(--gris); }
 .act-meta { font-family: var(--mono); font-size: 14px; color: var(--gris); }
 .act-meta:empty { display: none; }
-.act-mas { font-weight: 700; font-size: 15px; color: var(--azul); text-underline-offset: 4px; }
-.act--taller .act-mas { color: var(--teal); }
-.act--especial { border-left-color: var(--navy); padding: 4px 0 4px 18px; grid-column: 1 / -1; }
+.act-mas { grid-column: 2; align-self: end; white-space: nowrap; }
+.act--especial { display: block; background: none; border: 0; border-left: 6px solid var(--navy); padding: 4px 0 4px 18px; }
 .act--especial .act-titulo { font-size: 20px; }
 .act--especial .act-desc { font-style: italic; color: var(--gris); font-size: 16px; }
 
@@ -268,7 +273,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .hero { display: block; min-height: 0; padding-top: calc(var(--nav) + 62vw); }
   .hero-img { width: 100%; top: var(--nav); }
   .datos { grid-template-columns: 1fr 1fr; }
-  .bloque { grid-template-columns: 1fr; gap: 12px; }
+  .bloque { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .bloque-hora { position: static; }
+  .act { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+  .act-mas { grid-column: 1; justify-self: start; }
   .anterior-intro, .contacto { grid-template-columns: 1fr; }
   .form-grilla { grid-template-columns: 1fr; }
 }

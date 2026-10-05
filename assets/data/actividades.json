@@ -24,5 +24,31 @@
     "cupo": null,
     "inscripcion_previa": false,
     "oculta": false
+  },
+  {
+    "titulo": "Inteligencia artificial en medicina",
+    "tipo": "Charla",
+    "area": "",
+    "inicio": "",
+    "fin": "",
+    "lugar": "",
+    "descripcion": "Aplicaciones, oportunidades y desafíos: qué es la IA y cómo aprende, cómo se analizan los datos biomédicos y qué son la IA predictiva y la generativa.",
+    "temas": [
+      "Qué es la IA",
+      "Datos biomédicos",
+      "IA predictiva y generativa"
+    ],
+    "imagen": "",
+    "disertantes": [
+      {
+        "nombre": "Luciano Anselmino",
+        "rol": "Lic. en Ciencias Biológicas · Dr. en Biomedicina · Especialista en Bioinformática · Docente UNR",
+        "institucion": "Centro de Investigaciones del Cáncer de Rosario",
+        "foto": "assets/img/uploads/disertante-luciano-anselmino.webp"
+      }
+    ],
+    "cupo": null,
+    "inscripcion_previa": false,
+    "oculta": false
   }
 ]
