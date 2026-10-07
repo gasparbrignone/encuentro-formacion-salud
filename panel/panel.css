@@ -1,0 +1,32 @@
+/* Panel de inscripciones del EFS: extiende staff.css (mismas variables de color/tipografía). */
+
+.chk { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--navy); margin: 14px 0; }
+.chk input { width: auto; min-height: 0; }
+
+.vista--ancha { max-width: 960px; }
+
+.tarjeta--panel { max-width: none; padding: 16px 18px; display: block; margin-bottom: 18px; }
+.tarjeta--panel h2 { margin-bottom: 10px; }
+
+.aviso { background: var(--papel); border: 2px solid var(--azul); color: var(--navy); font-weight: 700; padding: 10px 12px; margin-bottom: 14px; }
+.aviso[data-tipo=error] { border-color: var(--rojo); color: var(--rojo); }
+.aviso[data-tipo=ok] { border-color: var(--verde); color: var(--verde); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { background: var(--papel); border: 2px solid var(--linea); padding: 6px 12px; font-family: var(--mono); font-size: 13px; font-weight: 700; }
+
+.tabla-scroll { overflow-x: auto; margin-top: 10px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--linea); white-space: nowrap; }
+th { color: var(--gris); font-size: 12px; text-transform: uppercase; letter-spacing: .03em; }
+td.col-mail, td.col-nombre { white-space: normal; }
+
+.estado { font-family: var(--mono); font-size: 12px; padding: 2px 8px; border: 1px solid var(--linea); }
+.estado[data-e=activa] { border-color: var(--verde); color: var(--verde); }
+.estado[data-e=revocada] { border-color: var(--rojo); color: var(--rojo); }
+
+.btn-mini { min-height: 36px; padding: 6px 12px; font-size: 13px; }
+
+.resultado-pago { border: 2px solid var(--linea); padding: 10px 12px; margin-top: 10px; }
+.resultado-pago h3 { font-size: 15px; margin-bottom: 4px; }
+.resultado-pago .pagos { font-family: var(--mono); font-size: 12px; color: var(--gris); margin-top: 6px; }
