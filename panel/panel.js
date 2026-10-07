@@ -330,9 +330,11 @@
     errorEl.hidden = true;
     transferenciaPendiente = datos;
     const resumen = $('#previaTransferenciaTexto');
-    resumen.innerHTML = '';
+    resumen.replaceChildren();
     const p1 = document.createElement('p');
-    p1.innerHTML = '<strong>' + datos.nombre + ' ' + datos.apellido + '</strong> — DNI ' + datos.dni + ' — ' + datos.correo + ' — ' + datos.telefono;
+    const titular = document.createElement('strong');
+    titular.textContent = datos.nombre + ' ' + datos.apellido;
+    p1.append(titular, ' — DNI ' + datos.dni + ' — ' + datos.correo + ' — ' + datos.telefono);
     resumen.appendChild(p1);
     const p2 = document.createElement('p');
     p2.textContent = datos.carrera + ', año ' + datos.anio + ', ' + datos.universidad;
@@ -358,13 +360,16 @@
   $('#btnConfirmarTransferencia').addEventListener('click', async () => {
     if (!transferenciaPendiente) return;
     const btn = $('#btnConfirmarTransferencia');
+    const editar = $('#btnEditarTransferencia');
     btn.disabled = true;
+    editar.disabled = true;
     btn.textContent = 'Emitiendo… (puede tardar hasta 30s)';
     // Emite la entrada y manda el mail con el QR en el mismo pedido a Apps Script: el timeout
     // por defecto de api() (15s) se queda corto — la auditoría de la Etapa 1 ya había medido
     // hasta ~29s de Apps Script bajo tráfico real.
     const r = await api('admin_alta_transferencia', transferenciaPendiente, 35000);
     btn.disabled = false;
+    editar.disabled = false;
     btn.textContent = 'Confirmar y emitir';
     if (r.ok) {
       avisar('Entrada emitida y mail enviado (' + r.codigo + ').', 'ok');
@@ -378,9 +383,10 @@
       datos: 'Revisá el campo "' + (r.campo || '') + '".',
       ya_inscripto: 'Ese DNI ya tiene una entrada activa (' + (r.entrada || '') + ').',
       ocupado: 'El sistema está ocupado, probá de nuevo en unos segundos.',
-      red: 'No pudimos conectar. Probá de nuevo.',
+      // Sin respuesta no se sabe si Apps Script llegó a emitir: reintentar es seguro (el DNI repetido se rechaza).
+      red: 'No llegó la respuesta. Puede que la entrada se haya emitido igual: tocá "Recargar" y buscala en la tabla antes de reintentar.',
     };
-    avisar(mensajes[r.error] || 'No se pudo emitir la entrada.', 'error');
+    avisar(mensajes[r.error] || 'No se pudo emitir la entrada (código: ' + (r.error || 'desconocido') + ').', 'error');
   });
 
   // ─────────── arranque ───────────
