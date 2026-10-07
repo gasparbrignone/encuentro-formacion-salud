@@ -64,11 +64,16 @@
         <div id="resultadosBuscar"></div>
       </section>
 
-      <!-- Alta de transferencia (Etapa 2) -->
+      <!-- Alta manual: transferencia o cortesía (Etapa 2) -->
       <section class="tarjeta tarjeta--panel">
-        <h2>Cargar transferencia</h2>
-        <p class="ayuda">Para quien pagó por transferencia y no pudo usar la página: cargá sus datos, revisá la vista previa y confirmá para emitir la entrada y mandar el mail.</p>
+        <h2>Cargar transferencia o cortesía</h2>
+        <p class="ayuda">Para quien pagó por transferencia, o para una entrada sin cargo (disertantes, staff, invitados): cargá sus datos, revisá la vista previa y confirmá para emitir la entrada y mandar el mail.</p>
         <form id="formTransferencia" autocomplete="off">
+          <fieldset class="tipo-alta">
+            <legend>Tipo</legend>
+            <label class="chk"><input type="radio" name="tipoAlta" value="transferencia" checked /> Transferencia</label>
+            <label class="chk"><input type="radio" name="tipoAlta" value="cortesia" /> Cortesía (sin cargo)</label>
+          </fieldset>
           <div class="grid2">
             <div><label for="t_nombre">Nombre</label><input id="t_nombre" type="text" autocomplete="off" /></div>
             <div><label for="t_apellido">Apellido</label><input id="t_apellido" type="text" autocomplete="off" /></div>
@@ -78,9 +83,10 @@
             <div><label for="t_carrera">Carrera</label><input id="t_carrera" type="text" autocomplete="off" /></div>
             <div><label for="t_anio">Año</label><input id="t_anio" type="text" autocomplete="off" /></div>
             <div><label for="t_universidad">Universidad</label><input id="t_universidad" type="text" autocomplete="off" /></div>
-            <div><label for="t_monto">Monto (opcional)</label><input id="t_monto" type="text" autocomplete="off" /></div>
-            <div><label for="t_fecha">Fecha de la transferencia (opcional)</label><input id="t_fecha" type="text" autocomplete="off" placeholder="10/04/2026" /></div>
-            <div><label for="t_comprobante">Comprobante (opcional)</label><input id="t_comprobante" type="text" autocomplete="off" placeholder="número o link" /></div>
+            <div data-solo="transferencia"><label for="t_monto">Monto (opcional)</label><input id="t_monto" type="text" autocomplete="off" /></div>
+            <div data-solo="transferencia"><label for="t_fecha">Fecha de la transferencia (opcional)</label><input id="t_fecha" type="text" autocomplete="off" placeholder="10/04/2026" /></div>
+            <div data-solo="transferencia"><label for="t_comprobante">Comprobante (opcional)</label><input id="t_comprobante" type="text" autocomplete="off" placeholder="número o link" /></div>
+            <div data-solo="cortesia" hidden><label for="t_motivo">Motivo (opcional)</label><input id="t_motivo" type="text" autocomplete="off" placeholder="disertante, staff, invitado…" /></div>
           </div>
           <button class="btn btn--principal" type="submit">Revisar</button>
           <p id="errorTransferencia" class="error" role="alert" hidden></p>

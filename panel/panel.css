@@ -34,5 +34,10 @@ td.col-mail, td.col-nombre { white-space: normal; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
 @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
 
+.tipo-alta { border: 0; padding: 0; margin: 0 0 4px; display: flex; flex-wrap: wrap; gap: 0 24px; }
+.tipo-alta legend { font-size: 14px; font-weight: 700; color: var(--gris); padding: 0; margin: 12px 0 0; }
+.tipo-alta .chk { margin: 8px 0; }
+
 .previa-transferencia { border: 2px solid var(--azul); padding: 12px 14px; margin-top: 14px; }
+.previa-transferencia .tipo { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--azul); margin-bottom: 6px; }
 .previa-transferencia h3 { font-size: 15px; margin-bottom: 8px; }

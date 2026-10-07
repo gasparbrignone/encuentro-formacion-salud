@@ -1,10 +1,9 @@
-/* Panel de inscripciones del EFS (Etapa 1: ver y reenviar). Habla con dos cosas:
+/* Panel de inscripciones del EFS (Etapa 1: ver y reenviar; Etapa 2: altas de transferencias y
+   cortesías, ver docs/EFS_PANEL_ADMIN.md en web atp). Habla con dos cosas:
    - El Apps Script de ATP (login: misma contraseña + TOTP que /staff/panel/ de ATP), por JSONP,
      porque un Web App de Apps Script no manda cabeceras CORS.
    - El Worker del EFS (acciones admin_*), por fetch normal con el token de esa sesión: el Worker
-     ya tiene CORS para efsarg.com.ar y reenvía al mismo Apps Script con el secreto compartido.
-   No se cambió nada del backend para esta etapa: admin_resumen, admin_buscar y admin_reenviar
-   ya existían y ya se usan en producción (el escáner y las campañas de mail los usan hace rato). */
+     ya tiene CORS para efsarg.com.ar y reenvía al mismo Apps Script con el secreto compartido. */
 (() => {
   'use strict';
 
@@ -311,26 +310,39 @@
     });
   });
 
-  // ─────────── alta de transferencia (Etapa 2) ───────────
-  const CAMPOS_TRANSFERENCIA = ['nombre', 'apellido', 'dni', 'correo', 'telefono', 'carrera', 'anio', 'universidad', 'monto', 'fecha', 'comprobante'];
-  const OBLIGATORIOS_TRANSFERENCIA = ['nombre', 'apellido', 'dni', 'correo', 'telefono', 'carrera', 'anio', 'universidad'];
+  // ─────────── alta manual: transferencia o cortesía (Etapa 2) ───────────
+  const OBLIGATORIOS_ALTA = ['nombre', 'apellido', 'dni', 'correo', 'telefono', 'carrera', 'anio', 'universidad'];
+  const EXTRAS_ALTA = { transferencia: ['monto', 'fecha', 'comprobante'], cortesia: ['motivo'] };
   let transferenciaPendiente = null;
+
+  const tipoAlta = () => document.querySelector('input[name="tipoAlta"]:checked').value;
+
+  function mostrarCamposTipo() {
+    const tipo = tipoAlta();
+    document.querySelectorAll('[data-solo]').forEach((el) => { el.hidden = el.dataset.solo !== tipo; });
+  }
+  document.querySelectorAll('input[name="tipoAlta"]').forEach((r) => r.addEventListener('change', mostrarCamposTipo));
 
   $('#formTransferencia').addEventListener('submit', (ev) => {
     ev.preventDefault();
+    const tipo = tipoAlta();
     const datos = {};
-    CAMPOS_TRANSFERENCIA.forEach((k) => { datos[k] = $('#t_' + k).value.trim(); });
+    OBLIGATORIOS_ALTA.concat(EXTRAS_ALTA[tipo]).forEach((k) => { datos[k] = $('#t_' + k).value.trim(); });
     const errorEl = $('#errorTransferencia');
-    const faltante = OBLIGATORIOS_TRANSFERENCIA.find((k) => !datos[k]);
+    const faltante = OBLIGATORIOS_ALTA.find((k) => !datos[k]);
     if (faltante) {
       errorEl.textContent = 'Completá todos los campos obligatorios.';
       errorEl.hidden = false;
       return;
     }
     errorEl.hidden = true;
-    transferenciaPendiente = datos;
+    transferenciaPendiente = { accion: tipo === 'cortesia' ? 'admin_alta_cortesia' : 'admin_alta_transferencia', datos };
     const resumen = $('#previaTransferenciaTexto');
     resumen.replaceChildren();
+    const p0 = document.createElement('p');
+    p0.className = 'tipo';
+    p0.textContent = tipo === 'cortesia' ? 'CORTESÍA (sin cargo)' : 'TRANSFERENCIA';
+    resumen.appendChild(p0);
     const p1 = document.createElement('p');
     const titular = document.createElement('strong');
     titular.textContent = datos.nombre + ' ' + datos.apellido;
@@ -339,10 +351,12 @@
     const p2 = document.createElement('p');
     p2.textContent = datos.carrera + ', año ' + datos.anio + ', ' + datos.universidad;
     resumen.appendChild(p2);
-    const detalle = [datos.monto && ('$' + datos.monto), datos.fecha, datos.comprobante].filter(Boolean).join(' · ');
+    const detalle = tipo === 'cortesia'
+      ? (datos.motivo ? 'Motivo: ' + datos.motivo : '')
+      : [datos.monto && ('$' + datos.monto), datos.fecha, datos.comprobante].filter(Boolean).join(' · ');
     if (detalle) {
       const p3 = document.createElement('p');
-      p3.textContent = 'Transferencia: ' + detalle;
+      p3.textContent = (tipo === 'cortesia' ? '' : 'Transferencia: ') + detalle;
       resumen.appendChild(p3);
     }
     $('#formTransferencia').hidden = true;
@@ -367,13 +381,14 @@
     // Emite la entrada y manda el mail con el QR en el mismo pedido a Apps Script: el timeout
     // por defecto de api() (15s) se queda corto — la auditoría de la Etapa 1 ya había medido
     // hasta ~29s de Apps Script bajo tráfico real.
-    const r = await api('admin_alta_transferencia', transferenciaPendiente, 35000);
+    const r = await api(transferenciaPendiente.accion, transferenciaPendiente.datos, 35000);
     btn.disabled = false;
     editar.disabled = false;
     btn.textContent = 'Confirmar y emitir';
     if (r.ok) {
       avisar('Entrada emitida y mail enviado (' + r.codigo + ').', 'ok');
       $('#formTransferencia').reset();
+      mostrarCamposTipo();
       cerrarPreviaTransferencia();
       cargarResumen();
       return;
