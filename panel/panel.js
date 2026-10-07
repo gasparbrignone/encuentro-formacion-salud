@@ -53,12 +53,11 @@
   }
 
   function getToken() {
-    return sessionStorage.getItem(SESSION_KEY) || localStorage.getItem(SESSION_KEY) || '';
+    return sessionStorage.getItem(SESSION_KEY) || '';
   }
 
   function sesionVencida() {
     sessionStorage.removeItem(SESSION_KEY);
-    localStorage.removeItem(SESSION_KEY);
     token = '';
     $('#app').hidden = true;
     $('#ingreso').hidden = false;
@@ -79,7 +78,6 @@
     const btn = $('#btnEntrar');
     const password = $('#clave').value;
     const code = $('#codigo').value;
-    const recordar = $('#recordar').checked;
     const errorEl = $('#errorIngreso');
     errorEl.hidden = true;
     if (!password || !/^\d{6}$/.test(code)) {
@@ -88,17 +86,25 @@
       return;
     }
     btn.disabled = true;
+    btn.textContent = 'Entrando…';
     try {
       const loginId = crypto.randomUUID();
-      await fetch(GOOGLE_FORMS_ENDPOINT, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: new URLSearchParams({ action: 'adminLoginAttempt', password, code, loginId, remember: String(recordar) }),
-      });
-      const resp = await jsonpRequest(GOOGLE_FORMS_ENDPOINT, { action: 'adminLoginPoll', loginId });
+      const envio = new AbortController();
+      const envioTimeout = setTimeout(() => envio.abort(), 15000);
+      try {
+        await fetch(GOOGLE_FORMS_ENDPOINT, {
+          method: 'POST',
+          mode: 'no-cors',
+          body: new URLSearchParams({ action: 'adminLoginAttempt', password, code, loginId }),
+          signal: envio.signal,
+        });
+      } finally {
+        clearTimeout(envioTimeout);
+      }
+      btn.textContent = 'Verificando… (puede tardar hasta 30s)';
+      const resp = await jsonpRequest(GOOGLE_FORMS_ENDPOINT, { action: 'adminLoginPoll', loginId }, 30000);
       if (resp.result === 'success' && resp.token) {
-        if (recordar) localStorage.setItem(SESSION_KEY, resp.token);
-        else sessionStorage.setItem(SESSION_KEY, resp.token);
+        sessionStorage.setItem(SESSION_KEY, resp.token);
         $('#codigo').value = '';
         $('#clave').value = '';
         await entrar(resp.token);
@@ -107,17 +113,21 @@
         errorEl.hidden = false;
       }
     } catch (err) {
-      errorEl.textContent = 'No pudimos conectar. Probá de nuevo en un rato.';
+      if (err && (err.name === 'AbortError' || err.message === 'timeout')) {
+        errorEl.textContent = 'Tardó demasiado en responder (Apps Script está lento) — probá de nuevo en unos segundos.';
+      } else {
+        errorEl.textContent = 'No pudimos conectar. Probá de nuevo en un rato.';
+      }
       errorEl.hidden = false;
     } finally {
       btn.disabled = false;
+      btn.textContent = 'Entrar';
     }
   });
 
   $('#btnSalir').addEventListener('click', () => {
     const t = getToken();
     sessionStorage.removeItem(SESSION_KEY);
-    localStorage.removeItem(SESSION_KEY);
     if (t) jsonpRequest(GOOGLE_FORMS_ENDPOINT, { action: 'adminLogout', token: t }).catch(() => {});
     token = '';
     $('#app').hidden = true;
@@ -128,6 +138,22 @@
 
   // ─────────── resumen + tabla de entradas ───────────
   let entradasCache = [];
+
+  // Se ve completo solo al buscar a alguien puntual (Buscar pago); acá, de un
+  // vistazo, mejor no mostrar el padrón entero con los datos a la vista.
+  function enmascararDni(dni) {
+    const d = String(dni || '');
+    if (d.length <= 4) return d;
+    return d.slice(0, 2) + '*'.repeat(d.length - 4) + d.slice(-2);
+  }
+  function enmascararMail(correo) {
+    const m = String(correo || '');
+    const arroba = m.indexOf('@');
+    if (arroba < 1) return m;
+    const usuario = m.slice(0, arroba);
+    const resto = usuario.length <= 2 ? usuario : usuario.slice(0, 2) + '*'.repeat(usuario.length - 2);
+    return resto + m.slice(arroba);
+  }
 
   function renderResumen(data) {
     const chips = $('#resumenEstados');
@@ -169,12 +195,12 @@
       fila.appendChild(nombre);
 
       const dni = document.createElement('td');
-      dni.textContent = e.dni || '';
+      dni.textContent = enmascararDni(e.dni);
       fila.appendChild(dni);
 
       const mail = document.createElement('td');
       mail.className = 'col-mail';
-      mail.textContent = e.correo || '';
+      mail.textContent = enmascararMail(e.correo);
       fila.appendChild(mail);
 
       const origen = document.createElement('td');
