@@ -335,7 +335,7 @@
     p1.innerHTML = '<strong>' + datos.nombre + ' ' + datos.apellido + '</strong> — DNI ' + datos.dni + ' — ' + datos.correo + ' — ' + datos.telefono;
     resumen.appendChild(p1);
     const p2 = document.createElement('p');
-    p2.textContent = datos.carrera + ', ' + datos.anio + '° año, ' + datos.universidad;
+    p2.textContent = datos.carrera + ', año ' + datos.anio + ', ' + datos.universidad;
     resumen.appendChild(p2);
     const detalle = [datos.monto && ('$' + datos.monto), datos.fecha, datos.comprobante].filter(Boolean).join(' · ');
     if (detalle) {
@@ -359,8 +359,11 @@
     if (!transferenciaPendiente) return;
     const btn = $('#btnConfirmarTransferencia');
     btn.disabled = true;
-    btn.textContent = 'Emitiendo…';
-    const r = await api('admin_alta_transferencia', transferenciaPendiente);
+    btn.textContent = 'Emitiendo… (puede tardar hasta 30s)';
+    // Emite la entrada y manda el mail con el QR en el mismo pedido a Apps Script: el timeout
+    // por defecto de api() (15s) se queda corto — la auditoría de la Etapa 1 ya había medido
+    // hasta ~29s de Apps Script bajo tráfico real.
+    const r = await api('admin_alta_transferencia', transferenciaPendiente, 35000);
     btn.disabled = false;
     btn.textContent = 'Confirmar y emitir';
     if (r.ok) {
