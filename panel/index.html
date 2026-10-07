@@ -64,6 +64,37 @@
         <div id="resultadosBuscar"></div>
       </section>
 
+      <!-- Alta de transferencia (Etapa 2) -->
+      <section class="tarjeta tarjeta--panel">
+        <h2>Cargar transferencia</h2>
+        <p class="ayuda">Para quien pagó por transferencia y no pudo usar la página: cargá sus datos, revisá la vista previa y confirmá para emitir la entrada y mandar el mail.</p>
+        <form id="formTransferencia" autocomplete="off">
+          <div class="grid2">
+            <div><label for="t_nombre">Nombre</label><input id="t_nombre" type="text" autocomplete="off" /></div>
+            <div><label for="t_apellido">Apellido</label><input id="t_apellido" type="text" autocomplete="off" /></div>
+            <div><label for="t_dni">DNI (o "PAS" + pasaporte)</label><input id="t_dni" type="text" autocomplete="off" /></div>
+            <div><label for="t_correo">Mail</label><input id="t_correo" type="text" autocomplete="off" /></div>
+            <div><label for="t_telefono">Teléfono</label><input id="t_telefono" type="text" autocomplete="off" /></div>
+            <div><label for="t_carrera">Carrera</label><input id="t_carrera" type="text" autocomplete="off" /></div>
+            <div><label for="t_anio">Año</label><input id="t_anio" type="text" autocomplete="off" /></div>
+            <div><label for="t_universidad">Universidad</label><input id="t_universidad" type="text" autocomplete="off" /></div>
+            <div><label for="t_monto">Monto (opcional)</label><input id="t_monto" type="text" autocomplete="off" /></div>
+            <div><label for="t_fecha">Fecha de la transferencia (opcional)</label><input id="t_fecha" type="text" autocomplete="off" placeholder="10/04/2026" /></div>
+            <div><label for="t_comprobante">Comprobante (opcional)</label><input id="t_comprobante" type="text" autocomplete="off" placeholder="número o link" /></div>
+          </div>
+          <button class="btn btn--principal" type="submit">Revisar</button>
+          <p id="errorTransferencia" class="error" role="alert" hidden></p>
+        </form>
+        <div id="previaTransferencia" class="previa-transferencia" hidden>
+          <h3>Confirmá antes de emitir</h3>
+          <div id="previaTransferenciaTexto"></div>
+          <div class="fila">
+            <button id="btnEditarTransferencia" class="btn" type="button">Editar</button>
+            <button id="btnConfirmarTransferencia" class="btn btn--principal" type="button">Confirmar y emitir</button>
+          </div>
+        </div>
+      </section>
+
       <!-- Entradas -->
       <section class="tarjeta tarjeta--panel">
         <h2>Entradas emitidas</h2>

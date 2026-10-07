@@ -30,3 +30,9 @@ td.col-mail, td.col-nombre { white-space: normal; }
 .resultado-pago { border: 2px solid var(--linea); padding: 10px 12px; margin-top: 10px; }
 .resultado-pago h3 { font-size: 15px; margin-bottom: 4px; }
 .resultado-pago .pagos { font-family: var(--mono); font-size: 12px; color: var(--gris); margin-top: 6px; }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+@media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+
+.previa-transferencia { border: 2px solid var(--azul); padding: 12px 14px; margin-top: 14px; }
+.previa-transferencia h3 { font-size: 15px; margin-bottom: 8px; }

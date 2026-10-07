@@ -311,6 +311,75 @@
     });
   });
 
+  // ─────────── alta de transferencia (Etapa 2) ───────────
+  const CAMPOS_TRANSFERENCIA = ['nombre', 'apellido', 'dni', 'correo', 'telefono', 'carrera', 'anio', 'universidad', 'monto', 'fecha', 'comprobante'];
+  const OBLIGATORIOS_TRANSFERENCIA = ['nombre', 'apellido', 'dni', 'correo', 'telefono', 'carrera', 'anio', 'universidad'];
+  let transferenciaPendiente = null;
+
+  $('#formTransferencia').addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    const datos = {};
+    CAMPOS_TRANSFERENCIA.forEach((k) => { datos[k] = $('#t_' + k).value.trim(); });
+    const errorEl = $('#errorTransferencia');
+    const faltante = OBLIGATORIOS_TRANSFERENCIA.find((k) => !datos[k]);
+    if (faltante) {
+      errorEl.textContent = 'Completá todos los campos obligatorios.';
+      errorEl.hidden = false;
+      return;
+    }
+    errorEl.hidden = true;
+    transferenciaPendiente = datos;
+    const resumen = $('#previaTransferenciaTexto');
+    resumen.innerHTML = '';
+    const p1 = document.createElement('p');
+    p1.innerHTML = '<strong>' + datos.nombre + ' ' + datos.apellido + '</strong> — DNI ' + datos.dni + ' — ' + datos.correo + ' — ' + datos.telefono;
+    resumen.appendChild(p1);
+    const p2 = document.createElement('p');
+    p2.textContent = datos.carrera + ', ' + datos.anio + '° año, ' + datos.universidad;
+    resumen.appendChild(p2);
+    const detalle = [datos.monto && ('$' + datos.monto), datos.fecha, datos.comprobante].filter(Boolean).join(' · ');
+    if (detalle) {
+      const p3 = document.createElement('p');
+      p3.textContent = 'Transferencia: ' + detalle;
+      resumen.appendChild(p3);
+    }
+    $('#formTransferencia').hidden = true;
+    $('#previaTransferencia').hidden = false;
+  });
+
+  function cerrarPreviaTransferencia() {
+    transferenciaPendiente = null;
+    $('#previaTransferencia').hidden = true;
+    $('#formTransferencia').hidden = false;
+  }
+
+  $('#btnEditarTransferencia').addEventListener('click', cerrarPreviaTransferencia);
+
+  $('#btnConfirmarTransferencia').addEventListener('click', async () => {
+    if (!transferenciaPendiente) return;
+    const btn = $('#btnConfirmarTransferencia');
+    btn.disabled = true;
+    btn.textContent = 'Emitiendo…';
+    const r = await api('admin_alta_transferencia', transferenciaPendiente);
+    btn.disabled = false;
+    btn.textContent = 'Confirmar y emitir';
+    if (r.ok) {
+      avisar('Entrada emitida y mail enviado (' + r.codigo + ').', 'ok');
+      $('#formTransferencia').reset();
+      cerrarPreviaTransferencia();
+      cargarResumen();
+      return;
+    }
+    if (r.error === 'no_autorizado') return sesionVencida();
+    const mensajes = {
+      datos: 'Revisá el campo "' + (r.campo || '') + '".',
+      ya_inscripto: 'Ese DNI ya tiene una entrada activa (' + (r.entrada || '') + ').',
+      ocupado: 'El sistema está ocupado, probá de nuevo en unos segundos.',
+      red: 'No pudimos conectar. Probá de nuevo.',
+    };
+    avisar(mensajes[r.error] || 'No se pudo emitir la entrada.', 'error');
+  });
+
   // ─────────── arranque ───────────
   async function entrar(t) {
     token = t;
