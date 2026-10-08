@@ -50,5 +50,75 @@
     "cupo": null,
     "inscripcion_previa": false,
     "oculta": false
+  },
+  {
+    "titulo": "Medicina del deporte",
+    "tipo": "Charla",
+    "area": "Mesa redonda",
+    "inicio": "",
+    "fin": "",
+    "lugar": "",
+    "descripcion": "Del consultorio a la cancha, en equipo: qué es la medicina del deporte, el rol del médico del deporte, cómo se conforma un equipo interdisciplinario, la evaluación médica del deportista, la prevención de lesiones, la nutrición e hidratación deportiva, el rendimiento y la salud, y el retorno al deporte después de una lesión.",
+    "temas": [
+      "Prevención de lesiones",
+      "Nutrición deportiva",
+      "Retorno al deporte"
+    ],
+    "imagen": "",
+    "disertantes": [
+      {
+        "nombre": "Marcelo Montrasi",
+        "rol": "Medicina del Deporte, Terapias Regenerativas y Dolor · Médico de la Selección Argentina de Hockey (Leonas y Leones)",
+        "institucion": "Presidente de ARMEDE (Asociación Rosarina de Medicina del Deporte y el Ejercicio)",
+        "foto": "assets/img/uploads/disertante-marcelo-montrasi.webp"
+      },
+      {
+        "nombre": "Martín Biasiol Calvo",
+        "rol": "Especialista en Medicina del Deporte y Nutrición Clínica · Posgrado en Nutrición, Doping y Suplementación",
+        "institucion": "Docente de la Escuela de DT ATFA (AFA-Conmebol)",
+        "foto": "assets/img/uploads/disertante-martin-biasiol-calvo.webp"
+      },
+      {
+        "nombre": "Juan Ignacio Bottoli",
+        "rol": "Especialista en Traumatología y Medicina del Deporte · Consultor de la Selección de Vóley Playa",
+        "institucion": "Coordinador médico de Newell’s (2009-2025)",
+        "foto": "assets/img/uploads/disertante-juan-ignacio-bottoli.webp"
+      },
+      {
+        "nombre": "René Girotti",
+        "rol": "Lic. en Kinesiología y Fisioterapia · Especialista en Kinesiología del Deporte · Quiropráctico y terapista MEP",
+        "institucion": "Director de KYF",
+        "foto": "assets/img/uploads/disertante-rene-girotti.webp"
+      }
+    ],
+    "cupo": null,
+    "inscripcion_previa": false,
+    "oculta": false
+  },
+  {
+    "titulo": "Taller de inyectables",
+    "tipo": "Taller",
+    "area": "",
+    "inicio": "",
+    "fin": "",
+    "lugar": "",
+    "descripcion": "Técnica, seguridad y errores frecuentes. Taller 100 % práctico: vías intramuscular, subcutánea e intradérmica; preparación, ángulo y control del paciente; descarte de punzocortantes y bioseguridad. El taller se elige en la acreditación, según la disponibilidad.",
+    "temas": [
+      "Vías de administración",
+      "Técnica segura",
+      "Residuos y bioseguridad"
+    ],
+    "imagen": "",
+    "disertantes": [
+      {
+        "nombre": "Paola Martinotti",
+        "rol": "Lic. en Enfermería",
+        "institucion": "Centro de Salud Juana Azurduy",
+        "foto": ""
+      }
+    ],
+    "cupo": 40,
+    "inscripcion_previa": false,
+    "oculta": false
   }
 ]

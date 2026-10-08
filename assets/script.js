@@ -436,7 +436,7 @@
         ${temas.length ? `<ul class="temas temas--chico" aria-label="Temas">${temas.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
         ${d1 ? `<div class="act-quien">
           ${d1.foto ? `<span class="act-foto"><img src="${esc(d1.foto)}" alt="" loading="lazy" decoding="async"></span>` : ''}
-          <span><b>${esc(con.map((d) => d.nombre).join(', '))}</b>${d1.rol ? `<small>${esc(d1.rol)}</small>` : ''}</span>
+          <span><b>${esc(con.map((d) => d.nombre).join(', '))}</b>${con.length === 1 && d1.rol ? `<small>${esc(d1.rol)}</small>` : ''}</span>
         </div>` : ''}
         <p class="act-meta">${esc([horario(a), a.lugar].filter(Boolean).join(', '))}</p>
       </div>
