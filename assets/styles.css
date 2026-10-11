@@ -171,6 +171,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .form label { display: flex; flex-direction: column; gap: 6px; font-family: var(--mono); font-size: 14px; color: var(--papel); }
 .form label small { font-size: 12px; opacity: .75; }
 .form input:not([type="checkbox"]), .form select { font: 500 17px var(--sans); color: var(--navy); background: #fff; border: 2px solid #fff; padding: 11px 12px; min-height: 48px; width: 100%; border-radius: 0; }
+.form-doc { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; }
+.form .form-doc select { width: auto; }
 .form input:focus-visible, .form select:focus-visible { outline: 3px solid #8FC1E3; outline-offset: 2px; }
 .form--revisar input:invalid, .form--revisar select:invalid { border-color: #F2B8A0; box-shadow: inset 0 0 0 1px #F2B8A0; }
 .form-error { min-height: 24px; color: #F8C9B6; font-weight: 600; margin-bottom: 10px; }

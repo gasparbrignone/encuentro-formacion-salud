@@ -160,13 +160,13 @@
   const ERRORES = {
     turnstile: 'No pudimos comprobar que no sos un robot. Recargá la página y probá de nuevo.',
     demasiados_intentos: 'Hiciste varios intentos seguidos. Esperá unos minutos y volvé a probar.',
-    ya_inscripto: 'Ya hay una inscripción con ese DNI. Tu entrada está en el mail que te mandamos (revisá también spam). Si no la encontrás, escribinos por mail.',
+    ya_inscripto: 'Ya hay una inscripción con ese documento. Tu entrada está en el mail que te mandamos (revisá también spam). Si no la encontrás, escribinos por mail.',
     cerrada: 'La inscripción está cerrada.',
     correo_dominio: 'Ese correo no parece existir: revisá lo que está después de la @.',
     invitacion: 'Este link de invitación no es válido. Pedile a quien te invitó que te lo mande de nuevo.',
     invitacion_agotada: 'Este link de invitación ya se usó todas las veces que tenía disponibles.',
   };
-  const CAMPOS = { nombre: 'el nombre', apellido: 'el apellido', dni: 'el DNI', telefono: 'el teléfono', correo: 'el correo', carrera: 'la carrera', anio: 'el año', universidad: 'la universidad' };
+  const CAMPOS = { nombre: 'el nombre', apellido: 'el apellido', dni: 'el documento', telefono: 'el teléfono', correo: 'el correo', carrera: 'la carrera', anio: 'el año', universidad: 'la universidad' };
 
   // inv = true: se abrió con un link de invitación. Mismos datos, sin precio ni Mercado Pago.
   function formularioPago(i, contacto = {}, inv = false) {
@@ -188,11 +188,11 @@
           <li><span>03</span><b>Recibí tu entrada</b> un código QR personal</li>
         </ol>`}
         <form class="form" id="formInsc" novalidate>
-          <p class="form-aviso">Completá tu nombre, apellido, DNI y correo tal como querés que figuren en tu <b>certificado</b>.</p>
+          <p class="form-aviso">Completá tu nombre, apellido, documento y correo tal como querés que figuren en tu <b>certificado</b>.</p>
           <div class="form-grilla">
             <label>Nombre<input name="nombre" autocomplete="given-name" required maxlength="60"></label>
             <label>Apellido<input name="apellido" autocomplete="family-name" required maxlength="60"></label>
-            <label>DNI<input name="dni" inputmode="numeric" required pattern="[0-9.\\s]{7,11}" maxlength="11" placeholder="Solo números"></label>
+            <label>Documento<span class="form-doc"><select name="doc" aria-label="Tipo de documento"><option value="dni">DNI</option><option value="pas">Pasaporte</option></select><input name="dni" aria-label="Número de documento" inputmode="numeric" required pattern="[0-9.\\s]{7,11}" maxlength="11" placeholder="Solo números"></span></label>
             <label>Teléfono<input name="telefono" type="tel" autocomplete="tel" required minlength="8" maxlength="30" placeholder="Ej.: 341 555-1234"></label>
             <label>Correo electrónico<input name="correo" type="email" autocomplete="email" required maxlength="120"></label>
             <label>Repetí el correo<input name="correo2" type="email" autocomplete="off" required maxlength="120"></label>
@@ -207,7 +207,7 @@
             <p class="confirmar-titulo" tabindex="-1">Revisá tus datos</p>
             <p class="confirmar-texto">Así van a figurar en tu certificado, y a este correo te llega la entrada.</p>
             <dl class="confirmar-datos" id="confirmarDatos"></dl>
-            <label class="confirmar-check"><input type="checkbox" id="confirmoDatos"> <span>Revisé mi nombre, DNI y correo: están bien escritos.</span></label>
+            <label class="confirmar-check"><input type="checkbox" id="confirmoDatos"> <span>Revisé mi nombre, documento y correo: están bien escritos.</span></label>
             <div class="confirmar-acciones">
               <button class="btn btn--blanco" type="button" id="botonPagar" disabled>${inv ? 'Confirmar inscripción' : `Ir al pago${precio ? `: ${precio}` : ''}`}</button>
               <button class="btn-chico" type="button" id="botonCorregir">Corregir datos</button>
@@ -312,7 +312,7 @@
     const limpio = (v) => String(v).replace(/\s+/g, ' ').trim();
     $('#confirmarDatos').innerHTML = [
       ['Nombre completo', `${limpio(d.nombre)} ${limpio(d.apellido)}`],
-      ['DNI', Number(dni).toLocaleString('es-AR')],
+      d.doc === 'pas' ? ['Pasaporte', pasaporte(d.dni)] : ['DNI', Number(dni).toLocaleString('es-AR')],
       ['Correo', limpio(d.correo).toLowerCase()],
     ].map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('');
     $('#confirmoDatos').checked = false;
@@ -322,7 +322,23 @@
     $('#formConfirmar .confirmar-titulo').focus();
   }
 
+  // Quien no tiene DNI argentino se inscribe con pasaporte: letras y números, y viaja como "PAS AB123456".
+  const pasaporte = (v) => String(v).replace(/[^0-9a-z]/gi, '').toUpperCase();
+
+  function prepararDocumento() {
+    const f = $('#formInsc');
+    f.doc.addEventListener('change', () => {
+      const pas = f.doc.value === 'pas';
+      f.dni.value = '';
+      f.dni.pattern = pas ? '\\s*([A-Za-z0-9]\\s*){5,15}' : '[0-9.\\s]{7,11}';
+      f.dni.maxLength = pas ? 20 : 11;
+      f.dni.inputMode = pas ? 'text' : 'numeric';
+      f.dni.placeholder = pas ? 'Letras y números' : 'Solo números';
+    });
+  }
+
   function prepararConfirmacion(i) {
+    prepararDocumento();
     const f = $('#formInsc');
     const cerrar = () => { $('#formConfirmar').hidden = true; $('#formBoton').hidden = false; };
     $('#confirmoDatos').addEventListener('change', (e) => { $('#botonPagar').disabled = !e.target.checked; });
@@ -359,6 +375,8 @@
 
     const datos = Object.fromEntries(new FormData(f));
     delete datos.correo2; delete datos['cf-turnstile-response'];
+    if (datos.doc === 'pas') datos.dni = 'PAS ' + pasaporte(datos.dni);
+    delete datos.doc;
     btn.disabled = true; btn.textContent = INVITACION ? 'Inscribiendo…' : 'Generando el pago…';
     const noSalio = INVITACION ? 'No pudimos completar la inscripción. Probá de nuevo en unos minutos.' : 'No pudimos generar el pago. Probá de nuevo en unos minutos: no se cobró nada.';
     try {
@@ -435,7 +453,7 @@
     setTimeout(() => $('#inscripcion').scrollIntoView({ block: 'start' }), 50);
 
     if (estado === 'rechazado') {
-      mostrar('El pago no se completó', puedeReintentar ? 'No se cobró nada. Podés intentarlo de nuevo con otro medio de pago, con el mismo DNI.' : 'No se cobró nada.');
+      mostrar('El pago no se completó', puedeReintentar ? 'No se cobró nada. Podés intentarlo de nuevo con otro medio de pago, con el mismo documento.' : 'No se cobró nada.');
       return;
     }
     $('#inscForm').hidden = true;
