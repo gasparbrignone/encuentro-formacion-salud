@@ -508,7 +508,7 @@
         ${a.descripcion ? `<p class="act-desc">${esc(a.descripcion)}</p>` : ''}
         ${temas.length ? `<ul class="temas temas--chico" aria-label="Temas">${temas.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
         ${d1 ? `<div class="act-quien">
-          ${d1.foto ? `<span class="act-foto"><img src="${esc(d1.foto)}" alt="" loading="lazy" decoding="async"></span>` : ''}
+          ${con.some((d) => d.foto) ? `<span class="act-fotos">${con.filter((d) => d.foto).map((d) => `<span class="act-foto"><img src="${esc(d.foto)}" alt="" loading="lazy" decoding="async"></span>`).join('')}</span>` : ''}
           <span><b>${esc(con.map((d) => d.nombre).join(', '))}</b>${con.length === 1 && d1.rol ? `<small>${esc(d1.rol)}</small>` : ''}</span>
         </div>` : ''}
         <p class="act-meta">${esc([horario(a), a.lugar].filter(Boolean).join(', '))}</p>
@@ -587,7 +587,7 @@
   // ── disertantes
   function persona(d) {
     return `<div class="persona">
-      ${d.foto ? `<div class="persona-foto"><img src="${esc(d.foto)}" alt="" loading="lazy" decoding="async"></div>` : ''}
+      ${d.foto ? `<div class="persona-foto"><img src="${esc(d.foto)}" alt="" loading="lazy" decoding="async"></div>` : `<div class="persona-foto persona-foto--ini" aria-hidden="true">${esc(d.nombre.trim().split(/\s+/).filter((p) => /^\p{Lu}/u.test(p) && p.length > 2).map((p) => p[0]).slice(0, 2).join(''))}</div>`}
       <div class="expositor"><b>${esc(d.nombre)}</b>${d.rol ? `<span>${esc(d.rol)}</span>` : ''}${d.institucion ? `<small>${esc(d.institucion)}</small>` : ''}</div>
     </div>`;
   }
@@ -622,11 +622,7 @@
     $('#edicion-anterior').hidden = false;
   }
 
-  // ── separadores: franja de foto con la trama EFS
-  document.querySelectorAll('.separador[data-img]').forEach((n) => {
-    const foco = (n.dataset.foco || '.5,.5').split(',').map(Number);
-    EFSTrama.aplicar(n, n.dataset.img, { tinta: '#2C6FA0', retiro: 'bottom', desde: .72, hasta: 1.05, celda: 2, foco });
-  });
+  // ── separadores: fotos ya tramadas (assets/img/sep-N.png). Antes las dibujaba trama.js y trababa la página varios segundos.
 
   // ── animación de entrada: cada tarjeta sube al entrar en pantalla (escalonada); con "reducir movimiento" se ve directo (CSS)
   function revelar(sel) {

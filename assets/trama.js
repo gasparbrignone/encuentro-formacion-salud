@@ -103,8 +103,13 @@
       const pintar = () => { try { dibujar(canvas, im, o); } catch (e) { fallback(); } };
       const fallback = () => { canvas.remove(); const i = document.createElement('img'); i.src = src; i.alt = ''; i.className = 'trama-fallback'; cont.appendChild(i); };
       pintar();
-      let t;
-      new ResizeObserver(() => { clearTimeout(t); t = setTimeout(pintar, 120); }).observe(cont);
+      // el ResizeObserver avisa una vez al arrancar: solo se repinta si el tamaño cambió de verdad
+      let t, w0 = cont.clientWidth, h0 = cont.clientHeight;
+      new ResizeObserver(() => {
+        if (cont.clientWidth === w0 && cont.clientHeight === h0) return;
+        w0 = cont.clientWidth; h0 = cont.clientHeight;
+        clearTimeout(t); t = setTimeout(pintar, 120);
+      }).observe(cont);
     } catch (e) {
       canvas.remove();
     }
