@@ -90,6 +90,18 @@
     const conPago = i.modo === 'mercadopago' && i.servicio;
     const volviendoDelPago = new URLSearchParams(location.search).has('pago');
 
+    // Link de invitación (?inv=INV-XXXXXXXX): mismo formulario, sin pago. Si el link sirve o no lo
+    // decide el servidor, por eso se muestra aunque la inscripción general figure cerrada.
+    if (INVITACION && conPago && !volviendoDelPago) {
+      cont.innerHTML = formularioPago(i, contacto, true);
+      cta.textContent = 'Inscribite'; cta.href = '#inscripcion';
+      $('#formInsc').addEventListener('submit', (e) => enviarInscripcion(e, i));
+      prepararConfirmacion(i);
+      cargarTurnstile(i);
+      verInvitacion(i);
+      return;
+    }
+
     // Quien vuelve de Mercado Pago ve su entrada aunque la inscripción ya figure
     // como cerrada o todavía como "próximamente" (por ejemplo, si pagó justo al cierre).
     if (conPago && volviendoDelPago && i.estado !== 'abierta') {
@@ -139,31 +151,42 @@
   const INTENTO = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now()) + Math.random().toString(16).slice(2);
   let turnstileId = null;
   let turnstileToken = '';
+  // Código del link de invitación con el que se abrió la página, o '' si es una visita común.
+  const INVITACION = (() => {
+    const v = (new URLSearchParams(location.search).get('inv') || '').trim().toUpperCase();
+    return /^INV-[0-9A-Z]{8}$/.test(v) ? v : '';
+  })();
 
   const ERRORES = {
     turnstile: 'No pudimos comprobar que no sos un robot. Recargá la página y probá de nuevo.',
     demasiados_intentos: 'Hiciste varios intentos seguidos. Esperá unos minutos y volvé a probar.',
-    ya_inscripto: 'Ya hay una inscripción paga con ese DNI. Tu entrada está en el mail que te mandamos (revisá también spam). Si no la encontrás, escribinos por mail.',
+    ya_inscripto: 'Ya hay una inscripción con ese DNI. Tu entrada está en el mail que te mandamos (revisá también spam). Si no la encontrás, escribinos por mail.',
     cerrada: 'La inscripción está cerrada.',
     correo_dominio: 'Ese correo no parece existir: revisá lo que está después de la @.',
+    invitacion: 'Este link de invitación no es válido. Pedile a quien te invitó que te lo mande de nuevo.',
+    invitacion_agotada: 'Este link de invitación ya se usó todas las veces que tenía disponibles.',
   };
   const CAMPOS = { nombre: 'el nombre', apellido: 'el apellido', dni: 'el DNI', telefono: 'el teléfono', correo: 'el correo', carrera: 'la carrera', anio: 'el año', universidad: 'la universidad' };
 
-  function formularioPago(i, contacto = {}) {
-    const precio = Number(i.precio) > 0 ? pesos(i.precio) : '';
+  // inv = true: se abrió con un link de invitación. Mismos datos, sin precio ni Mercado Pago.
+  function formularioPago(i, contacto = {}, inv = false) {
+    const precio = !inv && Number(i.precio) > 0 ? pesos(i.precio) : '';
     const email = String(contacto.email || '').trim();
     const anios = ['1.º', '2.º', '3.º', '4.º', '5.º', '6.º', 'Internado / PFO', 'Egresado/a', 'Otro'];
     const carreras = ['Medicina', 'Enfermería', 'Fonoaudiología', 'Obstetricia', 'Psicología', 'Nutrición', 'Kinesiología', 'Odontología', 'Bioquímica'];
     return `
       <div id="inscMensaje" class="insc-mensaje" hidden role="status" aria-live="polite"></div>
       <div id="inscForm">
+        ${inv ? `
+        <p class="insc-estado">Tenés una invitación</p>
+        <p class="insc-texto" id="invTexto">Tu entrada al EFS es gratis. Completá tus datos: la ves en pantalla y te llega por mail.</p>` : `
         <p class="insc-estado">Inscripción abierta</p>
         <p class="insc-texto">${esc(i.texto || `Completá tus datos y pagá la inscripción${precio ? ` (${precio})` : ''} con Mercado Pago. Apenas se aprueba el pago ves tu entrada en pantalla y te llega por mail.`)}</p>
         <ol class="pasos pasos--cortos">
           <li><span>01</span><b>Completá tus datos</b></li>
           <li><span>02</span><b>Pagá con Mercado Pago</b> débito, crédito o dinero en cuenta</li>
           <li><span>03</span><b>Recibí tu entrada</b> un código QR personal</li>
-        </ol>
+        </ol>`}
         <form class="form" id="formInsc" novalidate>
           <p class="form-aviso">Completá tu nombre, apellido, DNI y correo tal como querés que figuren en tu <b>certificado</b>.</p>
           <div class="form-grilla">
@@ -186,12 +209,12 @@
             <dl class="confirmar-datos" id="confirmarDatos"></dl>
             <label class="confirmar-check"><input type="checkbox" id="confirmoDatos"> <span>Revisé mi nombre, DNI y correo: están bien escritos.</span></label>
             <div class="confirmar-acciones">
-              <button class="btn btn--blanco" type="button" id="botonPagar" disabled>Ir al pago${precio ? `: ${precio}` : ''}</button>
+              <button class="btn btn--blanco" type="button" id="botonPagar" disabled>${inv ? 'Confirmar inscripción' : `Ir al pago${precio ? `: ${precio}` : ''}`}</button>
               <button class="btn-chico" type="button" id="botonCorregir">Corregir datos</button>
             </div>
           </div>
-          <p class="form-pie">El costo de la inscripción cubre los materiales de los talleres y la logística del encuentro. ATP es una agrupación estudiantil y el EFS no tiene fines de lucro.</p>
-          ${email ? `<a class="btn-chico" href="mailto:${email}?subject=${encodeURIComponent('EFS 2026: no puedo pagar la inscripción')}">¿No podés pagar la inscripción? Escribinos</a>` : ''}
+          ${inv ? '' : `<p class="form-pie">El costo de la inscripción cubre los materiales de los talleres y la logística del encuentro. ATP es una agrupación estudiantil y el EFS no tiene fines de lucro.</p>
+          ${email ? `<a class="btn-chico" href="mailto:${email}?subject=${encodeURIComponent('EFS 2026: no puedo pagar la inscripción')}">¿No podés pagar la inscripción? Escribinos</a>` : ''}`}
         </form>
       </div>`;
   }
@@ -336,10 +359,22 @@
 
     const datos = Object.fromEntries(new FormData(f));
     delete datos.correo2; delete datos['cf-turnstile-response'];
-    btn.disabled = true; btn.textContent = 'Generando el pago…';
+    btn.disabled = true; btn.textContent = INVITACION ? 'Inscribiendo…' : 'Generando el pago…';
+    const noSalio = INVITACION ? 'No pudimos completar la inscripción. Probá de nuevo en unos minutos.' : 'No pudimos generar el pago. Probá de nuevo en unos minutos: no se cobró nada.';
     try {
+      // Con invitación no hay pago: la entrada vuelve en la misma respuesta. Si se corta la conexión,
+      // repetir es seguro (mismo INTENTO = misma entrada).
       // Cookies del píxel (si las hay): el servidor las usa para la API de Conversiones de Meta.
-      const r = await llamar(i, '/inscribir', { ...datos, intento_id: INTENTO, turnstile: token, fbp: galleta('_fbp'), fbc: galleta('_fbc') });
+      const r = INVITACION
+        ? await llamar(i, '/invitacion', { ...datos, intento_id: INTENTO, turnstile: token, invitacion: INVITACION })
+        : await llamar(i, '/inscribir', { ...datos, intento_id: INTENTO, turnstile: token, fbp: galleta('_fbp'), fbc: galleta('_fbc') });
+      if (INVITACION && r.ok && r.codigo) {
+        $('#inscForm').hidden = true;
+        mensajeInscripcion('¡Listo, ya tenés tu entrada!', `Hola ${r.nombre || ''}. Este QR es tu entrada: mostralo en la acreditación. También te lo mandamos por mail.`, entradaHtml(r.codigo));
+        window.EFSQR && window.EFSQR.dibujar($('#entradaQr'), r.codigo, $('#entradaGuardar'));
+        $('#inscripcion').scrollIntoView({ block: 'start' });
+        return;
+      }
       if (r.ok && r.pago_url) {
         // Datos confirmados y link de pago listo: la persona sale a Mercado Pago.
         pixel('AddPaymentInfo', { value: Number(i.precio) || 0, currency: 'ARS' });
@@ -353,14 +388,38 @@
       } else if (r.error === 'correo_dominio') {
         $('#formConfirmar').hidden = true; $('#formBoton').hidden = false; f.correo.focus();
       }
-      if (!err.textContent) err.textContent = ERRORES[r.error] || (r.error === 'datos' && CAMPOS[r.campo] ? `Revisá ${CAMPOS[r.campo]}.` : 'No pudimos generar el pago. Probá de nuevo en unos minutos: no se cobró nada.');
+      if (!err.textContent) err.textContent = ERRORES[r.error] || (r.error === 'datos' && CAMPOS[r.campo] ? `Revisá ${CAMPOS[r.campo]}.` : noSalio);
     } catch (x) {
-      err.textContent = 'No pudimos conectarnos. Revisá tu conexión y probá de nuevo: no se cobró nada.';
+      err.textContent = INVITACION ? 'No pudimos conectarnos. Revisá tu conexión y volvé a tocar el botón.' : 'No pudimos conectarnos. Revisá tu conexión y probá de nuevo: no se cobró nada.';
     }
     // Cada respuesta de Turnstile sirve una sola vez: se pide otra para el próximo intento.
     turnstileToken = '';
     if (window.turnstile && turnstileId !== null) window.turnstile.reset(turnstileId);
     btn.disabled = false; btn.textContent = textoBoton;
+  }
+
+  // Cartel arriba del formulario: resultado del pago, entrada emitida o link de invitación que no sirve.
+  function mensajeInscripcion(titulo, texto, extra = '') {
+    const msj = $('#inscMensaje');
+    msj.innerHTML = `<p class="insc-estado">${esc(titulo)}</p><p class="insc-texto">${esc(texto)}</p>${extra}`;
+    msj.hidden = false;
+  }
+
+  // Al abrir un link de invitación: quién invita y si quedan lugares. Si el link no sirve se avisa
+  // antes de que la persona complete nada. Si la consulta falla, el formulario queda igual: el
+  // servidor vuelve a controlar todo al confirmar.
+  async function verInvitacion(i) {
+    setTimeout(() => $('#inscripcion').scrollIntoView({ block: 'start' }), 50);
+    try {
+      const r = await llamar(i, '/invitacion/ver', { invitacion: INVITACION });
+      if (r.ok) {
+        if (r.titular) $('#invTexto').textContent = `${r.titular} te invitó al EFS: tu entrada es gratis. Completá tus datos, la ves en pantalla y te llega por mail.`;
+      } else if (r.error === 'invitacion' || r.error === 'invitacion_agotada' || r.error === 'cerrada') {
+        $('#inscForm').hidden = true;
+        mensajeInscripcion(r.error === 'cerrada' ? 'Invitaciones cerradas' : r.error === 'invitacion_agotada' ? 'Invitación sin lugares' : 'Invitación no válida',
+          r.error === 'cerrada' ? 'Ya cerramos las inscripciones por invitación para esta edición.' : ERRORES[r.error]);
+      }
+    } catch (x) { /* sin conexión: se intenta igual al confirmar */ }
   }
 
   // Vuelta desde Mercado Pago: ?pago=aprobado|pendiente|rechazado. Mercado
@@ -372,11 +431,7 @@
     if (!estado) return;
     const pagoId = q.get('payment_id') || q.get('collection_id');
     const referencia = q.get('external_reference');
-    const msj = $('#inscMensaje');
-    const mostrar = (titulo, texto, extra = '') => {
-      msj.innerHTML = `<p class="insc-estado">${esc(titulo)}</p><p class="insc-texto">${esc(texto)}</p>${extra}`;
-      msj.hidden = false;
-    };
+    const mostrar = mensajeInscripcion;
     setTimeout(() => $('#inscripcion').scrollIntoView({ block: 'start' }), 50);
 
     if (estado === 'rechazado') {
