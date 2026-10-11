@@ -120,5 +120,69 @@
     "cupo": 40,
     "inscripcion_previa": false,
     "oculta": false
+  },
+  {
+    "titulo": "Nutrición clínica",
+    "tipo": "Charla",
+    "area": "",
+    "inicio": "",
+    "fin": "",
+    "lugar": "",
+    "descripcion": "Del diagnóstico a la intervención: por qué hablamos de nutrición clínica; la obesidad, una pandemia silenciosa y una enfermedad no reconocida; y la composición corporal en la nutrición clínica.",
+    "temas": [
+      "Nutrición clínica",
+      "Obesidad",
+      "Composición corporal"
+    ],
+    "imagen": "",
+    "disertantes": [
+      {
+        "nombre": "Mario R. Groberman",
+        "rol": "Especialista en Terapia Intensiva, Clínica Médica y Nutrición · Consultor en Nutrición Clínica",
+        "institucion": "Director de la Diplomatura Superior Universitaria en Nutrición Clínica (UAI)",
+        "foto": "assets/img/uploads/disertante-mario-groberman.webp"
+      },
+      {
+        "nombre": "Karina Graciela Frattini",
+        "rol": "Médica especialista en nutrición · Cirugía metabólica, nutrición en fertilidad y lipedema",
+        "institucion": "Sanatorio Británico · Sanatorio Español · Centro Médico Proar · Centro Médico Plastia",
+        "foto": "assets/img/uploads/disertante-karina-frattini.webp"
+      },
+      {
+        "nombre": "Martín Biasiol Calvo",
+        "rol": "Especialista en Medicina del Deporte y Nutrición Clínica · Posgrado en Nutrición, Doping y Suplementación",
+        "institucion": "Docente de la Escuela de DT ATFA (AFA-Conmebol)",
+        "foto": "assets/img/uploads/disertante-martin-biasiol-calvo.webp"
+      }
+    ],
+    "cupo": null,
+    "inscripcion_previa": false,
+    "oculta": false
+  },
+  {
+    "titulo": "¿Qué pasa cuando terminamos la Facultad?",
+    "tipo": "Charla",
+    "area": "Conversatorio",
+    "inicio": "",
+    "fin": "",
+    "lugar": "",
+    "descripcion": "¿Qué caminos podemos tomar? Un conversatorio sobre el paso de la carrera al ejercicio profesional: la residencia y otros caminos, qué se espera al recibirse, la autonomía, la responsabilidad y los límites, cómo elegir una especialidad, y las guardias, el consultorio y el primer trabajo. Se suman residentes y estudiantes de la PFO para contar su experiencia desde adentro.",
+    "temas": [
+      "Residencia",
+      "Elección de especialidad",
+      "Primer trabajo"
+    ],
+    "imagen": "",
+    "disertantes": [
+      {
+        "nombre": "Marcelo Borgna",
+        "rol": "Médico clínico · APS · Coordina",
+        "institucion": "Ex director del CEMAR y ex director de APS de Rosario",
+        "foto": ""
+      }
+    ],
+    "cupo": null,
+    "inscripcion_previa": false,
+    "oculta": false
   }
 ]
