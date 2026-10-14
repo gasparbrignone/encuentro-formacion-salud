@@ -184,5 +184,31 @@
     "cupo": null,
     "inscripcion_previa": false,
     "oculta": false
+  },
+  {
+    "titulo": "Taller de ECG normal",
+    "tipo": "Taller",
+    "area": "",
+    "inicio": "",
+    "fin": "",
+    "lugar": "",
+    "descripcion": "Criterios de normalidad e interpretación. Taller 100 % práctico: derivaciones y registro; ritmo y frecuencia cardíaca; eje eléctrico; ondas, intervalos y segmentos; criterios de normalidad y lectura sistemática del trazado. El taller se elige en la acreditación, según la disponibilidad.",
+    "temas": [
+      "Derivaciones y eje",
+      "Ondas e intervalos",
+      "Interpretación sistemática"
+    ],
+    "imagen": "",
+    "disertantes": [
+      {
+        "nombre": "Florencia Pérez",
+        "rol": "Médica · Cardiología",
+        "institucion": "Universidad Nacional de Rosario",
+        "foto": ""
+      }
+    ],
+    "cupo": null,
+    "inscripcion_previa": false,
+    "oculta": false
   }
 ]
