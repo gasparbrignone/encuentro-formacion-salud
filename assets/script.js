@@ -57,7 +57,7 @@
     const tema = $('[data-tema="precio"]');
     if (!tema) return;
     if (i.precio === 0 || i.precio === '0') tema.textContent = 'Entrada libre y gratuita';
-    else if (Number(i.precio) > 0) tema.textContent = 'Inscripción: ' + pesos(i.precio);
+    else if (Number(i.precio) > 0) tema.textContent = 'Inscripción: ' + pesos(i.precio) + (promoActiva(i) ? ' · 2x1: dos entradas por ' + pesos(i.precio) : '');
     tema.hidden = !tema.textContent;
     // Kit de bienvenida: el texto repite el precio de la inscripción. Sin precio se deja el texto genérico; entrada gratuita: no se promete kit.
     const kit = $('#kit'), lead = $('#kitLead');
@@ -82,8 +82,19 @@
     return i;
   }
 
+  // Promo 2x1: una persona paga el precio y carga también los datos de un acompañante. El sitio muestra
+  // la opción entre promo_2x1_desde y promo_2x1_hasta; la que manda de verdad es la planilla (promo_2x1 = SI).
+  function promoActiva(i) {
+    if (i.promo_2x1 !== true || i.estado !== 'abierta') return false;
+    const ahora = Date.now();
+    const desde = i.promo_2x1_desde ? Date.parse(i.promo_2x1_desde) : NaN;
+    const hasta = i.promo_2x1_hasta ? Date.parse(i.promo_2x1_hasta) : NaN;
+    return !(desde > ahora) && !(hasta < ahora);
+  }
+
   function inscripcion(i, contacto = {}) {
     i = estadoPorFecha(i);
+    i = { ...i, promo: promoActiva(i) };
     const cont = $('#inscripcionCont');
     const cta = $('[data-evento="cta"]');
     precioInicio(i);
@@ -161,12 +172,16 @@
     turnstile: 'No pudimos comprobar que no sos un robot. Recargá la página y probá de nuevo.',
     demasiados_intentos: 'Hiciste varios intentos seguidos. Esperá unos minutos y volvé a probar.',
     ya_inscripto: 'Ya hay una inscripción con ese documento. Tu entrada está en el mail que te mandamos (revisá también spam). Si no la encontrás, escribinos por mail.',
+    acomp_ya_inscripto: 'Tu acompañante ya tiene una entrada con ese documento. Elegí "Voy solo/a" o cargá los datos de otra persona.',
+    acomp_mismo_dni: 'El documento de tu acompañante es igual al tuyo. Revisalo.',
+    promo_cerrada: 'La promo 2x1 ya no está disponible. Podés inscribirte con la opción "Voy solo/a".',
     cerrada: 'La inscripción está cerrada.',
     correo_dominio: 'Ese correo no parece existir: revisá lo que está después de la @.',
     invitacion: 'Este link de invitación no es válido. Pedile a quien te invitó que te lo mande de nuevo.',
     invitacion_agotada: 'Este link de invitación ya se usó todas las veces que tenía disponibles.',
   };
   const CAMPOS = { nombre: 'el nombre', apellido: 'el apellido', dni: 'el documento', telefono: 'el teléfono', correo: 'el correo', carrera: 'la carrera', anio: 'el año', universidad: 'la universidad' };
+  Object.keys(CAMPOS).forEach((k) => { CAMPOS['acomp_' + k] = CAMPOS[k] + ' de tu acompañante'; });
 
   // inv = true: se abrió con un link de invitación. Mismos datos, sin precio ni Mercado Pago.
   function formularioPago(i, contacto = {}, inv = false) {
@@ -174,6 +189,23 @@
     const email = String(contacto.email || '').trim();
     const anios = ['1.º', '2.º', '3.º', '4.º', '5.º', '6.º', 'Internado / PFO', 'Egresado/a', 'Otro'];
     const carreras = ['Medicina', 'Enfermería', 'Fonoaudiología', 'Obstetricia', 'Psicología', 'Nutrición', 'Kinesiología', 'Odontología', 'Bioquímica'];
+    const promo = !inv && i.promo;
+    // Mismos campos para quien se inscribe y para el acompañante del 2x1 (con "acomp_" adelante y sin autocompletar).
+    const campos = (pre = '') => {
+      const auto = (v) => (pre ? 'off' : v);
+      return `
+          <div class="form-grilla">
+            <label>Nombre<input name="${pre}nombre" autocomplete="${auto('given-name')}" required maxlength="60"></label>
+            <label>Apellido<input name="${pre}apellido" autocomplete="${auto('family-name')}" required maxlength="60"></label>
+            <label>Documento<span class="form-doc"><select name="${pre}doc" aria-label="Tipo de documento"><option value="dni">DNI</option><option value="pas">Pasaporte</option></select><input name="${pre}dni" aria-label="Número de documento" inputmode="numeric" required pattern="[0-9.\\s]{7,11}" maxlength="11" placeholder="Solo números"></span></label>
+            <label>Teléfono<input name="${pre}telefono" type="tel" autocomplete="${auto('tel')}" required minlength="8" maxlength="30" placeholder="Ej.: 341 555-1234"></label>
+            <label>Correo electrónico<input name="${pre}correo" type="email" autocomplete="${auto('email')}" required maxlength="120"></label>
+            <label>Repetí el correo<input name="${pre}correo2" type="email" autocomplete="off" required maxlength="120"></label>
+            <label>Carrera<input name="${pre}carrera" list="carreras" required maxlength="80"></label>
+            <label>Año que cursás<select name="${pre}anio" required><option value="">Elegí</option>${anios.map((a) => `<option>${a}</option>`).join('')}</select></label>
+            <label class="form-ancho">Universidad<input name="${pre}universidad" required maxlength="100" value="Universidad Nacional de Rosario"></label>
+          </div>`;
+    };
     return `
       <div id="inscMensaje" class="insc-mensaje" hidden role="status" aria-live="polite"></div>
       <div id="inscForm">
@@ -188,26 +220,29 @@
           <li><span>03</span><b>Recibí tu entrada</b> un código QR personal</li>
         </ol>`}
         <form class="form" id="formInsc" novalidate>
+          <datalist id="carreras">${carreras.map((c) => `<option value="${c}">`).join('')}</datalist>
+          ${promo ? `
+          <fieldset class="modo">
+            <legend class="modo-titulo">¿Cómo te inscribís?</legend>
+            <label class="modo-op"><input type="radio" name="modo" value="solo" checked><span><b>Voy solo/a</b><small>1 entrada · ${precio}</small></span></label>
+            <label class="modo-op"><input type="radio" name="modo" value="2x1"><span><b>2x1</b><small>2 entradas · ${precio} en total</small></span></label>
+          </fieldset>` : ''}
           <p class="form-aviso">Completá tu nombre, apellido, documento y correo tal como querés que figuren en tu <b>certificado</b>.</p>
-          <div class="form-grilla">
-            <label>Nombre<input name="nombre" autocomplete="given-name" required maxlength="60"></label>
-            <label>Apellido<input name="apellido" autocomplete="family-name" required maxlength="60"></label>
-            <label>Documento<span class="form-doc"><select name="doc" aria-label="Tipo de documento"><option value="dni">DNI</option><option value="pas">Pasaporte</option></select><input name="dni" aria-label="Número de documento" inputmode="numeric" required pattern="[0-9.\\s]{7,11}" maxlength="11" placeholder="Solo números"></span></label>
-            <label>Teléfono<input name="telefono" type="tel" autocomplete="tel" required minlength="8" maxlength="30" placeholder="Ej.: 341 555-1234"></label>
-            <label>Correo electrónico<input name="correo" type="email" autocomplete="email" required maxlength="120"></label>
-            <label>Repetí el correo<input name="correo2" type="email" autocomplete="off" required maxlength="120"></label>
-            <label>Carrera<input name="carrera" list="carreras" required maxlength="80"><datalist id="carreras">${carreras.map((c) => `<option value="${c}">`).join('')}</datalist></label>
-            <label>Año que cursás<select name="anio" required><option value="">Elegí</option>${anios.map((a) => `<option>${a}</option>`).join('')}</select></label>
-            <label class="form-ancho">Universidad<input name="universidad" required maxlength="100" value="Universidad Nacional de Rosario"></label>
-          </div>
+          ${campos()}
+          ${promo ? `
+          <fieldset class="acomp" id="formAcomp" hidden disabled>
+            <legend class="acomp-titulo">Tu acompañante</legend>
+            <p class="form-aviso">Sus datos, tal como van en su <b>certificado</b>. A su correo le llega su propia entrada.</p>
+            ${campos('acomp_')}
+          </fieldset>` : ''}
           <div id="turnstile" class="form-turnstile"></div>
           <p class="form-error" id="formError" role="alert"></p>
           <button class="btn btn--blanco" type="submit" id="formBoton">Continuar</button>
           <div class="confirmar" id="formConfirmar" hidden>
             <p class="confirmar-titulo" tabindex="-1">Revisá tus datos</p>
-            <p class="confirmar-texto">Así van a figurar en tu certificado, y a este correo te llega la entrada.</p>
+            <p class="confirmar-texto" id="confirmarTexto">Así van a figurar en tu certificado, y a este correo te llega la entrada.</p>
             <dl class="confirmar-datos" id="confirmarDatos"></dl>
-            <label class="confirmar-check"><input type="checkbox" id="confirmoDatos"> <span>Revisé mi nombre, documento y correo: están bien escritos.</span></label>
+            <label class="confirmar-check"><input type="checkbox" id="confirmoDatos"> <span id="confirmoTexto">Revisé mi nombre, documento y correo: están bien escritos.</span></label>
             <div class="confirmar-acciones">
               <button class="btn btn--blanco" type="button" id="botonPagar" disabled>${inv ? 'Confirmar inscripción' : `Ir al pago${precio ? `: ${precio}` : ''}`}</button>
               <button class="btn-chico" type="button" id="botonCorregir">Corregir datos</button>
@@ -299,22 +334,32 @@
     e.preventDefault();
     const f = e.target, err = $('#formError');
     err.textContent = '';
-    f.telefono.setCustomValidity(f.telefono.value.replace(/\D/g, '').length >= 8 ? '' : 'corto');
-    f.correo2.setCustomValidity(f.correo2.value.trim().toLowerCase() === f.correo.value.trim().toLowerCase() ? '' : 'distinto');
+    const dos = es2x1(f);
+    const prefijos = dos ? ['', 'acomp_'] : [''];
+    prefijos.forEach((pre) => {
+      f[pre + 'telefono'].setCustomValidity(f[pre + 'telefono'].value.replace(/\D/g, '').length >= 8 ? '' : 'corto');
+      f[pre + 'correo2'].setCustomValidity(f[pre + 'correo2'].value.trim().toLowerCase() === f[pre + 'correo'].value.trim().toLowerCase() ? '' : 'distinto');
+    });
+    const docClave = (pre) => (f[pre + 'doc'].value === 'pas' ? 'PAS ' + pasaporte(f[pre + 'dni'].value) : f[pre + 'dni'].value.replace(/\D/g, ''));
+    if (dos) f.acomp_dni.setCustomValidity(f.acomp_dni.value && docClave('acomp_') === docClave('') ? 'igual' : '');
     if (!f.checkValidity()) {
       const mal = [...f.elements].find((x) => x.willValidate && !x.checkValidity());
-      err.textContent = !mal ? '' : mal.name === 'correo2' ? 'Los dos correos no coinciden.' : 'Revisá los datos marcados antes de continuar.';
+      err.textContent = !mal ? '' : /correo2$/.test(mal.name) ? 'Los dos correos no coinciden.'
+        : mal.name === 'acomp_dni' && mal.validationMessage === 'igual' ? ERRORES.acomp_mismo_dni : 'Revisá los datos marcados antes de continuar.';
       f.classList.add('form--revisar'); if (mal) mal.focus();
       return;
     }
     const d = Object.fromEntries(new FormData(f));
-    const dni = String(d.dni).replace(/\D/g, '');
     const limpio = (v) => String(v).replace(/\s+/g, ' ').trim();
-    $('#confirmarDatos').innerHTML = [
-      ['Nombre completo', `${limpio(d.nombre)} ${limpio(d.apellido)}`],
-      d.doc === 'pas' ? ['Pasaporte', pasaporte(d.dni)] : ['DNI', Number(dni).toLocaleString('es-AR')],
-      ['Correo', limpio(d.correo).toLowerCase()],
-    ].map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('');
+    const persona = (pre, quien) => [
+      [quien, `${limpio(d[pre + 'nombre'])} ${limpio(d[pre + 'apellido'])}`],
+      d[pre + 'doc'] === 'pas' ? ['Pasaporte', pasaporte(d[pre + 'dni'])] : ['DNI', Number(String(d[pre + 'dni']).replace(/\D/g, '')).toLocaleString('es-AR')],
+      ['Correo', limpio(d[pre + 'correo']).toLowerCase()],
+    ];
+    const filasDatos = dos ? [...persona('', 'Vos'), ...persona('acomp_', 'Tu acompañante')] : persona('', 'Nombre completo');
+    $('#confirmarDatos').innerHTML = filasDatos.map(([k, v]) => `<div${k === 'Tu acompañante' ? ' class="confirmar-otra"' : ''}><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('');
+    $('#confirmarTexto').textContent = dos ? 'Así van a figurar en los certificados. Cada entrada llega al correo de su dueño/a.' : 'Así van a figurar en tu certificado, y a este correo te llega la entrada.';
+    $('#confirmoTexto').textContent = dos ? 'Revisé los nombres, documentos y correos de las dos personas: están bien escritos.' : 'Revisé mi nombre, documento y correo: están bien escritos.';
     $('#confirmoDatos').checked = false;
     $('#botonPagar').disabled = true;
     $('#formBoton').hidden = true;
@@ -325,20 +370,37 @@
   // Quien no tiene DNI argentino se inscribe con pasaporte: letras y números, y viaja como "PAS AB123456".
   const pasaporte = (v) => String(v).replace(/[^0-9a-z]/gi, '').toUpperCase();
 
-  function prepararDocumento() {
+  function prepararDocumento(pre = '') {
     const f = $('#formInsc');
-    f.doc.addEventListener('change', () => {
-      const pas = f.doc.value === 'pas';
-      f.dni.value = '';
-      f.dni.pattern = pas ? '\\s*([A-Za-z0-9]\\s*){5,15}' : '[0-9.\\s]{7,11}';
-      f.dni.maxLength = pas ? 20 : 11;
-      f.dni.inputMode = pas ? 'text' : 'numeric';
-      f.dni.placeholder = pas ? 'Letras y números' : 'Solo números';
+    const doc = f[pre + 'doc'], dni = f[pre + 'dni'];
+    if (!doc) return;
+    doc.addEventListener('change', () => {
+      const pas = doc.value === 'pas';
+      dni.value = '';
+      dni.pattern = pas ? '\\s*([A-Za-z0-9]\\s*){5,15}' : '[0-9.\\s]{7,11}';
+      dni.maxLength = pas ? 20 : 11;
+      dni.inputMode = pas ? 'text' : 'numeric';
+      dni.placeholder = pas ? 'Letras y números' : 'Solo números';
     });
+  }
+
+  const es2x1 = (f) => Boolean(f.modo && f.modo.value === '2x1');
+
+  // 2x1: al elegirlo se abre el bloque del acompañante. Cerrado queda deshabilitado: no se valida ni se envía.
+  function prepararModo() {
+    const f = $('#formInsc'), bloque = $('#formAcomp');
+    if (!bloque) return;
+    f.querySelectorAll('[name="modo"]').forEach((r) => r.addEventListener('change', () => {
+      const dos = es2x1(f);
+      bloque.hidden = !dos; bloque.disabled = !dos;
+      if (dos) f.acomp_nombre.focus();
+    }));
   }
 
   function prepararConfirmacion(i) {
     prepararDocumento();
+    prepararDocumento('acomp_');
+    prepararModo();
     const f = $('#formInsc');
     const cerrar = () => { $('#formConfirmar').hidden = true; $('#formBoton').hidden = false; };
     $('#confirmoDatos').addEventListener('change', (e) => { $('#botonPagar').disabled = !e.target.checked; });
@@ -374,9 +436,14 @@
     }
 
     const datos = Object.fromEntries(new FormData(f));
-    delete datos.correo2; delete datos['cf-turnstile-response'];
-    if (datos.doc === 'pas') datos.dni = 'PAS ' + pasaporte(datos.dni);
-    delete datos.doc;
+    const dos = !INVITACION && es2x1(f);
+    delete datos['cf-turnstile-response']; delete datos.modo;
+    ['', 'acomp_'].forEach((pre) => {
+      delete datos[pre + 'correo2'];
+      if (datos[pre + 'doc'] === 'pas') datos[pre + 'dni'] = 'PAS ' + pasaporte(datos[pre + 'dni']);
+      delete datos[pre + 'doc'];
+    });
+    if (dos) datos.promo = '2x1';
     btn.disabled = true; btn.textContent = INVITACION ? 'Inscribiendo…' : 'Generando el pago…';
     const noSalio = INVITACION ? 'No pudimos completar la inscripción. Probá de nuevo en unos minutos.' : 'No pudimos generar el pago. Probá de nuevo en unos minutos: no se cobró nada.';
     try {
@@ -393,18 +460,24 @@
         $('#inscripcion').scrollIntoView({ block: 'start' });
         return;
       }
-      if (r.ok && r.pago_url) {
+      if (r.ok && r.pago_url && dos && r.promo !== '2x1') {
+        // El servidor no registró al acompañante (por ejemplo, un Apps Script sin el 2x1): no se manda a pagar.
+        err.textContent = 'No pudimos registrar el 2x1. Probá de nuevo en unos minutos: no se cobró nada.';
+      } else if (r.ok && r.pago_url) {
         // Datos confirmados y link de pago listo: la persona sale a Mercado Pago.
         pixel('AddPaymentInfo', { value: Number(i.precio) || 0, currency: 'ARS' });
         // Unos 300 ms para que el navegador alcance a enviar el evento antes de salir de la página.
         setTimeout(() => { location.href = r.pago_url; }, 300);
         return;
       }
+      const deAcomp = r.campo === 'acomp_correo';
+      const campoCorreo = deAcomp && f.acomp_correo ? f.acomp_correo : f.correo;
       if (r.error === 'correo_dominio' && r.sugerencia) {
-        err.textContent = `Revisá el correo: ¿quisiste escribir ${r.sugerencia}? Corregilo en los dos campos y volvé a continuar.`;
-        $('#formConfirmar').hidden = true; $('#formBoton').hidden = false; f.correo.focus();
+        err.textContent = `Revisá el correo${deAcomp ? ' de tu acompañante' : ''}: ¿quisiste escribir ${r.sugerencia}? Corregilo en los dos campos y volvé a continuar.`;
+        $('#formConfirmar').hidden = true; $('#formBoton').hidden = false; campoCorreo.focus();
       } else if (r.error === 'correo_dominio') {
-        $('#formConfirmar').hidden = true; $('#formBoton').hidden = false; f.correo.focus();
+        if (deAcomp) err.textContent = 'El correo de tu acompañante no parece existir: revisá lo que está después de la @.';
+        $('#formConfirmar').hidden = true; $('#formBoton').hidden = false; campoCorreo.focus();
       }
       if (!err.textContent) err.textContent = ERRORES[r.error] || (r.error === 'datos' && CAMPOS[r.campo] ? `Revisá ${CAMPOS[r.campo]}.` : noSalio);
     } catch (x) {
@@ -467,7 +540,14 @@
         const r = await llamar(i, '/verificar', { pago_id: pagoId, referencia });
         if (r.ok && r.estado === 'pagado' && r.codigo) {
           medirInscripcionPaga(i, pagoId, r.codigo);
-          mostrar('¡Listo, ya tenés tu entrada!', `Hola ${r.nombre || ''}. Este QR es tu entrada: mostralo en la acreditación. También te lo mandamos por mail.`, entradaHtml(r.codigo));
+          if (r.codigo2) {
+            // 2x1: las dos entradas en pantalla, cada una con su nombre.
+            mostrar('¡Listo, ya tienen sus entradas!', `Hola ${r.nombre || ''}. Cada persona muestra su QR en la acreditación. A cada una también le llega el suyo por mail.`,
+              `<div class="entradas">${entradaHtml(r.codigo, '', r.nombre)}${entradaHtml(r.codigo2, '2', r.nombre2)}</div>`);
+            window.EFSQR && window.EFSQR.dibujar($('#entradaQr2'), r.codigo2, $('#entradaGuardar2'));
+          } else {
+            mostrar('¡Listo, ya tenés tu entrada!', `Hola ${r.nombre || ''}. Este QR es tu entrada: mostralo en la acreditación. También te lo mandamos por mail.`, entradaHtml(r.codigo));
+          }
           window.EFSQR && window.EFSQR.dibujar($('#entradaQr'), r.codigo, $('#entradaGuardar'));
           return;
         }
@@ -478,13 +558,14 @@
     mostrar('Estamos confirmando tu pago', 'En unos minutos te llega la entrada por mail (revisá también spam). No hace falta que vuelvas a inscribirte ni a pagar. Si en una hora no te llegó, escribinos por mail.');
   }
 
-  function entradaHtml(codigo) {
+  function entradaHtml(codigo, n = '', nombre = '') {
     return `
       <div class="entrada">
-        <div class="entrada-qr" id="entradaQr" role="img" aria-label="Código QR de tu entrada ${esc(codigo)}"></div>
+        ${nombre ? `<p class="entrada-nombre">${esc(nombre)}</p>` : ''}
+        <div class="entrada-qr" id="entradaQr${n}" role="img" aria-label="Código QR de la entrada ${esc(codigo)}"></div>
         <p class="entrada-codigo">${esc(codigo)}</p>
         <div class="entrada-acciones">
-          <a class="btn btn--blanco" id="entradaGuardar" download="entrada-${esc(codigo)}.gif" href="#">Guardar imagen</a>
+          <a class="btn btn--blanco" id="entradaGuardar${n}" download="entrada-${esc(codigo)}.gif" href="#">Guardar imagen</a>
           <a class="btn btn--linea-blanca" href="entrada/#${esc(codigo)}">Abrir mi entrada</a>
         </div>
       </div>`;

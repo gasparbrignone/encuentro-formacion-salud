@@ -96,6 +96,18 @@ content:
             label: Texto (opcional)
             type: text
             description: Si se deja vacío, se usa un texto por defecto según el estado.
+          - name: promo_2x1
+            label: Promo 2x1 (una persona paga y entran dos)
+            type: boolean
+            description: 'Muestra en el formulario la opción 2x1. La que manda de verdad es la planilla (hoja "EFS · Config", fila "promo_2x1" = SI).'
+          - name: promo_2x1_desde
+            label: 2x1 desde (opcional)
+            type: string
+            description: 'Fecha y hora con este formato: 2026-10-14T17:00:00-03:00. Antes de esa hora no se muestra. Vacío = desde ya.'
+          - name: promo_2x1_hasta
+            label: 2x1 hasta (opcional)
+            type: string
+            description: 'Mismo formato. Vacío = hasta el cierre de la inscripción.'
       - name: mostrar_edicion_anterior
         label: Mostrar la sección "Así fue la edición anterior"
         type: boolean

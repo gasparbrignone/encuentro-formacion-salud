@@ -16,7 +16,10 @@
     "servicio": "https://efs-worker.gasparbrignone1.workers.dev",
     "turnstile": "0x4AAAAAAFJCn7CqYrS4Hoc2",
     "link": "",
-    "texto": ""
+    "texto": "",
+    "promo_2x1": true,
+    "promo_2x1_desde": "2026-10-14T17:00:00-03:00",
+    "promo_2x1_hasta": ""
   },
   "mostrar_edicion_anterior": true,
   "contacto": {

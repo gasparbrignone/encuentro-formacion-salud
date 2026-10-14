@@ -175,7 +175,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .form-grilla { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; margin-bottom: 22px; }
 .form label { display: flex; flex-direction: column; gap: 6px; font-family: var(--mono); font-size: 14px; color: var(--papel); }
 .form label small { font-size: 12px; opacity: .75; }
-.form input:not([type="checkbox"]), .form select { font: 500 17px var(--sans); color: var(--navy); background: #fff; border: 2px solid #fff; padding: 11px 12px; min-height: 48px; width: 100%; border-radius: 0; }
+.form input:not([type="checkbox"]):not([type="radio"]), .form select { font: 500 17px var(--sans); color: var(--navy); background: #fff; border: 2px solid #fff; padding: 11px 12px; min-height: 48px; width: 100%; border-radius: 0; }
 .form-doc { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; }
 .form .form-doc select { width: auto; }
 .form input:focus-visible, .form select:focus-visible { outline: 3px solid #8FC1E3; outline-offset: 2px; }
@@ -202,6 +202,26 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .confirmar .btn--blanco:disabled { opacity: .45; cursor: not-allowed; }
 .confirmar .btn-chico { color: var(--navy); border-color: var(--navy); background: transparent; cursor: pointer; }
 .form-turnstile { min-height: 65px; margin-bottom: 10px; }
+
+/* promo 2x1: elegir modalidad y bloque del acompañante */
+.modo { border: 0; padding: 0; margin: 0 0 24px; min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; max-width: 560px; }
+.modo-titulo { font-size: 22px; font-weight: 800; margin-bottom: 12px; padding: 0; }
+.form .modo-op { flex-direction: row; align-items: center; gap: 12px; border: 2px solid var(--navy); padding: 14px 16px; cursor: pointer; font-family: var(--sans); color: var(--navy); background: #fff; }
+.modo-op input { width: 20px; height: 20px; accent-color: var(--navy); flex: none; margin: 0; }
+.modo-op span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+@media (max-width: 420px) { .modo { grid-template-columns: 1fr; } }
+.modo-op b { font-size: 20px; font-weight: 800; line-height: 1.1; }
+.modo-op small { font-family: var(--mono); font-size: 13px; }
+#inscripcion .form .modo-op:has(input:checked) { background: var(--navy); color: #fff; }
+#inscripcion .form .modo-op:has(input:checked) small { color: #C9D8E6; }
+.modo-op:has(input:checked) input { accent-color: #8FC1E3; }
+.modo-op:has(input:focus-visible) { outline: 3px solid var(--azul2); outline-offset: 2px; }
+.acomp { border: 0; border-top: 2px solid var(--navy); padding: 20px 0 0; margin: 4px 0 0; min-width: 0; }
+.acomp[hidden] { display: none; }
+.acomp-titulo { font-size: 22px; font-weight: 800; padding: 0 10px 0 0; margin-bottom: 12px; }
+.confirmar-datos > .confirmar-otra { border-top-width: 4px; margin-top: 8px; }
+.entradas { display: flex; flex-wrap: wrap; gap: 0 18px; }
+.entrada-nombre { font-weight: 800; font-size: 18px; text-align: center; margin-bottom: 10px; overflow-wrap: anywhere; }
 
 /* entrada (QR) en la vuelta del pago y en /entrada/ */
 .entrada { background: #fff; color: var(--navy); padding: 22px; max-width: 360px; margin-top: 22px; }
@@ -370,7 +390,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 #inscripcion .insc-mensaje, #inscripcion .form-aviso { border-left-color: var(--azul2); color: var(--navy); }
 #inscripcion .form label { color: var(--navy); }
 #inscripcion .form label small { opacity: 1; color: var(--gris); }
-#inscripcion .form input:not([type="checkbox"]), #inscripcion .form select { border-color: var(--navy); }
+#inscripcion .form input:not([type="checkbox"]):not([type="radio"]), #inscripcion .form select { border-color: var(--navy); }
 #inscripcion .form input:focus-visible, #inscripcion .form select:focus-visible { outline-color: var(--azul2); }
 #inscripcion .form--revisar input:invalid, #inscripcion .form--revisar select:invalid { border-color: #B3411B; box-shadow: inset 0 0 0 1px #B3411B; }
 #inscripcion .form-error { color: #B3411B; }
