@@ -262,5 +262,31 @@
     "cupo": null,
     "inscripcion_previa": false,
     "oculta": false
+  },
+  {
+    "titulo": "Interpretación clínica del laboratorio",
+    "tipo": "Charla",
+    "area": "Conferencia en vivo",
+    "inicio": "",
+    "fin": "",
+    "lugar": "",
+    "descripcion": "Del valor aislado al paciente: cómo interpretar un laboratorio a partir del contexto clínico; qué significa realmente que un valor esté por encima o por debajo del rango de referencia; hemograma (anemia, leucocitosis, leucopenia, neutrofilia y alteraciones plaquetarias); función renal (creatinina, urea, filtrado glomerular e ionograma); hepatograma (transaminasas, fosfatasa alcalina, GGT, bilirrubina y patrones de lesión); alteraciones de glucemia y metabolismo; cuándo un resultado aislado es relevante y cuándo es un hallazgo incidental; qué estudios pedir según el síndrome clínico y cómo cambia el diagnóstico diferencial; y errores preanalíticos que pueden alterar un resultado.",
+    "temas": [
+      "Hemograma",
+      "Función renal",
+      "Hepatograma"
+    ],
+    "imagen": "",
+    "disertantes": [
+      {
+        "nombre": "Cristóbal Elgueta",
+        "rol": "Médico · Residente de Clínica Médica",
+        "institucion": "Hospital General de Agudos José María Penna",
+        "foto": "assets/img/uploads/disertante-cristobal-elgueta.webp"
+      }
+    ],
+    "cupo": null,
+    "inscripcion_previa": false,
+    "oculta": false
   }
 ]
