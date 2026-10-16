@@ -601,6 +601,7 @@
 
   function programa(acts) {
     const cont = $('#programaLista');
+    if (!cont) return;   // el programa se reemplazó por el cronograma (assets/cronograma.js)
     const visibles = acts.filter((a) => a && a.titulo && !a.oculta && a.publicada !== false);
     if (!visibles.length) return;
     const grupos = new Map();
@@ -620,7 +621,7 @@
     $('#filtros').hidden = !(hayTalleres && hayCharlas);
   }
 
-  $('#filtros').addEventListener('click', (e) => {
+  if ($('#filtros')) $('#filtros').addEventListener('click', (e) => {
     const b = e.target.closest('.filtro'); if (!b) return;
     document.querySelectorAll('.filtro').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
     const f = b.dataset.filtro;

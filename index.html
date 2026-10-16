@@ -34,7 +34,8 @@
   <link rel="preload" href="assets/fonts/chivo-mono-normal-500-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" as="image" href="assets/img/hero-fcm.png?v=2" fetchpriority="high" />
   <link rel="stylesheet" href="assets/fonts.css" />
-  <link rel="stylesheet" href="assets/styles.css?v=20261014a" />
+  <link rel="stylesheet" href="assets/styles.css?v=20261016a" />
+  <link rel="stylesheet" href="assets/cronograma.css?v=20261016d" />
 
   <!-- Google tag (gtag.js): se carga después de que la página terminó de cargar, para no frenar el primer render -->
   <script>
@@ -68,7 +69,7 @@
 <body>
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1096888216454556&ev=PageView&noscript=1" alt="" /></noscript>
 
-<a class="saltar" href="#programa">Ir al programa</a>
+<a class="saltar" href="#programa">Ir al cronograma</a>
 
 <!-- NAV -->
 <header class="nav" id="nav">
@@ -80,8 +81,7 @@
   </button>
   <nav aria-label="Secciones">
     <ul class="nav-links" id="navLinks">
-      <li><a href="cronograma/">Cronograma</a></li>
-      <li><a href="#programa">Programa</a></li>
+      <li><a href="#programa">Cronograma</a></li>
       <li data-si="disertantes"><a href="#disertantes">Disertantes</a></li>
       <li><a href="#contacto">Contacto</a></li>
       <li><a href="#inscripcion" class="nav-cta">Inscripción</a></li>
@@ -135,20 +135,21 @@
 <section class="seccion" id="programa" aria-labelledby="programa-titulo">
   <div class="seccion-in">
     <div class="seccion-cab">
-      <span class="etiqueta">Programa</span>
-      <h2 class="seccion-titulo" id="programa-titulo">Charlas y talleres confirmados</h2>
-      <a class="btn btn--navy" href="cronograma/">Ver el cronograma del día</a>
+      <span class="etiqueta">Sábado 17 de octubre</span>
+      <h2 class="seccion-titulo" id="programa-titulo">Cronograma</h2>
+      <p class="crono-sub">8 a 18 h · Facultad de Ciencias Médicas, UNR</p>
+      <ul class="crono-leyenda" aria-label="Referencias">
+        <li>Charla</li>
+        <li class="ley-taller">Taller, cupo limitado</li>
+      </ul>
+      <a class="crono-ahora-link" id="ahoraLink" href="#" hidden></a>
     </div>
-    <div class="filtros" id="filtros" hidden role="group" aria-label="Filtrar actividades">
-      <button type="button" class="filtro" aria-pressed="true" data-filtro="todas">Todas</button>
-      <button type="button" class="filtro" aria-pressed="false" data-filtro="charla">Charlas</button>
-      <button type="button" class="filtro" aria-pressed="false" data-filtro="taller">Talleres</button>
+    <!-- Mismo cronograma que /cronograma (assets/cronograma.js), sin barra de horarios: tocar una actividad abre su detalle. -->
+    <div class="crono-dia inicio-crono" id="dia" data-base="" aria-live="polite">
+      <p class="crono-cargando">Cargando el cronograma…</p>
     </div>
-    <div class="programa" id="programaLista" aria-live="polite">
-      <div class="vacio">
-        <p class="vacio-titulo">Estamos armando el programa.</p>
-        <p>Las charlas y talleres de esta edición se publican acá apenas estén confirmados. Mientras tanto, seguinos en <a href="https://instagram.com/efs.atp" target="_blank" rel="noopener">@efs.atp</a>.</p>
-      </div>
+    <div class="inicio-crono-mas">
+      <a class="btn btn--navy" href="cronograma/">Talleres y cómo llegar a las aulas</a>
     </div>
   </div>
 </section>
@@ -267,7 +268,8 @@
 <script src="assets/vendor/qrcode.js"></script>
 <script src="assets/entrada-qr.js"></script>
 <script src="assets/trama.js?v=20261011b"></script>
-<script src="assets/script.js?v=20261014a"></script>
+<script src="assets/script.js?v=20261016a"></script>
+<script src="assets/cronograma.js?v=20261016c"></script>
 <script src="assets/kit.js?v=20261001b" defer></script>
 </body>
 </html>

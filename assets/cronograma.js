@@ -11,6 +11,9 @@
   const cargar = (url) => fetch(url, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   const min = (h) => { const [a, b] = String(h).split(':').map(Number); return a * 60 + (b || 0); };
   const idHora = (h) => 'h' + String(h).replace(':', '');
+  // Ruta a la raíz del sitio: '../' en /cronograma; el inicio usa la misma lista con data-base="".
+  const BASE = ($('#dia') && $('#dia').dataset.base) ?? '../';
+  const COMPLETA = !!$('#horas');   // /cronograma: barra de horarios, talleres, aulas y salto a lo de ahora
 
   // Ubicación de cada aula en assets/img/plano-fcm.png (en % del ancho y alto de la imagen).
   // Azul: anfiteatros (charlas). Teal: CECECAP Grande (talleres).
@@ -24,7 +27,7 @@
   function persona(d) {
     const ini = d.nombre.trim().split(/\s+/).filter((p) => /^\p{Lu}/u.test(p) && p.length > 2).map((p) => p[0]).slice(0, 2).join('');
     return `<div class="ac-persona">
-      <span class="ac-foto">${d.foto ? `<img src="../${esc(d.foto)}" alt="" loading="lazy" decoding="async">` : `<b aria-hidden="true">${esc(ini)}</b>`}</span>
+      <span class="ac-foto">${d.foto ? `<img src="${BASE}${esc(d.foto)}" alt="" loading="lazy" decoding="async">` : `<b aria-hidden="true">${esc(ini)}</b>`}</span>
       <span><b>${esc(d.nombre)}</b>${d.rol ? `<small>${esc(d.rol)}</small>` : ''}</span>
     </div>`;
   }
@@ -173,7 +176,7 @@
   }
 
   // ── carga
-  Promise.all([cargar('../assets/data/cronograma.json'), cargar('../assets/data/actividades.json')]).then(([cr, acts]) => {
+  Promise.all([cargar(BASE + 'assets/data/cronograma.json'), cargar(BASE + 'assets/data/actividades.json')]).then(([cr, acts]) => {
     const dia = $('#dia');
     if (!cr || !Array.isArray(cr.franjas)) {
       dia.innerHTML = '<p class="crono-cargando">No pudimos cargar el cronograma. Revisá tu conexión y volvé a intentar.</p><button type="button" class="btn btn--navy" onclick="location.reload()">Recargar</button>';
@@ -183,6 +186,7 @@
     const franjas = cr.franjas.filter((f) => f && f.inicio && f.fin).sort((a, b) => min(a.inicio) - min(b.inicio));
     const lista = Array.isArray(acts) ? acts : [];
     dia.innerHTML = franjas.map((f) => (f.pausa ? pausa(f) : franja(f, espacios, lista))).join('');
+    if (!COMPLETA) { marcarAhora(cr.fecha); setInterval(() => marcarAhora(cr.fecha), 30000); return; }
     talleres(franjas, espacios);
     aulas(espacios);
     const actualizarBarra = barra(franjas);
