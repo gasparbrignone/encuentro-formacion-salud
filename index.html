@@ -84,7 +84,6 @@
       <li><a href="#programa">Cronograma</a></li>
       <li data-si="disertantes"><a href="#disertantes">Disertantes</a></li>
       <li><a href="#contacto">Contacto</a></li>
-      <li><a href="#inscripcion" class="nav-cta">Inscripción</a></li>
     </ul>
   </nav>
 </header>
@@ -105,18 +104,18 @@
       <div><dt>Modalidad</dt><dd data-evento="modalidad">Presencial</dd></div>
     </dl>
     <ul class="temas" aria-label="Condiciones">
-      <li data-tema="precio" hidden></li>
       <li>Certificado de la UNR</li>
     </ul>
     <div class="hero-acciones">
-      <a class="btn btn--navy" href="#inscripcion" data-evento="cta">Inscribite</a>
+      <a class="btn btn--navy" href="#programa">Ver el cronograma</a>
       <a class="btn btn--linea" href="https://instagram.com/efs.atp" target="_blank" rel="noopener">Seguinos en @efs.atp</a>
     </div>
   </div>
 </section>
 
-<!-- INSCRIPCIÓN -->
-<section class="seccion" id="inscripcion" aria-labelledby="inscripcion-titulo">
+<!-- INSCRIPCIÓN: cerrada y oculta (16/10). Queda en el HTML porque script.js la usa (links ?inv= y vuelta de Mercado Pago). -->
+<section class="seccion" id="inscripcion" aria-labelledby="inscripcion-titulo" hidden>
+  <a data-evento="cta" href="#inscripcion" hidden></a>
   <div class="seccion-in">
     <div class="seccion-cab">
       <span class="etiqueta etiqueta--blanca">Inscripción</span>
@@ -178,7 +177,6 @@
         <li>Bolsita</li><li>Lapicera</li><li>Libretita</li><li>Credencial</li><li>Cronograma</li>
       </ul>
       <p class="kit-nota">Lo entregamos al momento de la acreditación.</p>
-      <a class="btn btn--navy" href="#inscripcion">Inscribite</a>
     </div>
     <div class="kit-escena" id="kitEscena" role="img" aria-label="La bolsita del EFS abierta, con el cronograma, la libretita, la lapicera y la credencial saliendo de adentro">
       <div class="kit-mundo" id="kitMundo">
