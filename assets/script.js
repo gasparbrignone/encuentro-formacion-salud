@@ -176,6 +176,7 @@
     acomp_mismo_dni: 'El documento de tu acompañante es igual al tuyo. Revisalo.',
     promo_cerrada: 'La promo 2x1 ya no está disponible. Podés inscribirte con la opción "Voy solo/a".',
     cerrada: 'La inscripción está cerrada.',
+    cupo_completo: 'Se completó el cupo y cerramos la inscripción. Si tenés dudas, escribinos por mail.',
     correo_dominio: 'Ese correo no parece existir: revisá lo que está después de la @.',
     invitacion: 'Este link de invitación no es válido. Pedile a quien te invitó que te lo mande de nuevo.',
     invitacion_agotada: 'Este link de invitación ya se usó todas las veces que tenía disponibles.',
