@@ -1,0 +1,139 @@
+/* Sorteo en vivo del EFS: pensado para proyectar (16:9) y que se lea desde el fondo del aula.
+   Blanco + navy + azul, Chivo, esquinas rectas, sin degradados (docs/EFS_DESIGN_SYSTEM.md §7, §8, §15). */
+:root {
+  --navy: #16283F;
+  --azul: #1B5286;
+  --azul2: #2C6FA0;
+  --celeste: #5AA6CC;
+  --teal: #1C7A72;
+  --papel: #EAF2F9;
+  --linea: #C9D8E6;
+  --gris: #4A5F78;
+  --rojo: #B3261E;
+  --verde: #14804A;
+  --sans: 'Chivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'Chivo Mono', ui-monospace, Consolas, monospace;
+  --m: clamp(16px, 3.2vw, 64px);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: var(--sans); background: #fff; color: var(--navy); font-size: 17px; line-height: 1.35; }
+[hidden] { display: none !important; }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--azul); outline-offset: 2px; }
+a { color: var(--azul); font-weight: 700; }
+
+.btn { min-height: 52px; padding: 12px 22px; border: 2px solid var(--navy); background: #fff; font-weight: 800; font-size: 17px; cursor: pointer; border-radius: 0; }
+.btn:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--celeste); }
+.btn:active { transform: none; box-shadow: none; }
+.btn--principal { background: var(--navy); color: #fff; }
+.btn:disabled { opacity: .5; cursor: default; transform: none; box-shadow: none; }
+.error { color: var(--rojo); font-weight: 700; margin-top: 8px; }
+.ayuda { color: var(--gris); font-size: 15px; }
+
+/* ─────────── ingreso ─────────── */
+.ingreso { max-width: 440px; margin: 0 auto; padding: 40px 16px; display: flex; flex-direction: column; gap: 18px; }
+.ingreso__logo { width: 150px; height: auto; }
+.ingreso h1 { font-size: 34px; font-weight: 900; letter-spacing: -.02em; }
+.ingreso label { display: block; font-size: 14px; font-weight: 700; color: var(--gris); margin: 4px 0; }
+.ingreso input { width: 100%; min-height: 50px; padding: 10px 12px; border: 2px solid var(--navy); border-radius: 0; margin-bottom: 14px; }
+.ingreso .btn { width: 100%; }
+
+/* ─────────── estructura ─────────── */
+.app { height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; }
+.cabeza { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: clamp(10px, 1.6vw, 24px) var(--m); }
+.cabeza__logo { height: clamp(34px, 4.4vw, 72px); width: auto; }
+.cabeza__datos { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: flex-end; }
+.cabeza__cuenta { font-family: var(--mono); font-weight: 500; font-size: clamp(14px, 1.4vw, 24px); color: var(--navy); }
+.cabeza__cuenta strong { font-family: var(--sans); font-weight: 900; font-size: 1.3em; font-variant-numeric: tabular-nums; }
+
+.etiqueta { display: inline-block; align-self: flex-start; background: var(--navy); color: #fff; font-family: var(--mono); font-weight: 500; font-size: clamp(14px, 1.4vw, 24px); padding: .3em .7em; }
+.etiqueta--demo { background: var(--rojo); }
+
+.escenario { position: relative; overflow: hidden; min-height: 0; }
+.vista { position: absolute; inset: 0; display: none; padding: 0 var(--m) clamp(12px, 2vw, 32px); }
+.escenario[data-estado=premio] .vista--premio { display: grid; }
+.escenario[data-estado=girando] .vista--sorteo,
+.escenario[data-estado=ganador] .vista--sorteo { display: flex; }
+.escenario[data-estado=resultados] .vista--resultados { display: block; }
+
+/* ─────────── 1 · premio ─────────── */
+.vista--premio { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--m); align-items: center; }
+.premio__foto { height: 100%; display: flex; align-items: center; justify-content: center; min-height: 0; }
+.premio__foto img { max-width: 100%; max-height: min(64vh, 100%); object-fit: contain; animation: cae .7s cubic-bezier(.2, 1.4, .4, 1) both; }
+.premio__texto { display: flex; flex-direction: column; gap: clamp(10px, 1.6vw, 26px); min-width: 0; }
+.premio__titulo { font-size: clamp(36px, 6.4vw, 124px); font-weight: 800; line-height: .95; letter-spacing: -.022em; text-wrap: balance; }
+.premio__detalle { font-size: clamp(16px, 1.9vw, 34px); font-weight: 500; line-height: 1.3; color: var(--gris); max-width: 32ch; }
+.premio__detalle:empty { display: none; }
+.sponsor { display: flex; flex-direction: column; gap: 6px; }
+.sponsor__gracias { font-family: var(--mono); font-weight: 500; font-size: clamp(13px, 1.2vw, 20px); color: var(--gris); }
+.sponsor img { height: clamp(34px, 4.6vw, 80px); width: auto; align-self: flex-start; }
+.btn--sortear { align-self: flex-start; background: var(--azul); border-color: var(--azul); color: #fff; font-size: clamp(20px, 2.4vw, 40px); font-weight: 900; padding: .45em 1.3em; min-height: 0; margin-top: clamp(4px, 1vw, 16px); }
+.btn--sortear:hover { box-shadow: 6px 6px 0 var(--navy); }
+
+@keyframes cae { from { opacity: 0; transform: translateY(-40px); } to { opacity: 1; transform: none; } }
+
+/* ─────────── 2 · girando y 3 · ganador ─────────── */
+.vista--sorteo { flex-direction: column; justify-content: center; gap: clamp(12px, 2vw, 32px); }
+.sorteo__premio { font-size: clamp(18px, 2.4vw, 44px); font-weight: 700; line-height: 1.15; }
+.sorteo__se { font-family: var(--mono); font-weight: 500; font-size: .7em; color: var(--gris); margin-right: .3em; }
+.sorteo__placa { background: var(--azul); color: #fff; min-height: 46vh; display: flex; flex-direction: column; justify-content: center; padding: clamp(16px, 3vw, 56px) clamp(16px, 4vw, 80px); }
+.sorteo__nombre { font-weight: 900; line-height: .92; letter-spacing: -.035em; font-size: 160px; white-space: nowrap; overflow: hidden; text-overflow: clip; }
+.sorteo__dni { font-family: var(--mono); font-weight: 500; font-size: clamp(16px, 1.9vw, 34px); margin-top: .8em; min-height: 1.3em; color: var(--papel); }
+.escenario[data-estado=girando] .sorteo__nombre { opacity: .92; }
+.escenario[data-estado=ganador] .sorteo__placa { background: var(--navy); }
+.escenario[data-estado=ganador] .sorteo__nombre { animation: rebote .9s cubic-bezier(.2, 1.6, .35, 1) both; transform-origin: left center; }
+.sorteo__acciones { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; min-height: 64px; }
+.escenario[data-estado=girando] .sorteo__acciones { visibility: hidden; }
+.sorteo__acciones .btn--sortear { margin: 0; font-size: clamp(17px, 1.7vw, 28px); }
+.sorteo__acciones .btn:not(.btn--sortear) { font-size: clamp(15px, 1.3vw, 22px); }
+
+@keyframes rebote { 0% { transform: scale(.6); opacity: 0; } 60% { transform: scale(1.06); opacity: 1; } 100% { transform: scale(1); } }
+
+/* ─────────── 4 · ganadores ─────────── */
+.vista--resultados { overflow-y: auto; }
+.resultados__titulo { font-size: clamp(30px, 4.6vw, 84px); font-weight: 800; letter-spacing: -.022em; line-height: 1; margin-bottom: clamp(14px, 2.4vw, 40px); }
+.resultados { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: 0 var(--m); }
+.resultados li { display: grid; grid-template-columns: clamp(48px, 5vw, 84px) 1fr; gap: 16px; align-items: center; padding: clamp(8px, 1vw, 16px) 0; border-top: 2px solid var(--navy); }
+.resultados img { width: 100%; height: clamp(48px, 5vw, 84px); object-fit: contain; }
+.resultados .r-premio { font-size: clamp(14px, 1.2vw, 20px); font-weight: 600; color: var(--gris); }
+.resultados .r-nombre { font-size: clamp(20px, 2.2vw, 40px); font-weight: 800; line-height: 1.05; letter-spacing: -.015em; }
+.resultados .r-nombre--falta { color: var(--linea); }
+
+.papelitos { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+/* ─────────── mando (quien maneja) ─────────── */
+.mando { background: var(--papel); border-top: 2px solid var(--linea); padding: 8px var(--m); display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; font-size: 13px; }
+.mando__premios { display: flex; gap: 6px; flex-wrap: wrap; flex: 1 1 auto; }
+.mando__botones { display: flex; gap: 6px; flex-wrap: wrap; }
+.mando__estado { width: 100%; font-family: var(--mono); font-size: 12px; color: var(--gris); }
+.mini { border: 2px solid var(--navy); background: #fff; font-weight: 700; font-size: 13px; padding: 4px 10px; cursor: pointer; border-radius: 0; }
+.mini--osc { background: var(--navy); color: #fff; }
+.mini:disabled { opacity: .5; cursor: default; }
+.chip { border: 2px solid var(--linea); background: #fff; font-size: 13px; font-weight: 600; padding: 4px 10px; cursor: pointer; max-width: 22ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border-radius: 0; }
+.chip[aria-selected=true] { border-color: var(--navy); background: var(--navy); color: #fff; }
+.chip--hecho { border-color: var(--verde); color: var(--verde); }
+.chip--hecho::before { content: '✓ '; }
+.mas { width: 100%; display: flex; flex-direction: column; gap: 8px; padding: 6px 0 4px; }
+.mas__fila { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.mas label { font-weight: 700; color: var(--gris); }
+.mas input { min-height: 32px; padding: 4px 8px; border: 2px solid var(--navy); border-radius: 0; min-width: 220px; }
+.mas__ausentes { font-size: 13px; }
+.mas__ausentes button { margin-left: 6px; }
+
+.toast { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); background: var(--navy); color: #fff; font-weight: 700; padding: 10px 16px; z-index: 50; max-width: calc(100% - 32px); }
+
+/* En pantalla completa el mando se achica a una línea hasta que se pasa el mouse */
+:fullscreen .mando { opacity: .15; transition: opacity .2s; }
+:fullscreen .mando:hover, :fullscreen .mando:focus-within { opacity: 1; }
+
+@media (max-width: 760px) {
+  .vista--premio { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) auto; align-content: center; }
+  .premio__foto img { max-height: 30vh; }
+  .sorteo__placa { min-height: 34vh; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .premio__foto img, .escenario[data-estado=ganador] .sorteo__nombre { animation: none; }
+  .btn:hover { transform: none; }
+}
