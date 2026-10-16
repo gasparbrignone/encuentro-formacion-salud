@@ -65,8 +65,8 @@
           <p id="nombreDni" class="sorteo__dni"></p>
         </div>
         <div class="sorteo__acciones">
-          <button id="btnConfirmar" class="btn btn--sortear" type="button">Está presente: confirmar</button>
-          <button id="btnAusente" class="btn" type="button">No está: sortear de nuevo</button>
+          <button id="btnConfirmar" class="btn btn--sortear" type="button">Siguiente</button>
+          <button id="btnAusente" class="btn" type="button">Repetir</button>
         </div>
       </section>
 
@@ -85,11 +85,13 @@
       <div class="mando__botones">
         <button id="btnResultados" class="mini" type="button">Ganadores</button>
         <button id="btnActualizar" class="mini" type="button">Actualizar lista</button>
-        <button id="btnSonido" class="mini" type="button" aria-pressed="true">Sonido: sí</button>
+        <button id="btnMusica" class="mini" type="button" aria-pressed="true">Música: sí</button>
+        <button id="btnSonido" class="mini" type="button" aria-pressed="true">Efectos: sí</button>
         <button id="btnPantalla" class="mini" type="button">Pantalla completa</button>
         <button id="btnMas" class="mini" type="button">Más</button>
       </div>
       <p id="estadoLista" class="mando__estado"></p>
+      <p class="mando__estado">Música: "Wallpaper", Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0</p>
 
       <div id="panelMas" class="mas" hidden>
         <form id="formPremio" class="mas__fila">
@@ -104,7 +106,7 @@
           <button id="btnSalir" class="mini mini--osc" type="button">Salir</button>
         </div>
         <p id="listaAusentes" class="mas__ausentes" hidden></p>
-        <p class="ayuda">Atajos: espacio o flecha derecha = sortear / confirmar · R = ganadores · F = pantalla completa · M = sonido. Cada ganador queda afuera de los sorteos siguientes, igual que quien no estaba.</p>
+        <p class="ayuda">Atajos: espacio o flecha derecha = sortear / siguiente · R = ganadores · F = pantalla completa · M = música · S = efectos. "Siguiente" confirma al ganador y pasa al próximo premio; "Repetir" lo deja afuera (por ejemplo, si no está) y vuelve a sortear el mismo premio. Cada ganador queda afuera de los sorteos siguientes.</p>
       </div>
     </footer>
   </div>

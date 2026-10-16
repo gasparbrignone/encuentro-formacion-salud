@@ -88,6 +88,13 @@ a { color: var(--azul); font-weight: 700; }
 .sorteo__acciones .btn--sortear { margin: 0; font-size: clamp(17px, 1.7vw, 28px); }
 .sorteo__acciones .btn:not(.btn--sortear) { font-size: clamp(15px, 1.3vw, 22px); }
 
+/* tramo de suspenso: el nombre late; después, pausa con "Y se lo lleva…" */
+.escenario[data-fase=tension] .sorteo__placa { background: var(--navy); }
+.escenario[data-fase=tension] .sorteo__nombre { animation: latido .7s ease-in-out infinite; transform-origin: left center; }
+.escenario[data-fase=espera] .sorteo__placa { background: var(--navy); }
+.escenario[data-fase=espera] .sorteo__nombre { opacity: 1; animation: respira 1.8s ease-in-out both; }
+@keyframes latido { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.04); } 30% { transform: scale(1); } 45% { transform: scale(1.025); } }
+@keyframes respira { from { opacity: 0; letter-spacing: -.06em; } to { opacity: 1; letter-spacing: -.035em; } }
 @keyframes rebote { 0% { transform: scale(.6); opacity: 0; } 60% { transform: scale(1.06); opacity: 1; } 100% { transform: scale(1); } }
 
 /* ─────────── 4 · ganadores ─────────── */
@@ -134,6 +141,6 @@ a { color: var(--azul); font-weight: 700; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .premio__foto img, .escenario[data-estado=ganador] .sorteo__nombre { animation: none; }
+  .premio__foto img, .escenario[data-estado=ganador] .sorteo__nombre, .escenario[data-fase] .sorteo__nombre { animation: none; }
   .btn:hover { transform: none; }
 }

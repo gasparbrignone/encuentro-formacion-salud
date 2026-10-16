@@ -10,7 +10,7 @@
   const GUARDADO = DEMO ? 'efs-sorteo-demo' : 'efs-sorteo-2026';
   const SESION_CLAVE = 'efs-sorteo-clave';
   const REFRESCO_MS = 30000;
-  const GIRO_MS = 6500;
+  const GIRO_MS = 7000;
 
   const PREMIOS_BASE = [
     { id: 'libro-medicina-interna', corto: 'Medicina interna', titulo: 'Manual de medicina interna', detalle: 'Cálculos, scores y abordajes. Bartolomei, Aranalde y Keller', foto: 'img/libro-medicina-interna.webp', logo: 'img/logo-corpus.webp', sponsor: 'Corpus' },
@@ -35,7 +35,7 @@
   // ─────────── estado guardado ───────────
   let estado = leerEstado();
   function leerEstado() {
-    const base = { extras: [], ganadores: {}, ausentes: {}, actual: PREMIOS_BASE[0].id, sonido: true };
+    const base = { extras: [], ganadores: {}, ausentes: {}, actual: PREMIOS_BASE[0].id, sonido: true, musica: true };
     try { return Object.assign(base, JSON.parse(localStorage.getItem(GUARDADO) || '{}')); } catch { return base; }
   }
   function guardar() {
@@ -71,36 +71,59 @@
 
   const hhmm = (d) => d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
 
-  // ─────────── sonido (sintetizado, sin archivos) ───────────
+  // ─────────── sonido: música del EFS + efectos de las historias ───────────
+  // Música: "Wallpaper", Kevin MacLeod (incompetech.com), CC BY 4.0: el crédito queda visible abajo.
+  const musica = new Audio('audio/musica.mp3');
+  musica.loop = true;
+  musica.preload = 'auto';
+  const VOL = { normal: 0.35, giro: 0.18, festejo: 0.75 };
+  let volObjetivo = VOL.normal;
+  let fundido = null;
+  function volumenMusica(v, ms) {
+    volObjetivo = v;
+    clearInterval(fundido);
+    const desde = musica.volume;
+    const inicio = performance.now();
+    fundido = setInterval(() => {
+      const k = Math.min(1, (performance.now() - inicio) / (ms || 1));
+      musica.volume = Math.max(0, Math.min(1, desde + (v - desde) * k));
+      if (k >= 1) clearInterval(fundido);
+    }, 30);
+  }
+  function arrancarMusica() {
+    if (!estado.musica || !musica.paused) return;
+    musica.volume = 0;
+    musica.play().then(() => volumenMusica(volObjetivo, 1500)).catch(() => { /* hace falta un clic primero */ });
+  }
+
   let audio = null;
+  const buffers = {};
   function ctx() {
-    if (!estado.sonido) return null;
     try {
       audio = audio || new (window.AudioContext || window.webkitAudioContext)();
       if (audio.state === 'suspended') audio.resume();
+      if (!buffers.cargando) {
+        buffers.cargando = true;
+        ['tick', 'impacto', 'campanita', 'sub', 'whoosh-sube'].forEach(async (n) => {
+          try { buffers[n] = await audio.decodeAudioData(await (await fetch('audio/' + n + '.wav')).arrayBuffer()); } catch { /* sin ese efecto */ }
+        });
+      }
       return audio;
     } catch { return null; }
   }
-  function nota(frec, inicio, dur, vol, tipo) {
+  function efecto(nombre, vol, velocidad) {
+    if (!estado.sonido) return;
     const a = ctx();
-    if (!a) return;
-    const t0 = a.currentTime + inicio;
-    const o = a.createOscillator();
+    if (!a || !buffers[nombre]) return;
+    const f = a.createBufferSource();
     const g = a.createGain();
-    o.type = tipo || 'sine';
-    o.frequency.value = frec;
-    g.gain.setValueAtTime(0.0001, t0);
-    g.gain.exponentialRampToValueAtTime(vol, t0 + 0.008);
-    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-    o.connect(g).connect(a.destination);
-    o.start(t0);
-    o.stop(t0 + dur + 0.05);
+    f.buffer = buffers[nombre];
+    f.playbackRate.value = velocidad || 1;
+    g.gain.value = vol == null ? 1 : vol;
+    f.connect(g).connect(a.destination);
+    f.start();
   }
-  const tic = (avance) => nota(700 + avance * 700, 0, 0.05, 0.12, 'square');
-  function campanita() {
-    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => nota(f, i * 0.09, 0.5, 0.18, 'triangle'));
-    [1, 2.76, 5.4].forEach((k, i) => nota(1046.5 * k, 0.4, 2.2 - i * 0.5, 0.12 / (i + 1)));
-  }
+  const tic = (avance) => efecto('tick', 0.55, 0.9 + avance * 0.6);
 
   // ─────────── papelitos (colores de la paleta) ───────────
   function papelitos() {
@@ -194,6 +217,7 @@
   // ─────────── pantallas ───────────
   function mostrar(cual) {
     escenario.dataset.estado = cual;
+    delete escenario.dataset.fase;
     $('#btnResultados').textContent = cual === 'resultados' ? 'Volver al premio' : 'Ganadores';
   }
 
@@ -332,32 +356,57 @@
     girar(p, lista, ganador);
   }
 
+  // Tres tramos: nombres que pasan cada vez más lento, unos pocos nombres con latido (sin el ganador)
+  // y una pausa en silencio con "Y se lo lleva…" antes de mostrarlo.
   function girar(p, lista, ganador) {
     girando = true;
     clearTimeout(temporizador);
+    arrancarMusica();
+    volumenMusica(VOL.giro, 600);
     $('#sorteoPremio').textContent = p.titulo;
     $('#nombreDni').textContent = '';
     mostrar('girando');
     pintarChips();
+    efecto('whoosh-sube', 0.6);
     const el = $('#nombreGira');
     const reducido = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const total = reducido ? 1200 : GIRO_MS;
+    const total = reducido ? 1500 : GIRO_MS;
     const inicio = performance.now();
     let ultimo = -1;
-    const paso = () => {
-      const t = performance.now() - inicio;
-      const avance = Math.min(1, t / total);
-      if (avance >= 1) return terminar(p, ganador);
-      // Cada vez más lento: de 45 ms a ~480 ms entre nombre y nombre.
+    const otro = (sinGanador) => {
+      const pool = sinGanador && lista.length > 1 ? lista.filter((x) => x.c !== ganador.c) : lista;
       let i;
-      do { i = azar(lista.length); } while (lista.length > 1 && i === ultimo);
-      ultimo = i;
-      el.textContent = lista[i].n;
+      do { i = azar(pool.length); } while (pool.length > 1 && pool[i].c === ultimo);
+      ultimo = pool[i].c;
+      el.textContent = pool[i].n;
       ajustarNombre();
-      tic(avance);
-      temporizador = setTimeout(paso, 45 + Math.pow(avance, 2.6) * 440);
     };
-    paso();
+    const rapido = () => {
+      const avance = Math.min(1, (performance.now() - inicio) / total);
+      if (avance >= 1) return tension(0);
+      otro(false);
+      tic(avance);
+      // Cada vez más lento: de 45 ms a ~520 ms entre nombre y nombre.
+      temporizador = setTimeout(rapido, 45 + Math.pow(avance, 2.4) * 475);
+    };
+    const PAUSAS = [750, 1050, 1450];
+    const tension = (k) => {
+      if (k === 0) escenario.dataset.fase = 'tension';
+      if (k >= PAUSAS.length) return espera();
+      otro(true);
+      efecto('tick', 0.7, 0.8);
+      efecto('sub', 0.9);
+      temporizador = setTimeout(() => tension(k + 1), PAUSAS[k]);
+    };
+    const espera = () => {
+      escenario.dataset.fase = 'espera';
+      el.textContent = 'Y se lo lleva…';
+      ajustarNombre();
+      volumenMusica(0, 500);
+      efecto('whoosh-sube', 0.8);
+      temporizador = setTimeout(() => terminar(p, ganador), 1800);
+    };
+    rapido();
   }
 
   function terminar(p, ganador) {
@@ -370,8 +419,17 @@
     ajustarNombre();
     girando = false;
     pintarChips();
-    campanita();
+    festejo();
+  }
+
+  function festejo() {
+    efecto('impacto', 0.9);
+    efecto('campanita', 0.9);
     papelitos();
+    arrancarMusica();
+    volumenMusica(VOL.festejo, 300);
+    clearTimeout(festejo.t);
+    festejo.t = setTimeout(() => { if (!girando) volumenMusica(VOL.normal, 2500); }, 4500);
   }
 
   function confirmar() {
@@ -391,8 +449,7 @@
       mostrar('resultados');
       pintarResultados();
       pintarChips();
-      campanita();
-      papelitos();
+      festejo();
     }
   }
 
@@ -434,11 +491,27 @@
 
   function pintarSonido() {
     const b = $('#btnSonido');
-    b.textContent = 'Sonido: ' + (estado.sonido ? 'sí' : 'no');
+    b.textContent = 'Efectos: ' + (estado.sonido ? 'sí' : 'no');
     b.setAttribute('aria-pressed', String(estado.sonido));
   }
   function alternarSonido() { estado.sonido = !estado.sonido; guardar(); pintarSonido(); }
   $('#btnSonido').addEventListener('click', alternarSonido);
+
+  function pintarMusica() {
+    const b = $('#btnMusica');
+    b.textContent = 'Música: ' + (estado.musica ? 'sí' : 'no');
+    b.setAttribute('aria-pressed', String(estado.musica));
+  }
+  function alternarMusica() {
+    estado.musica = !estado.musica;
+    guardar();
+    pintarMusica();
+    if (estado.musica) { ctx(); arrancarMusica(); } else musica.pause();
+  }
+  $('#btnMusica').addEventListener('click', alternarMusica);
+  // El navegador no deja sonar nada antes del primer clic: la música arranca con el primero.
+  document.addEventListener('pointerdown', () => { ctx(); arrancarMusica(); }, { once: true });
+  document.addEventListener('keydown', () => { ctx(); arrancarMusica(); }, { once: true });
 
   function pantallaCompleta() {
     if (document.fullscreenElement) document.exitFullscreen();
@@ -493,8 +566,8 @@
 
   $('#btnReiniciar').addEventListener('click', () => {
     if (!confirm('¿Borrar todos los ganadores, ausentes y premios agregados? No se puede deshacer.')) return;
-    const sonido = estado.sonido;
-    estado = { extras: [], ganadores: {}, ausentes: {}, actual: PREMIOS_BASE[0].id, sonido };
+    const { sonido, musica: conMusica } = estado;
+    estado = { extras: [], ganadores: {}, ausentes: {}, actual: PREMIOS_BASE[0].id, sonido, musica: conMusica };
     guardar();
     mostrar('premio');
     pintarTodo();
@@ -514,7 +587,8 @@
       else if (escenario.dataset.estado === 'ganador') confirmar();
     } else if (k === 'r' || k === 'R') alternarResultados();
     else if (k === 'f' || k === 'F') pantallaCompleta();
-    else if (k === 'm' || k === 'M') alternarSonido();
+    else if (k === 'm' || k === 'M') alternarMusica();
+    else if (k === 's' || k === 'S') alternarSonido();
     else if (k === 'Escape' && escenario.dataset.estado === 'resultados') alternarResultados();
   });
   // Que un clic no deje el foco en un botón: si no, la barra espaciadora lo volvería a apretar.
@@ -541,6 +615,7 @@
     $('#app').hidden = false;
     $('#demoAviso').hidden = !DEMO;
     pintarSonido();
+    pintarMusica();
     // Si se recargó con un ganador en pantalla sin confirmar, se vuelve a mostrar.
     if (estado.pendiente && !estado.ganadores[estado.pendiente.premio]) {
       const p = premio(estado.pendiente.premio);
