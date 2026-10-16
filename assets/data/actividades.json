@@ -210,5 +210,57 @@
     "cupo": null,
     "inscripcion_previa": false,
     "oculta": false
+  },
+  {
+    "titulo": "Arritmias más frecuentes en la práctica clínica y su manejo inicial",
+    "tipo": "Charla",
+    "area": "",
+    "inicio": "",
+    "fin": "",
+    "lugar": "",
+    "descripcion": "Diagnóstico y manejo inicial: las arritmias más frecuentes, su diagnóstico electrocardiográfico, la evaluación hemodinámica del paciente y el manejo inicial.",
+    "temas": [
+      "Arritmias frecuentes",
+      "Diagnóstico por ECG",
+      "Manejo inicial"
+    ],
+    "imagen": "",
+    "disertantes": [
+      {
+        "nombre": "Florencia Pérez",
+        "rol": "Médica · Cardiología",
+        "institucion": "Universidad Nacional de Rosario",
+        "foto": ""
+      }
+    ],
+    "cupo": null,
+    "inscripcion_previa": false,
+    "oculta": false
+  },
+  {
+    "titulo": "Taller de extracción de sangre",
+    "tipo": "Taller",
+    "area": "",
+    "inicio": "",
+    "fin": "",
+    "lugar": "",
+    "descripcion": "Venopunción paso a paso, con práctica. Taller 100 % práctico: material y preparación; elección del sitio de punción; técnica de venopunción; bioseguridad y descarte. El taller se elige en la acreditación, según la disponibilidad.",
+    "temas": [
+      "Preparación y sitio",
+      "Técnica de venopunción",
+      "Bioseguridad y descarte"
+    ],
+    "imagen": "",
+    "disertantes": [
+      {
+        "nombre": "Alejandra Toledo",
+        "rol": "Enfermera · Terapia intensiva y unidad coronaria",
+        "institucion": "Hospital Roque Sáenz Peña · CEMAR",
+        "foto": ""
+      }
+    ],
+    "cupo": null,
+    "inscripcion_previa": false,
+    "oculta": false
   }
 ]
