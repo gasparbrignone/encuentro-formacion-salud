@@ -61,7 +61,7 @@
       "fin": "16:00",
       "pausa": false,
       "actividades": [
-        { "espacio": "Anf. Ferrandini", "tipo": "charla", "etiqueta": "Charla", "titulo": "Primeros auxilios", "quien": "Cruz Roja Rosario", "programa": "" },
+        { "espacio": "Anf. Ferrandini", "tipo": "charla", "etiqueta": "Charla", "titulo": "Formar para salvar. Actuar para transformar.", "quien": "Gimena Baez · Cruz Roja Rosario", "programa": "Formar para salvar. Actuar para transformar." },
         { "espacio": "CECECAP Grande", "tipo": "taller", "etiqueta": "Taller · cupo limitado", "titulo": "Taller de ECG", "quien": "Florencia Pérez", "programa": "Taller de ECG normal" }
       ]
     },

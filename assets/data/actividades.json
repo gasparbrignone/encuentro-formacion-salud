@@ -314,5 +314,31 @@
     "cupo": null,
     "inscripcion_previa": false,
     "oculta": false
+  },
+  {
+    "titulo": "Formar para salvar. Actuar para transformar.",
+    "tipo": "Charla",
+    "area": "",
+    "inicio": "",
+    "fin": "",
+    "lugar": "",
+    "descripcion": "RCP y compromiso humanitario en acción: de la práctica a la comunidad. Cómo unir la práctica de la reanimación con la vocación de servicio, y el impacto de la acción individual en la comunidad.",
+    "temas": [
+      "RCP",
+      "Vocación de servicio",
+      "Comunidad"
+    ],
+    "imagen": "",
+    "disertantes": [
+      {
+        "nombre": "Gimena Baez",
+        "rol": "Coordinadora General",
+        "institucion": "Cruz Roja Argentina · Filial Rosario",
+        "foto": "assets/img/uploads/disertante-gimena-baez.webp"
+      }
+    ],
+    "cupo": null,
+    "inscripcion_previa": false,
+    "oculta": false
   }
 ]
