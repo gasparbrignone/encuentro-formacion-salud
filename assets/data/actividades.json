@@ -288,5 +288,31 @@
     "cupo": null,
     "inscripcion_previa": false,
     "oculta": false
+  },
+  {
+    "titulo": "Cocina inteligente",
+    "tipo": "Charla",
+    "area": "",
+    "inicio": "",
+    "fin": "",
+    "lugar": "",
+    "descripcion": "Una guía práctica: técnicas y elecciones simples para una cocina más sana; qué va en el plato y en qué proporción para una dieta balanceada; y cómo transmitir estos conocimientos al paciente para que los aplique.",
+    "temas": [
+      "Cocina saludable",
+      "Dieta balanceada",
+      "Educación al paciente"
+    ],
+    "imagen": "",
+    "disertantes": [
+      {
+        "nombre": "Karina Graciela Frattini",
+        "rol": "Médica especialista en nutrición · Cirugía metabólica, nutrición en fertilidad y lipedema",
+        "institucion": "Sanatorio Británico · Sanatorio Español · Centro Médico Proar · Centro Médico Plastia",
+        "foto": "assets/img/uploads/disertante-karina-frattini.webp"
+      }
+    ],
+    "cupo": null,
+    "inscripcion_previa": false,
+    "oculta": false
   }
 ]

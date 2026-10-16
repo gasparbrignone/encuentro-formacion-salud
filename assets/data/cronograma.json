@@ -1,0 +1,89 @@
+{
+  "fecha": "2026-10-17",
+  "espacios": [
+    { "nombre": "Anf. Ferrandini", "piso": "1.er piso" },
+    { "nombre": "Anf. Anatomía Patológica", "piso": "1.er piso" },
+    { "nombre": "CECECAP Grande", "piso": "2.º piso" }
+  ],
+  "franjas": [
+    {
+      "inicio": "8:00",
+      "fin": "9:00",
+      "pausa": true,
+      "titulo": "Acreditación y desayuno",
+      "lugar": "Hall de ingreso",
+      "texto": "El desayuno está incluido con la entrada.* **Ahí elegís tu taller.**",
+      "nota": "* Hay opciones sin TACC.",
+      "actividades": []
+    },
+    {
+      "inicio": "9:00",
+      "fin": "10:30",
+      "pausa": false,
+      "actividades": [
+        { "espacio": "Anf. Ferrandini", "tipo": "charla", "etiqueta": "Mesa redonda", "titulo": "Medicina del deporte", "quien": "Montrasi, Biasiol Calvo, Bottoli y Girotti", "programa": "Medicina del deporte" },
+        { "espacio": "Anf. Anatomía Patológica", "tipo": "charla", "etiqueta": "Charla", "titulo": "Cocina inteligente", "quien": "Karina Graciela Frattini", "programa": "Cocina inteligente" },
+        { "espacio": "CECECAP Grande", "tipo": "taller", "etiqueta": "Taller · cupo limitado", "titulo": "Taller de inyectables", "quien": "Paola Martinotti", "programa": "Taller de inyectables" }
+      ]
+    },
+    {
+      "inicio": "10:30",
+      "fin": "12:00",
+      "pausa": false,
+      "actividades": [
+        { "espacio": "Anf. Ferrandini", "tipo": "charla", "etiqueta": "Conversatorio", "titulo": "¿Qué pasa cuando terminamos la Facultad?", "quien": "Marcelo Borgna, residentes y estudiantes de la PFO", "programa": "¿Qué pasa cuando terminamos la Facultad?" },
+        { "espacio": "Anf. Anatomía Patológica", "tipo": "charla", "etiqueta": "Charla", "titulo": "Nutrición clínica", "quien": "Groberman, Frattini y Biasiol Calvo", "programa": "Nutrición clínica" },
+        { "espacio": "CECECAP Grande", "tipo": "taller", "etiqueta": "Taller · cupo limitado", "titulo": "Taller de inyectables", "quien": "Paola Martinotti", "programa": "Taller de inyectables" }
+      ]
+    },
+    {
+      "inicio": "12:00",
+      "fin": "13:00",
+      "pausa": true,
+      "titulo": "Almuerzo",
+      "lugar": "",
+      "texto": "Podés comprar comida en el kiosco de ATP.",
+      "nota": "",
+      "actividades": []
+    },
+    {
+      "inicio": "13:00",
+      "fin": "14:30",
+      "pausa": false,
+      "actividades": [
+        { "espacio": "Anf. Ferrandini", "tipo": "charla", "etiqueta": "Charla", "titulo": "Quien maneja shock, maneja gran parte de la medicina", "quien": "M. Fabián Orellana", "programa": "Shock: fisiopatología, diagnóstico y manejo inicial" },
+        { "espacio": "Anf. Anatomía Patológica", "tipo": "charla", "etiqueta": "Charla", "titulo": "Inteligencia artificial en medicina", "quien": "Luciano Anselmino", "programa": "Inteligencia artificial en medicina" },
+        { "espacio": "CECECAP Grande", "tipo": "taller", "etiqueta": "Taller · cupo limitado", "titulo": "Taller de ECG", "quien": "Florencia Pérez", "programa": "Taller de ECG normal" }
+      ]
+    },
+    {
+      "inicio": "14:30",
+      "fin": "16:00",
+      "pausa": false,
+      "actividades": [
+        { "espacio": "Anf. Ferrandini", "tipo": "charla", "etiqueta": "Charla", "titulo": "Primeros auxilios", "quien": "Cruz Roja Rosario", "programa": "" },
+        { "espacio": "CECECAP Grande", "tipo": "taller", "etiqueta": "Taller · cupo limitado", "titulo": "Taller de ECG", "quien": "Florencia Pérez", "programa": "Taller de ECG normal" }
+      ]
+    },
+    {
+      "inicio": "16:00",
+      "fin": "16:20",
+      "pausa": true,
+      "titulo": "Break",
+      "lugar": "",
+      "texto": "Podés comprar algo para comer en el kiosco de ATP.",
+      "nota": "",
+      "actividades": []
+    },
+    {
+      "inicio": "16:20",
+      "fin": "18:00",
+      "pausa": false,
+      "actividades": [
+        { "espacio": "Anf. Ferrandini", "tipo": "charla", "etiqueta": "Conferencia en vivo", "titulo": "Interpretación clínica del laboratorio", "quien": "Cristóbal Elgueta", "programa": "Interpretación clínica del laboratorio" },
+        { "espacio": "Anf. Anatomía Patológica", "tipo": "charla", "etiqueta": "Charla", "titulo": "Arritmias más frecuentes en la práctica clínica y su manejo inicial", "quien": "Florencia Pérez", "programa": "Arritmias más frecuentes en la práctica clínica y su manejo inicial" },
+        { "espacio": "CECECAP Grande", "tipo": "taller", "etiqueta": "Taller · cupo limitado", "titulo": "Taller de extracción", "quien": "Alejandra Toledo", "programa": "Taller de extracción de sangre" }
+      ]
+    }
+  ]
+}

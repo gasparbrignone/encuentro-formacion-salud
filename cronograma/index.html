@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cronograma · EFS 2026</title>
+  <meta name="description" content="Cronograma del 2.º Encuentro de Formación en Salud: sábado 17 de octubre, de 8 a 18 h, en la Facultad de Ciencias Médicas de la UNR. Qué pasa en cada aula y a qué hora." />
+  <link rel="canonical" href="https://efsarg.com.ar/cronograma/" />
+  <meta name="theme-color" content="#16283F" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Encuentro de Formación en Salud" />
+  <meta property="og:title" content="Cronograma · EFS 2026" />
+  <meta property="og:description" content="Sábado 17 de octubre, 8 a 18 h, FCM-UNR. Qué pasa en cada aula y a qué hora." />
+  <meta property="og:url" content="https://efsarg.com.ar/cronograma/" />
+  <meta property="og:locale" content="es_AR" />
+  <meta property="og:image" content="https://efsarg.com.ar/assets/img/og-efs.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/apple-touch-icon.png" />
+
+  <link rel="preload" href="../assets/fonts/chivo-normal-400-900-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../assets/fonts/chivo-mono-normal-500-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../assets/fonts.css" />
+  <link rel="stylesheet" href="../assets/styles.css?v=20261014a" />
+  <link rel="stylesheet" href="../assets/cronograma.css?v=20261016c" />
+
+  <!-- Google tag (gtag.js): se carga después de que la página terminó de cargar -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag("js", new Date());
+    gtag("config", "G-NN76M1GBX5");
+    addEventListener("load", function () {
+      setTimeout(function () {
+        var s = document.createElement("script");
+        s.async = true; s.src = "https://www.googletagmanager.com/gtag/js?id=G-NN76M1GBX5";
+        document.head.appendChild(s);
+      }, 1500);
+    });
+  </script>
+
+  <!-- Meta Pixel -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1096888216454556');
+    fbq('track', 'PageView');
+  </script>
+</head>
+<body class="crono">
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1096888216454556&ev=PageView&noscript=1" alt="" /></noscript>
+
+<div class="franja franja--navy crono-franja" aria-hidden="true"><span><b>Cronograma</b><i>Sábado 17 de octubre</i></span></div>
+
+<header class="crono-top">
+  <a class="crono-logo" href="../" aria-label="Encuentro de Formación en Salud, ir al inicio">
+    <img src="../assets/img/logo-efs-dark.png" alt="Encuentro de Formación en Salud" width="900" height="316" />
+  </a>
+  <a class="crono-volver" href="../">Ir al sitio</a>
+</header>
+
+<main>
+  <section class="crono-cab" aria-labelledby="crono-titulo">
+    <span class="etiqueta">Sábado 17 de octubre</span>
+    <h1 class="crono-titulo" id="crono-titulo">Cronograma</h1>
+    <p class="crono-sub">8 a 18 h · Facultad de Ciencias Médicas, UNR</p>
+    <ul class="crono-leyenda" aria-label="Referencias">
+      <li>Charla</li>
+      <li class="ley-taller">Taller, cupo limitado</li>
+    </ul>
+    <a class="crono-ahora-link" id="ahoraLink" href="#" hidden></a>
+  </section>
+
+  <nav class="crono-horas" id="horas" aria-label="Ir a un horario">
+    <ul id="horasLista"></ul>
+  </nav>
+
+  <div class="crono-dia" id="dia" aria-live="polite">
+    <p class="crono-cargando">Cargando el cronograma…</p>
+    <noscript><p class="crono-cargando">Para ver el cronograma necesitás activar JavaScript en el navegador.</p></noscript>
+  </div>
+
+  <section class="crono-sec" id="talleres" aria-labelledby="talleres-titulo" hidden>
+    <span class="etiqueta etiqueta--teal">Uno por persona</span>
+    <h2 class="crono-sec-titulo" id="talleres-titulo">Talleres, <span>cupo limitado</span></h2>
+    <p class="crono-sec-texto"><b>Cada persona elige un solo taller.</b> Lo elegís al acreditarte, cuando escaneamos tu entrada, sujeto a disponibilidad.</p>
+    <ul class="crono-talleres" id="talleresLista"></ul>
+    <p class="crono-nota" id="talleresNota" hidden>* Es el mismo taller en los dos horarios.</p>
+  </section>
+
+  <section class="crono-sec" id="aulas" aria-labelledby="aulas-titulo">
+    <span class="etiqueta">Facultad de Ciencias Médicas</span>
+    <h2 class="crono-sec-titulo" id="aulas-titulo">Cómo llegar a las aulas</h2>
+    <figure class="plano" id="plano">
+      <img src="../assets/img/plano-fcm.png" alt="Plano del frente de la Facultad sobre calle Santa Fe, con las tres aulas marcadas" width="1692" height="639" loading="lazy" decoding="async" />
+      <span class="plano-hall" aria-hidden="true">Hall</span>
+      <figcaption class="plano-entrada">↑ Entrada por calle Santa Fe</figcaption>
+    </figure>
+    <ol class="aulas" id="aulasLista"></ol>
+    <p class="crono-dir">Santa Fe 3100, Rosario</p>
+    <a class="btn btn--navy" href="https://maps.google.com/?q=Facultad+de+Ciencias+Medicas+UNR+Santa+Fe+3100+Rosario" target="_blank" rel="noopener">Ver en Google Maps</a>
+  </section>
+</main>
+
+<footer class="pie">
+  <div class="firma">
+    <img src="../assets/img/logo-efs-light.png" alt="Encuentro de Formación en Salud" class="firma-efs" width="900" height="316" />
+    <img src="../assets/img/logo-atp.svg" alt="ATP" class="firma-atp" width="579" height="184" />
+  </div>
+  <p class="pie-texto">Encuentro de Formación en Salud. Facultad de Ciencias Médicas, Universidad Nacional de Rosario.</p>
+</footer>
+
+<script src="../assets/cronograma.js?v=20261016b"></script>
+</body>
+</html>

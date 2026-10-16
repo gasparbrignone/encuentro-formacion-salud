@@ -1,0 +1,120 @@
+/* EFS · cronograma del día (efsarg.com.ar/cronograma/)
+   Pensado primero para el celular: una franja horaria debajo de la otra, los tres espacios siempre en el mismo orden,
+   barra fija de horarios para saltar, y el día del evento marca lo que pasa ahora.
+   Criterio del cronograma en carrusel (sistema §13.5.1): tarjetas del color de categoría (charla azul, taller teal),
+   "a confirmar" en papel, pausas solo tipográficas, hora de inicio y de fin con la misma jerarquía, secundarios con asterisco. */
+
+.crono { --izq: calc(var(--franja) + var(--m)); font-variant-numeric: tabular-nums; }
+.crono-franja { position: fixed; z-index: 60; }
+html:has(.crono) { scroll-padding-top: 0; }   /* styles.css lo pone para la barra del inicio; acá cada sección trae su margen */
+
+/* ─── cabecera ────────────────────────────────────────── */
+.crono-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px var(--m) 0 var(--izq); }
+.crono-logo img { height: 38px; width: auto; }
+.crono-volver { font-family: var(--mono); font-weight: 500; font-size: 14px; text-decoration: none; padding: 12px 0; }
+.crono-volver:hover { color: var(--azul2); }
+
+.crono-cab { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: clamp(28px, 6vw, 64px) var(--m) 18px var(--izq); }
+.crono-titulo { font-weight: 900; font-size: clamp(44px, 13vw, 110px); line-height: .88; letter-spacing: -.045em; margin-top: 4px; }
+.crono-sub { font-weight: 700; font-size: clamp(17px, 4.4vw, 24px); line-height: 1.25; letter-spacing: -.01em; }
+.crono-ahora-link { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; margin-top: 6px; padding: 12px 16px; background: var(--navy); color: #fff; font-family: var(--mono); font-weight: 500; font-size: 15px; text-decoration: none; }
+.crono-ahora-link b { font-family: var(--sans); font-weight: 800; font-size: 16px; }
+.crono-ahora-link:hover { background: var(--azul); }
+
+/* ─── barra de horarios (fija arriba) ─────────────────── */
+.crono-horas { position: sticky; top: 0; z-index: 50; background: rgba(255, 255, 255, .97); box-shadow: 0 1px 0 var(--linea); overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.crono-horas::-webkit-scrollbar { display: none; }
+.crono-horas ul { display: flex; gap: 6px; list-style: none; padding: 10px var(--m) 10px var(--izq); width: max-content; }
+.crono-horas a { display: block; font-family: var(--mono); font-weight: 500; font-size: 15px; line-height: 1; padding: 11px 12px; border: 2px solid var(--navy); text-decoration: none; white-space: nowrap; }
+.crono-horas a:hover { background: var(--papel); }
+.crono-horas a[aria-current] { background: var(--navy); color: #fff; }
+.crono-horas .horas-sep { margin-left: 10px; }
+
+.crono-cargando { padding: 32px var(--m) 32px var(--izq); font-size: 17px; }
+.crono-dia > .btn { margin-left: var(--izq); }
+
+/* ─── franjas horarias: hora a la izquierda, actividades en filas ─ */
+.fr { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 14px; padding: 22px var(--m) 0 var(--izq); scroll-margin-top: 58px; transition: opacity .2s; }
+.fr-izq { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.fr-hora { display: flex; flex-direction: column; line-height: 1.1; }
+.fr-hora b { font-weight: 800; font-size: 21px; letter-spacing: -.02em; }
+.fr-hora span { font-family: var(--mono); font-weight: 500; font-size: 13px; color: var(--gris); }
+.fr-der { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+
+.fr-tag-ahora { background: var(--navy); color: #fff; font-family: var(--mono); font-weight: 500; font-size: 12px; line-height: 1; padding: 6px 7px; }
+.fr--ahora .fr-hora b { color: var(--navy); }
+.fr--pasada { opacity: .4; }
+
+/* pausas: solo texto */
+.fr-pausa-t { font-weight: 800; font-size: 19px; line-height: 1.2; letter-spacing: -.01em; padding-top: 1px; }
+.fr-lugar { font-family: var(--mono); font-weight: 500; font-size: 13px; margin-top: 4px; }
+.fr-texto { font-size: 15px; line-height: 1.4; margin-top: 4px; }
+.fr-texto b { font-weight: 700; }
+.crono-nota { font-size: 13px; line-height: 1.4; color: var(--gris); margin-top: 6px; }
+
+/* actividad: una fila con el color de su tipo a la izquierda */
+.ac { background: var(--papel); border-left: 5px solid var(--azul); }
+.ac--taller { border-left-color: var(--teal); }
+.ac > summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 10px; padding: 11px 12px 12px; }
+.ac > summary::-webkit-details-marker { display: none; }
+.ac > summary::after { content: '+'; grid-column: 2; grid-row: 1 / span 2; align-self: center; font-weight: 400; font-size: 22px; line-height: 1; color: var(--gris); }
+.ac[open] > summary::after { content: '−'; }
+.ac-t { font-weight: 700; font-size: 17px; line-height: 1.22; }
+.ac-aula { font-family: var(--mono); font-weight: 500; font-size: 13px; line-height: 1.3; margin-top: 3px; color: var(--azul); }
+.ac--taller .ac-aula { color: var(--teal); }
+.ac-det { padding: 0 12px 14px; }
+.ac-det p { font-size: 15px; line-height: 1.45; max-width: 38em; }
+.ac-det .ac-sub { font-weight: 700; margin-bottom: 6px; }
+.ac-gente { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+.ac-persona { display: flex; align-items: center; gap: 10px; font-size: 14px; line-height: 1.3; }
+.ac-persona b { display: block; font-weight: 700; }
+.ac-persona small { display: block; font-size: 12.5px; color: var(--gris); }
+.ac-foto { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #8FC1E3; overflow: hidden; color: var(--navy); font-weight: 800; font-size: 14px; }
+.ac-foto img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; }
+
+/* leyenda de colores */
+.crono-leyenda { display: flex; flex-wrap: wrap; gap: 6px 16px; list-style: none; font-size: 14px; line-height: 1.3; }
+.crono-leyenda li { display: flex; align-items: center; gap: 7px; }
+.crono-leyenda li::before { content: ''; width: 5px; height: 16px; background: var(--azul); }
+.crono-leyenda .ley-taller::before { background: var(--teal); }
+
+/* ─── talleres y aulas ────────────────────────────────── */
+.crono-sec { display: flex; flex-direction: column; align-items: flex-start; padding: clamp(48px, 9vw, 88px) var(--m) 8px var(--izq); scroll-margin-top: 64px; }
+.crono-sec + .crono-sec { padding-bottom: clamp(56px, 9vw, 96px); }
+.etiqueta--teal { background: var(--teal); }
+.crono-sec-titulo { font-weight: 800; font-size: clamp(28px, 8vw, 48px); line-height: .98; letter-spacing: -.025em; margin-top: 16px; }
+#talleres-titulo span { color: var(--teal); }
+.crono-sec-texto { font-weight: 400; font-size: 16px; line-height: 1.4; margin-top: 16px; max-width: 32em; }
+.crono-sec-texto b { font-weight: 800; }
+
+.crono-talleres { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-top: 22px; width: 100%; max-width: 640px; }
+.crono-talleres li { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 11px 12px 12px; background: var(--papel); border-left: 5px solid var(--teal); }
+.crono-talleres b { font-weight: 700; font-size: 17px; line-height: 1.22; }
+.crono-talleres span { font-family: var(--mono); font-weight: 500; font-size: 13px; color: var(--teal); white-space: nowrap; }
+.crono-talleres .crono-talleres-donde { display: block; padding: 6px 0 0; background: none; border: 0; color: var(--navy); font-family: var(--mono); font-weight: 500; font-size: 14px; }
+
+.plano { position: relative; width: 100%; max-width: 860px; margin: 28px 0 0; }
+.plano img { width: 100%; height: auto; }
+.plano-pin { position: absolute; transform: translate(-50%, -50%); display: grid; place-items: center; width: clamp(26px, 7.2vw, 52px); height: clamp(26px, 7.2vw, 52px); border-radius: 50%; color: #fff; font-weight: 900; font-size: clamp(14px, 3.8vw, 26px); line-height: 1; box-shadow: 0 0 0 clamp(2px, .7vw, 5px) #fff; }
+.plano-hall { position: absolute; left: 50.2%; top: 66.4%; transform: translate(-50%, -50%); font-family: var(--mono); font-weight: 500; font-size: clamp(9px, 2.4vw, 17px); }
+.plano-entrada { margin-top: 10px; text-align: center; font-family: var(--mono); font-weight: 500; font-size: clamp(12px, 3.4vw, 16px); }
+
+.aula-n--charla { background: var(--azul); }
+.aula-n--taller { background: var(--teal); }
+.aulas { list-style: none; display: flex; flex-direction: column; gap: 14px; margin-top: 28px; width: 100%; max-width: 640px; }
+.aulas li { display: flex; align-items: center; gap: 12px; }
+.aula-n { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; color: #fff; font-weight: 900; font-size: 17px; line-height: 1; }
+.aulas b { flex: 1; font-weight: 800; font-size: 19px; line-height: 1.15; }
+.aula-piso { font-family: var(--mono); font-weight: 500; font-size: 14px; white-space: nowrap; }
+.crono-dir { font-family: var(--mono); font-weight: 500; font-size: 14px; margin: 24px 0 12px; }
+
+/* ─── pantallas grandes: más aire, misma estructura ─── */
+@media (min-width: 900px) {
+  .fr { grid-template-columns: 110px minmax(0, 720px); gap: 24px; }
+  .fr-hora b { font-size: 28px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:has(.crono) { scroll-behavior: auto; }
+  .fr { transition: none; }
+}
