@@ -10,7 +10,7 @@
   const GUARDADO = DEMO ? 'efs-sorteo-demo' : 'efs-sorteo-2026';
   const SESION_CLAVE = 'efs-sorteo-clave';
   const REFRESCO_MS = 30000;
-  const GIRO_MS = 7000;
+  const GIRO_MS = 8000;
 
   const PREMIOS_BASE = [
     { id: 'libro-medicina-interna', corto: 'Medicina interna', titulo: 'Manual de medicina interna', detalle: 'Cálculos, scores y abordajes. Bartolomei, Aranalde y Keller', foto: 'img/libro-medicina-interna.webp', logo: 'img/logo-corpus.webp', sponsor: 'Corpus' },
@@ -155,10 +155,10 @@
   }
 
   // ─────────── red: lista de acreditados ───────────
-  async function pedirLista() {
+  async function pedirLista(timeoutMs) {
     if (DEMO) return listaDemo();
     const control = new AbortController();
-    const t = setTimeout(() => control.abort(), 25000);
+    const t = setTimeout(() => control.abort(), timeoutMs || 25000);
     try {
       // text/plain: pedido "simple", igual que los celulares del staff (sin consulta previa de CORS).
       const r = await fetch(SERVICIO + '/staff', { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=UTF-8' }, body: JSON.stringify({ op: 'lista', clave }), signal: control.signal });
@@ -187,8 +187,8 @@
     return demoCache;
   }
 
-  async function actualizarLista(avisarSiFalla) {
-    const r = await pedirLista();
+  async function actualizarLista(avisarSiFalla, timeoutMs) {
+    const r = await pedirLista(timeoutMs);
     if (!r.ok) {
       if (r.error === 'clave' || r.error === 'demasiados_intentos') { salir(r.error === 'clave' ? 'La clave del staff no es válida.' : 'Demasiados intentos. Esperá unos minutos.'); return false; }
       $('#estadoLista').textContent = 'No se pudo actualizar la lista (' + (r.error || 'error') + '). Se sigue con la última que llegó: ' + personas.length + ' acreditados.';
@@ -217,7 +217,6 @@
   // ─────────── pantallas ───────────
   function mostrar(cual) {
     escenario.dataset.estado = cual;
-    delete escenario.dataset.fase;
     $('#btnResultados').textContent = cual === 'resultados' ? 'Volver al premio' : 'Ganadores';
   }
 
@@ -341,7 +340,8 @@
     // Justo antes de sortear se trae la lista otra vez, por si alguien se acreditó recién.
     $('#btnSortear').disabled = true;
     $('#btnSortear').textContent = 'Preparando…';
-    await actualizarLista(false);
+    // Con tope corto: si la red del aula falla, se sortea con la última lista que llegó (a lo sumo de hace 30 s).
+    await actualizarLista(false, 6000);
     const lista = elegibles();
     if (!lista.length) {
       girando = false;
@@ -356,8 +356,7 @@
     girar(p, lista, ganador);
   }
 
-  // Tres tramos: nombres que pasan cada vez más lento, unos pocos nombres con latido (sin el ganador)
-  // y una pausa en silencio con "Y se lo lleva…" antes de mostrarlo.
+  // Los nombres pasan cada vez más lento hasta frenar en el ganador.
   function girar(p, lista, ganador) {
     girando = true;
     clearTimeout(temporizador);
@@ -372,39 +371,18 @@
     const reducido = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const total = reducido ? 1500 : GIRO_MS;
     const inicio = performance.now();
-    let ultimo = -1;
-    const otro = (sinGanador) => {
-      const pool = sinGanador && lista.length > 1 ? lista.filter((x) => x.c !== ganador.c) : lista;
-      let i;
-      do { i = azar(pool.length); } while (pool.length > 1 && pool[i].c === ultimo);
-      ultimo = pool[i].c;
-      el.textContent = pool[i].n;
-      ajustarNombre();
-    };
+    let ultimo = '';
     const rapido = () => {
       const avance = Math.min(1, (performance.now() - inicio) / total);
-      if (avance >= 1) return tension(0);
-      otro(false);
-      tic(avance);
-      // Cada vez más lento: de 45 ms a ~520 ms entre nombre y nombre.
-      temporizador = setTimeout(rapido, 45 + Math.pow(avance, 2.4) * 475);
-    };
-    const PAUSAS = [750, 1050, 1450];
-    const tension = (k) => {
-      if (k === 0) escenario.dataset.fase = 'tension';
-      if (k >= PAUSAS.length) return espera();
-      otro(true);
-      efecto('tick', 0.7, 0.8);
-      efecto('sub', 0.9);
-      temporizador = setTimeout(() => tension(k + 1), PAUSAS[k]);
-    };
-    const espera = () => {
-      escenario.dataset.fase = 'espera';
-      el.textContent = 'Y se lo lleva…';
+      if (avance >= 1) return terminar(p, ganador);
+      let i;
+      do { i = azar(lista.length); } while (lista.length > 1 && lista[i].c === ultimo);
+      ultimo = lista[i].c;
+      el.textContent = lista[i].n;
       ajustarNombre();
-      volumenMusica(0, 500);
-      efecto('whoosh-sube', 0.8);
-      temporizador = setTimeout(() => terminar(p, ganador), 1800);
+      tic(avance);
+      // Cada vez más lento: de 45 ms a ~600 ms entre nombre y nombre.
+      temporizador = setTimeout(rapido, 45 + Math.pow(avance, 2.4) * 555);
     };
     rapido();
   }
@@ -578,7 +556,8 @@
 
   // Atajos de teclado (también sirven para un control de presentaciones: flecha derecha / AvPág).
   document.addEventListener('keydown', (ev) => {
-    if (ev.target.closest('input, textarea') || ev.ctrlKey || ev.metaKey || ev.altKey) return;
+    // ev.repeat: dejar apretada la tecla no confirma al ganador sin querer.
+    if (ev.repeat || ev.target.closest('input, textarea') || ev.ctrlKey || ev.metaKey || ev.altKey) return;
     if ($('#app').hidden) return;
     const k = ev.key;
     if (k === ' ' || k === 'Enter' || k === 'ArrowRight' || k === 'PageDown') {
