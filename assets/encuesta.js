@@ -50,9 +50,9 @@
     estado.textContent = 'Guardando tu nota...';
     return enviar({ nota: n }).then(function () {
       notaEnviada = n;
-      estado.textContent = 'Tu nota (' + n + ') quedó registrada. Gracias. Si querés, contanos más abajo.';
+      estado.textContent = 'Nota registrada. Gracias.';
     }).catch(function () {
-      estado.textContent = 'No pudimos guardar la nota ahora. Se manda con tus respuestas al final.';
+      estado.textContent = 'No pudimos guardar la nota. Se manda con tus respuestas.';
     });
   }
 
