@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Encuesta · EFS 2026</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src https://efs-worker.gasparbrignone1.workers.dev; form-action 'none'; base-uri 'self'; object-src 'none'" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png" />
+  <link rel="preload" href="../assets/fonts/chivo-normal-400-900-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../assets/fonts.css" />
+  <link rel="stylesheet" href="../assets/styles.css" />
+</head>
+<body class="pagina-encuesta">
+  <main class="encuesta">
+    <p class="etiqueta">EFS 2026 · Encuesta anónima</p>
+    <h1 class="encuesta-titulo">¿Qué te pareció el EFS?</h1>
+    <p class="encuesta-ayuda"><strong>Es 100% anónima.</strong> No te pedimos nombre ni correo, y no sabemos quién respondió qué. Son menos de dos minutos.</p>
+
+    <form id="encuestaForm" novalidate>
+      <fieldset class="enc-nota">
+        <legend>1. En general, ¿cómo estuvo?</legend>
+        <div class="enc-nota-botones" role="radiogroup" aria-label="Nota de 1 a 5">
+          <button type="button" class="enc-n" data-nota="1" role="radio" aria-checked="false">1</button>
+          <button type="button" class="enc-n" data-nota="2" role="radio" aria-checked="false">2</button>
+          <button type="button" class="enc-n" data-nota="3" role="radio" aria-checked="false">3</button>
+          <button type="button" class="enc-n" data-nota="4" role="radio" aria-checked="false">4</button>
+          <button type="button" class="enc-n" data-nota="5" role="radio" aria-checked="false">5</button>
+        </div>
+        <p class="enc-extremos"><span>Para mejorar</span><span>Excelente</span></p>
+        <p class="enc-estado" id="encNotaEstado" role="status" aria-live="polite"></p>
+      </fieldset>
+
+      <label class="enc-campo" for="encGusto">
+        <span>2. ¿Qué fue lo que más te gustó?</span>
+        <textarea id="encGusto" name="gusto" rows="3" maxlength="1500" placeholder="Opcional"></textarea>
+      </label>
+      <label class="enc-campo" for="encMejorar">
+        <span>3. ¿Qué podemos mejorar?</span>
+        <textarea id="encMejorar" name="mejorar" rows="3" maxlength="1500" placeholder="Opcional"></textarea>
+      </label>
+      <label class="enc-campo" for="encProxima">
+        <span>4. ¿Qué te gustaría para la próxima?</span>
+        <textarea id="encProxima" name="proxima" rows="3" maxlength="1500" placeholder="Charlas, talleres, horarios, lo que se te ocurra. Opcional"></textarea>
+      </label>
+
+      <p class="enc-error" id="encError" role="alert"></p>
+      <button class="btn btn--navy" type="submit" id="encEnviar">Enviar mis respuestas</button>
+    </form>
+
+    <div id="encGracias" hidden>
+      <h2 class="encuesta-gracias">Gracias.</h2>
+      <p class="encuesta-ayuda">Tus respuestas llegaron. Nos sirven mucho para hacer una próxima edición mejor.</p>
+      <a class="btn btn--linea" href="../">Ir al sitio del EFS</a>
+    </div>
+  </main>
+  <script src="../assets/encuesta.js"></script>
+</body>
+</html>

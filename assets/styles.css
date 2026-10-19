@@ -242,6 +242,26 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .entrada-titulo { font-size: 40px; font-weight: 900; line-height: 1; }
 .entrada-ayuda { font-size: 16px; }
 
+/* ─── encuesta (efsarg.com.ar/encuesta/) ─────────────────── */
+.encuesta { max-width: 560px; margin: 0 auto; padding: 32px 16px 56px; display: flex; flex-direction: column; gap: 16px; }
+.encuesta-titulo { font-size: clamp(32px, 8vw, 44px); font-weight: 900; line-height: 1.02; letter-spacing: -.02em; }
+.encuesta-gracias { font-size: 36px; font-weight: 900; line-height: 1; }
+.encuesta-ayuda { font-size: 17px; }
+#encuestaForm { display: flex; flex-direction: column; gap: 22px; margin-top: 8px; }
+.enc-nota { border: 0; padding: 0; min-width: 0; }
+.enc-nota legend, .enc-campo > span { font-weight: 800; font-size: 18px; line-height: 1.25; padding: 0; }
+.enc-nota-botones { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 12px; }
+.enc-n { min-height: 60px; font: 800 24px var(--sans); color: var(--navy); background: var(--papel); border: 2px solid var(--navy); border-radius: 0; cursor: pointer; transition: background .15s, color .15s; }
+.enc-n:hover { background: #fff; }
+.enc-n--on, .enc-n--on:hover { background: var(--navy); color: #fff; }
+.enc-extremos { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 13px; color: var(--azul); margin-top: 6px; }
+.enc-estado { min-height: 24px; margin-top: 8px; font-size: 15px; font-weight: 600; color: var(--teal); }
+.enc-campo { display: flex; flex-direction: column; gap: 8px; }
+.enc-campo textarea { font: 500 17px/1.4 var(--sans); color: var(--navy); background: #fff; border: 2px solid var(--navy); border-radius: 0; padding: 11px 12px; width: 100%; resize: vertical; min-height: 92px; }
+.enc-error { min-height: 22px; color: #B03A1A; font-weight: 600; }
+#encEnviar { align-self: flex-start; cursor: pointer; }
+#encEnviar:disabled { opacity: .6; cursor: wait; }
+
 /* ─── edición anterior ────────────────────────────────── */
 .anterior { display: flex; flex-direction: column; gap: clamp(28px, 4vw, 48px); }
 .anterior-fecha { font-family: var(--mono); font-size: 15px; color: var(--azul2); margin-bottom: 8px; }
